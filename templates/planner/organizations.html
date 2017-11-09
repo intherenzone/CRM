@@ -1,0 +1,63 @@
+<table class="table for-pagination-organizations">
+    <thead>
+    <tr>
+        <td class="cell">
+        </td>
+        <th width="50%">
+            <a href='#'>
+                Name
+            </a>
+            <span class="caret"></span>
+        </th>
+        <th>
+            <a href="#">
+                Email
+            </a>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% ifequal organizations|length  0 %}
+        <tr>
+            <td class="cell">
+                NO ORGANIZATIONS FOUND!!
+            </td>
+        </tr>
+    {% endifequal %}
+    {% for organizations in organizations %}
+        <tr>
+        <td class="cell">
+            <input type="checkbox" class="checkorganizations" value="{{ organizations.id }}"/>
+        </td>
+            <td class="cell">
+                <a class="cell organizationsname" id="{{ organizations.id }}">{{ organizations.Name }}</a>
+            </td>
+            <td class="cell organizationsemail">
+                {{ organizations.email }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="pagination_row text-center row marl">
+    <ul class="pagination">
+        <li>
+            {% if organizations.has_previous %}
+                <a class="paginate-me-organizations" href="?page={{ organizations.previous_page_number }}">Previous</a>
+            {% endif %}
+        </li>
+        <li>
+            {% for page in organizations.paginator.page_range %}
+                <li class="{% if organizations.number == page %}active{% endif %}"><a class="paginate-me-organizations"
+                                                                              href="?page={{ page }}">{{ page }}</a>
+                </li>
+            {% endfor %}
+        </li>
+        <li>
+            {% if organizations.has_next %}
+                <a class="paginate-me-organizations" href="?page={{ organizations.next_page_number }}">Next</a>
+            {% endif %}
+        </li>
+    </ul>
+</div>
+<script src="{% static 'js/setstatus.js' %}"></script>

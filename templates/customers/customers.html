@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load paginate %}
+{% block content %}
+
+<div class="main_container">
+  <!-- heading_create starts here -->
+  <div class="row marl heading_create">
+    <div class="heading col-md-12">
+      <div class="col-md-6">
+        <h4>Customers</h4>
+      </div>
+      <div class="col-md-6">
+        <div class="create_new text-right">
+
+          <a href="{% url 'customer:add_customer' %}"><i class="fa fa-plus"></i> Add New Customer</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- heading_create ends here -->
+  <!-- filter_row starts here -->
+  <div class="filter_row row marl">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+        </div>
+        <form id="customers_filter" action="" method="POST">{%csrf_token%}
+          <div class="panel-content text-center">
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">First Name</label>
+                <input type="text" class="form-control" placeholder="first_name" name="first_name" value="{{request.POST.first_name}}">
+              </div>
+            </div>
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Last Name</label>
+                <input type="text" class="form-control" placeholder="last_name" name="last_name" value="{{request.POST.last_name}}">
+              </div>
+            </div>
+            <div class="filter_col text-center">
+              <div class="form-group">
+                <button class="btn btn-primary" type="submit">Search</button>
+                <a href="{% url 'customer:list' %}" class="btn btn-default">Clear</a>
+              </div>
+            </div>
+          </div>
+        </form>
+        <br clear="all">
+      </div>
+    </div>
+  </div>
+  <!-- filter_row ends here -->
+  <!-- leads list start-->
+  <div class="table_container_row row marl">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading-list text-center">
+          LIST OF Customers
+          <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Customers {{ customer_obj|length }}{% endif %}</span>
+        </div>
+        <div class="panel-content">
+          <table class="table table-bordered table-striped table-condensed">
+            <thead>
+              <tr>
+                <th width="15%" style="text-align:center;">S.No</th>
+                <th width="25%" style="text-align:center;">FIRST NAME</th>
+                <th width="15%" style="text-align:center;">LAST NAME</th>
+                <!-- <th width="20%" style="text-align:center;">ASSIGNED USER</th> -->
+                <!--<th width="15%" style="text-align:center;">CREATED ON</th>
+                <th width="30%" style="text-align:center;">ACTIONS</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              {% if per_page %}
+                {% paginate per_page customer_obj %}
+              {% else %}
+                {% paginate 10 customer_obj %}
+              {% endif %}
+              {% for customer in customer_obj %}
+              <tr class="text-center">
+                <td scope="row">{{ forloop.counter }}</td>
+                <td><a >{{ customer.first_name }}</a></td>
+                <td>{{ customer.last_name }}</td>
+                <td>
+                  <a class="btn btn-info">View</a>
+                  <a class="btn btn-success">Edit</a>
+                  <a class="btn btn-danger">Delete</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {%ifequal customer_obj|length 0%}
+            <h4 class="text-center">No Customers Records Found</h4>
+          {%endifequal%}
+          <div class="marl row text-center">
+            {% show_pages %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- leads list end-->
+</div>
+<!-- main_container ends here -->
+{% endblock %}
+{% block js_block %}
+<script type="text/javascript">
+  $("a[rel='page']").click(function(e){
+    e.preventDefault();
+    $('#customers_filter').attr("action", $(this).attr("href"));
+    $('#customers_filter').submit();
+  });
+</script>
+{% endblock js_block %}
