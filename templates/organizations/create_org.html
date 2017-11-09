@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block breadcrumb %}
+  <ol class="breadcrumb">
+    <li><a href="{% url 'organizations:list' %}">Organizations</a></li>
+    <li class="active">Create</li>
+  </ol>
+{% endblock %}
+{%block content%}
+  <form id="add_form" method="POST" action="" novalidate>{%csrf_token%}
+    <div class="overview_form_block row marl">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Overview
+          </div>
+          <div class="panel-content">
+            <div class="row marl">
+              <div class="col-md-6">
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" class="name" >Name</label>
+                    <div class="row">
+                      <div class="filter_col col-md-6">
+                        {{ org_form.Name }}
+                        {{ org_form.Name.errors }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" {% if request.POST.status == "converted" %} class="required" {% endif %}>Account Name</label>
+                    {{ org_form.account_name }}
+                    {{ org_form.account_name.errors }}
+                  </div>
+                </div>
+
+                <div class="filter_col col-md-12">
+                  <div class="form-group ">
+                    <label for="exampleInputEmail1">Phone</label>
+                    {{ org_form.phone }}
+                    {{ org_form.phone.errors }}
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group ">
+                    <label for="exampleInputEmail1" class="required">Email Address</label>
+                    {{ org_form.email }}
+                    {{ org_form.email.errors }}
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1"/>Status</label>
+                    {{ org_form.status }}
+                    {{ org_form.status.errors }}
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1"/>Source</label>
+                    {{ org_form.source }}
+                    {{ org_form.source.errors }}
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" >Address</label>
+                    {{ address_form.address_line }}
+                    {{ address_form.address_line.errors }}
+                  </div>
+                    {{ address_form.street }}
+                    {{ address_form.street.errors }}
+                  <div class="row" style="margin-top:10px;">
+                    <div class="col-md-4">
+                      {{ address_form.city }}
+                      {{ address_form.city.errors }}
+                    </div>
+                    <div class="col-md-4">
+                      {{ address_form.state }}
+                      {{ address_form.state.errors }}
+                    </div>
+                    <div class="col-md-4">
+                      {{ address_form.postcode }}
+                      {{ address_form.postcode.errors }}
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px;">
+                      {{ address_form.country }}
+                      {{ address_form.country.errors }}
+                    </div>
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Website</label>
+                    {{ org_form.website }}
+                    {{ org_form.website.errors }}
+                  </div>
+                </div>
+              </div>
+              <div class="filter_col col-md-12">
+                <div class="form-group col-md-12">
+                  <label for="exampleInputEmail1" >Description</label>
+                  {{ org_form.description }}
+                  {{ org_form.description.errors }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <br clear="all">
+        </div>
+      </div>
+      <input type="hidden" id="save_new_form" name="savenewform">
+    </div>
+    <div class="row marl buttons_row text-center">
+      <button  class="btn btn-default save" type="submit">Save</button>
+      {% if not org_obj %}
+        <button class="btn btn-success save savenew" type="submit">Save & New</button>
+      {% endif %}
+      <a href="{% url 'organizations:list' %}" class="btn btn-default" id="create_org_cancel">Cancel</a>
+    </div>
+  </form>
+{% endblock %}
+{% block js_block %}
+  <script type="text/javascript">
+    $(".savenew").on('click', function(e){
+      e.preventDefault()
+      $("#save_new_form").val('true')
+      $('#add_form').submit()
+    });
+  </script>
+{% endblock js_block %}

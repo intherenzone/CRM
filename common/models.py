@@ -13,6 +13,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(('date joined'), auto_now_add=True)
 
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', ]
 

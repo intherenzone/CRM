@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load paginate %}
+{% block content %}
+
+<div class="main_container">
+  <!-- heading_create starts here -->
+  <div class="row marl heading_create">
+    <div class="heading col-md-12">
+      <div class="col-md-6">
+        <h4>Activity</h4>
+      </div>
+      <div class="col-md-6">
+        <div class="create_new text-right">
+
+          <a href="{% url 'activity:add_activity' %}"><i class="fa fa-plus"></i> Add New Activity</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- heading_create ends here -->
+  <!-- filter_row starts here -->
+  <div class="filter_row row marl">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+        </div>
+        <form id="activity_filter" action="" method="POST">{%csrf_token%}
+          <div class="panel-content text-center">
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Name</label>
+                <input type="text" class="form-control" placeholder="Name" name="Name" value="{{request.POST.Name}}">
+              </div>
+            </div>
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Activity type</label>
+                <select class="form-control" id="id_status" name="status" >
+                  <option value="">--Status of Activity--</option>
+                  {% for each_status in status %}
+                  <option value="{{each_status.0}}" {% if request.POST.status %} {% ifequal each_status.0 request.POST.status %}selected{% endifequal %}{% endif %} >{{each_status.1}} </option>
+                  {% endfor%}
+                </select>
+              </div>
+            </div>
+            <div class="filter_col text-center">
+              <div class="form-group">
+                <button class="btn btn-primary" type="submit">Search</button>
+                <a href="{% url 'activity:list' %}" class="btn btn-default">Clear</a>
+              </div>
+            </div>
+          </div>
+        </form>
+        <br clear="all">
+      </div>
+    </div>
+  </div>
+  <!-- filter_row ends here -->
+  <!-- leads list start-->
+  <div class="table_container_row row marl">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading-list text-center">
+          LIST OF Activities
+          <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Activities {{ activity_obj|length }}{% endif %}</span>
+        </div>
+        <div class="panel-content">
+          <table class="table table-bordered table-striped table-condensed">
+            <thead>
+              <tr>
+                <th width="15%" style="text-align:center;">S.No</th>
+                <th width="25%" style="text-align:center;">NAME</th>
+                <th width="15%" style="text-align:center;">STATUS</th>
+                <!-- <th width="20%" style="text-align:center;">ASSIGNED USER</th> -->
+                <th width="15%" style="text-align:center;">CREATED ON</th>
+                <th width="30%" style="text-align:center;">ORGANIZATION</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if per_page %}
+                {% paginate per_page activity_obj %}
+              {% else %}
+                {% paginate 10 activity_obj %}
+              {% endif %}
+              {% for activity in activity_obj %}
+              <tr class="text-center">
+                <td scope="row">{{ forloop.counter }}</td>
+                <td><a >{{ activity.Name }}</a></td>
+                <td>{{ activity.status }}</td>
+                <td>{{ activity.created_on }}</td>
+                <td>{{ activity.org }}</td>
+                <td>
+                  <a class="btn btn-info">View</a>
+                  <a class="btn btn-success">Edit</a>
+                  <a class="btn btn-danger">Delete</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {%ifequal activity_obj|length 0%}
+            <h4 class="text-center">No Activity Records Found</h4>
+          {%endifequal%}
+          <div class="marl row text-center">
+            {% show_pages %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- leads list end-->
+</div>
+<!-- main_container ends here -->
+{% endblock %}
+{% block js_block %}
+<script type="text/javascript">
+  $("a[rel='page']").click(function(e){
+    e.preventDefault();
+    $('#activity_filter').attr("action", $(this).attr("href"));
+    $('#activity_filter').submit();
+  });
+</script>
+{% endblock js_block %}

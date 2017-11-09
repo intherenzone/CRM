@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block breadcrumb %}
+  <ol class="breadcrumb">
+    <li><a href="{% url 'customer:list' %}">Customers</a></li>
+    <li class="active">Create</li>
+  </ol>
+{% endblock %}
+{%block content%}
+  <form id="add_form" method="POST" action="" novalidate>{%csrf_token%}
+    <div class="overview_form_block row marl">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Overview
+          </div>
+          <div class="panel-content">
+            <div class="row marl">
+              <div class="col-md-6">
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" class="name" >First Name</label>
+                    <div class="row">
+                      <div class="filter_col col-md-6">
+                        {{ customer_form.first_name }}
+                        {{ customer_form.first_name.errors }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" class="lname" >Last Name</label>
+                    <div class="row">
+                      <div class="filter_col col-md-6">
+                        {{ customer_form.last_name }}
+                        {{ customer_form.last_name.errors }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group ">
+                    <label for="exampleInputEmail1">Phone</label>
+                    {{ customer_form.phone }}
+                    {{ customer_form.phone.errors }}
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group ">
+                    <label for="exampleInputEmail1" class="required">Email Address</label>
+                    {{ customer_form.email }}
+                    {{ customer_form.email.errors }}
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1"/>Customer Activity</label>
+                    {{ customer_form.activity }}
+                    {{ customer_form.activity.errors }}
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1"/>Organization</label>
+                    {{ customer_form.org }}
+                    {{ customer_form.org.errors }}
+                  </div>
+                </div>
+              </div>
+              <div class="filter_col col-md-12">
+                <div class="form-group col-md-12">
+                  <label for="exampleInputEmail1" >Description</label>
+                  {{ customer_form.description }}
+                  {{ customer_form.description.errors }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <br clear="all">
+        </div>
+      </div>
+      <input type="hidden" id="save_new_form" name="savenewform">
+    </div>
+    <div class="row marl buttons_row text-center">
+      <button  class="btn btn-default save" type="submit">Save</button>
+      {% if not customer_obj %}
+        <button class="btn btn-success save savenew" type="submit">Save & New</button>
+      {% endif %}
+      <a href="{% url 'customer:list' %}" class="btn btn-default" id="create_customer_cancel">Cancel</a>
+    </div>
+  </form>
+{% endblock %}
+{% block js_block %}
+  <script type="text/javascript">
+    $(".savenew").on('click', function(e){
+      e.preventDefault()
+      $("#save_new_form").val('true')
+      $('#add_form').submit()
+    });
+  </script>
+{% endblock js_block %}
