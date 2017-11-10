@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load paginate %}
+{% block content %}
+
+<div class="main_container">
+  <!-- heading_create starts here -->
+  <div class="row marl heading_create">
+    <div class="heading col-md-12">
+      <div class="col-md-6">
+        <h4>Organizations</h4>
+      </div>
+      <div class="col-md-6">
+        <div class="create_new text-right">
+
+          <a href="{% url 'organizations:add_org' %}"><i class="fa fa-plus"></i> Add New Organization</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- heading_create ends here -->
+  <!-- filter_row starts here -->
+  <div class="filter_row row marl">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+        </div>
+        <form id="organizations_filter" action="" method="POST">{%csrf_token%}
+          <div class="panel-content text-center">
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Name</label>
+                <input type="text" class="form-control" placeholder="Name" name="Name" value="{{request.POST.Name}}">
+              </div>
+            </div>
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Lead Status</label>
+                <select class="form-control" id="id_status" name="status" >
+                  <option value="">--Status of Organizations--</option>
+                  {% for each_status in status %}
+                  <option value="{{each_status.0}}" {% if request.POST.status %} {% ifequal each_status.0 request.POST.status %}selected{% endifequal %}{% endif %} >{{each_status.1}} </option>
+                  {% endfor%}
+                </select>
+              </div>
+            </div>
+            <div class="filter_col text-center">
+              <div class="form-group">
+                <button class="btn btn-primary" type="submit">Search</button>
+                <a href="{% url 'organizations:list' %}" class="btn btn-default">Clear</a>
+              </div>
+            </div>
+          </div>
+        </form>
+        <br clear="all">
+      </div>
+    </div>
+  </div>
+  <!-- filter_row ends here -->
+  <!-- leads list start-->
+  <div class="table_container_row row marl">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading-list text-center">
+          LIST OF Organizations
+          <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Organizations {{ org_obj|length }}{% endif %}</span>
+        </div>
+        <div class="panel-content">
+          <table class="table table-bordered table-striped table-condensed">
+            <thead>
+              <tr>
+                <th width="15%" style="text-align:center;">S.No</th>
+                <th width="25%" style="text-align:center;">NAME</th>
+                <th width="15%" style="text-align:center;">STATUS</th>
+                <!-- <th width="20%" style="text-align:center;">ASSIGNED USER</th> -->
+                <th width="15%" style="text-align:center;">CREATED ON</th>
+                <th width="30%" style="text-align:center;">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if per_page %}
+                {% paginate per_page org_obj %}
+              {% else %}
+                {% paginate 10 org_obj %}
+              {% endif %}
+              {% for org in org_obj %}
+              <tr class="text-center">
+                <td scope="row">{{ forloop.counter }}</td>
+                <td><a >{{ org.Name }}</a></td>
+                <td>{{ org.status }}</td>
+                <td>{{ org.created_on }}</td>
+                <td>
+                  <a class="btn btn-info">View</a>
+                  <a class="btn btn-success">Edit</a>
+                  <a class="btn btn-danger">Delete</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {%ifequal org_obj|length 0%}
+            <h4 class="text-center">No Organizations Records Found</h4>
+          {%endifequal%}
+          <div class="marl row text-center">
+            {% show_pages %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- leads list end-->
+</div>
+<!-- main_container ends here -->
+{% endblock %}
+{% block js_block %}
+<script type="text/javascript">
+  $("a[rel='page']").click(function(e){
+    e.preventDefault();
+    $('#organizations_filter').attr("action", $(this).attr("href"));
+    $('#organizations_filter').submit();
+  });
+</script>
+{% endblock js_block %}

@@ -34,9 +34,13 @@ INSTALLED_APPS = [
     'contacts',
     'emails',
     'leads',
+    'activity',
     'oppurtunity',
     'planner',
-    'simple_pagination'
+    'organizations',
+    'customer',
+    'simple_pagination',
+    #'simple_history',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'crm.urls'
@@ -102,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Calcutta'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 

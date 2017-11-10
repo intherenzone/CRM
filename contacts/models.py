@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from accounts.models import Account
 from common.models import Address, User, Team
+#from simple_history.models import HistoricalRecords
 
 
 class Contact(models.Model):
@@ -18,6 +19,7 @@ class Contact(models.Model):
     created_by = models.ForeignKey(User, related_name='contact_created_by', on_delete=models.CASCADE)
     created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
     is_active = models.BooleanField(default=False)
+    #history = HistoricalRecords()
 
     def __str__(self):
         return self.first_name
