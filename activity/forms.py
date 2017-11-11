@@ -24,6 +24,6 @@ class ActivityForm(forms.ModelForm):
 
     class Meta:
         model = Activity
-        fields = ('org', 'assigned_to','email', 'startdate', 'enddate', 'created_by', 'activity_type',
-                  'description','Name','status'
+        fields = ('assigned_to','email', 'startdate', 'enddate', 'created_by', 'activity_type',
+                  'description','name','status'
                   )

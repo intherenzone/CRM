@@ -1,12 +1,12 @@
 from django import forms
-from organizations.models import Organizations
+from organizations.models import Organization
 from common.models import Address, Comment
 
-class OrganizationsForm(forms.ModelForm):
+class OrganizationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         assigned_users = kwargs.pop('assigned_to', [])
-        super(OrganizationsForm, self).__init__(*args, **kwargs)
+        super(OrganizationForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs = {"class": "form-control"}
         #if self.data.get('status') == 'converted':
@@ -15,16 +15,16 @@ class OrganizationsForm(forms.ModelForm):
         self.fields['assigned_to'].required = False
         #self.fields['teams'].required = False
         self.fields['phone'].required = False
-        self.fields['Name'].widget.attrs.update({
-            'placeholder': 'Name'})
+        self.fields['name'].widget.attrs.update({
+            'placeholder': 'name'})
         #self.fields['Name'].widget.attrs.update({
             #'placeholder': 'Name'})
         #self.fields['account_name'].widget.attrs.update({
         #    'placeholder': 'Account Name'})
 
     class Meta:
-        model = Organizations
-        fields = ('Name','assigned_to',
+        model = Organization
+        fields = ('name','assigned_to',
                   'phone', 'email', 'status', 'source', 'website', 'address', 'description'
                   )
 
