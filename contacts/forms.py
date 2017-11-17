@@ -7,12 +7,15 @@ class ContactForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         assigned_users = kwargs.pop('assigned_to', [])
+        #contact_org = kwargs.pop('organization', [])
         super(ContactForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs = {"class": "form-control"}
         self.fields['description'].widget.attrs.update({
             'rows': '6'})
         self.fields['assigned_to'].queryset = assigned_users
+        #self.fields['organization'].queryset = contact_org
+        #self.fields['organization'].required = False
         self.fields['assigned_to'].required = False
         self.fields['teams'].required = False
 
