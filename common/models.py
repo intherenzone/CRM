@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserM
 from common.utils import COUNTRIES
 
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(max_length=255, unique=True)
@@ -15,7 +16,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', ]
+    REQUIRED_FIELDS = ['username']
 
     objects = UserManager()
 
@@ -24,6 +25,19 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __unicode__(self):
         return self.email
+
+    def has_perm(self, perm, obj=None):
+        if User.is_admin:
+            return True
+        else:
+            return False
+
+    def has_module_perms(self, app_label):
+        if User.is_admin:
+            return True
+        else:
+            return False
+
 
 
 class Address(models.Model):
