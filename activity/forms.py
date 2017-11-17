@@ -1,8 +1,10 @@
 from django import forms
 from activity.models import Activity
-from common.models import Address, Comment
-from common.utils import LEAD STATUS, LEAD SOURCE
-from organizations.models import Organizations
+from contacts.models import Contact
+from common.models import Address, User, Team
+from organizations.models import Organization
+from common.utils import LEAD_STATUS, LEAD_STATUS
+
 
 class ActivityForm(forms.ModelForm):
 
@@ -26,20 +28,8 @@ class ActivityForm(forms.ModelForm):
 
     class Meta:
         model = Activity
-        fields = ('org','assigned_to','email', 'startdate', 'enddate', 'created_by', 'activity_type',
-                  'description','Name','status'
+        fields = ('name','email','contact','startdate','enddate','created_by','activity_type','description','status','assigned_to'
                   )
 
-class ActivityListForm(FormHElper):
-    from_method = 'GET'
-    FormHelper.form_class = 'form-horizontal'
-    field_class = 'col-lg-6'
-    label_class = 'col-lg-3'
-    layout = Layout(
-            Fieldset(
-                        '<i class = "fa fa-search"></i> Search Activity Records',
-                        'org','assigned_date','email','created_by','actvity_type','Name','status'
-                        ),
-            Submit('submit','Apply Filter'),
-            )
+    
     
