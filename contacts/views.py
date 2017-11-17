@@ -6,7 +6,7 @@ from django.urls import reverse
 from common.models import User, Address, Comment, Team
 from common.forms import BillingAddressForm
 from common.utils import COUNTRIES
-from accounts.models import Account
+from organizations.models import Organization
 from contacts.models import Contact
 from contacts.forms import ContactForm, ContactCommentForm
 
@@ -17,7 +17,7 @@ from contacts.forms import ContactForm, ContactCommentForm
 @login_required
 def contacts_list(request):
     contact_obj_list = Contact.objects.all()
-    accounts = Account.objects.all()
+    #organization = Organization.objects.all()
     page = request.POST.get('per_page')
     first_name = request.POST.get('first_name')
     account = request.POST.get('account')
@@ -37,22 +37,28 @@ def contacts_list(request):
         contact_obj_list = contact_obj_list.filter(email__icontains=email)
     return render(request, 'contacts/contacts.html', {
         'contact_obj_list': contact_obj_list,
-        'accounts': accounts,
         'per_page': page
+
+    #return render(request, 'contacts/contacts.html', {
+     #   'contact_obj_list': contact_obj_list,
+      #  'organization': organization,
+       # 'per_page': page
     })
 
 
 @login_required
 def add_contact(request):
-    accounts = Account.objects.filter()
+    #organization = Organization.objects.filter()
     users = User.objects.filter(is_active=True).order_by('email')
-    form = ContactForm(assigned_to=users, account=accounts)
+    form = ContactForm(assigned_to=users)
+    #form = ContactForm(assigned_to=users, orgnization=organization)
     address_form = BillingAddressForm()
     teams = Team.objects.all()
     assignedto_list = request.POST.getlist('assigned_to')
     teams_list = request.POST.getlist('teams')
     if request.method == 'POST':
-        form = ContactForm(request.POST, assigned_to=users, account=accounts)
+        form = ContactForm(request.POST, assigned_to=users)
+        #form = ContactForm(request.POST, assigned_to=users, orgnization=organization)
         address_form = BillingAddressForm(request.POST)
         if form.is_valid() and address_form.is_valid():
             address_obj = address_form.save()
@@ -74,7 +80,7 @@ def add_contact(request):
             return render(request, 'contacts/create_contact.html', {
                 'contact_form': form,
                 'address_form': address_form,
-                'accounts': accounts,
+                #'organization': organization,
                 'countries': COUNTRIES,
                 'teams': teams,
                 'users': users,
@@ -85,7 +91,7 @@ def add_contact(request):
         return render(request, 'contacts/create_contact.html', {
             'contact_form': form,
             'address_form': address_form,
-            'accounts': accounts,
+            #'organization': organization,
             'countries': COUNTRIES,
             'teams': teams,
             'users': users,
@@ -108,15 +114,17 @@ def view_contact(request, contact_id):
 def edit_contact(request, pk):
     contact_obj = get_object_or_404(Contact, id=pk)
     address_obj = get_object_or_404(Address, id=contact_obj.address.id)
-    accounts = Account.objects.filter()
+    #organization = Organization.objects.filter()
     users = User.objects.filter(is_active=True).order_by('email')
-    form = ContactForm(instance=contact_obj, assigned_to=users, account=accounts)
+    form = ContactForm(instance=contact_obj, assigned_to=users)
+    #form = ContactForm(instance=contact_obj, assigned_to=users, organization=organization)
     address_form = BillingAddressForm(instance=address_obj)
     teams = Team.objects.all()
     assignedto_list = request.POST.getlist('assigned_to')
     teams_list = request.POST.getlist('teams')
     if request.method == 'POST':
-        form = ContactForm(request.POST, instance=contact_obj, assigned_to=users, account=accounts)
+        form = ContactForm(request.POST, instance=contact_obj, assigned_to=users)
+        #form = ContactForm(request.POST, instance=contact_obj, assigned_to=users, organization=organization)
         address_form = BillingAddressForm(request.POST, instance=address_obj)
         if form.is_valid() and address_form.is_valid():
             addres_obj = address_form.save()
@@ -138,7 +146,7 @@ def edit_contact(request, pk):
                 'contact_form': form,
                 'address_form': address_form,
                 'contact_obj': contact_obj,
-                'accounts': accounts,
+                #'organization': organization,
                 'countries': COUNTRIES,
                 'teams': teams,
                 'users': users,
@@ -151,7 +159,7 @@ def edit_contact(request, pk):
             'address_form': address_form,
             'contact_obj': contact_obj,
             'address_obj': address_obj,
-            'accounts': accounts,
+            #'organization': organization,
             'countries': COUNTRIES,
             'teams': teams,
             'users': users,
