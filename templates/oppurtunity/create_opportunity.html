@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block breadcrumb %}
+<h3 align="center">
   <ol class="breadcrumb">
     <li><a href="{%  url 'oppurtunities:list' %}">Opportunities</a></li>
     <li class="active">Create</li>
-  </ol>
+  </ol></h3>
 {% endblock %}
 {% block content %}
   <form class= "form_user" method="POST" action="" novalidate>{% csrf_token %}

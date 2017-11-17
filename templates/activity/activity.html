@@ -7,17 +7,19 @@
   <!-- heading_create starts here -->
   <div class="row marl heading_create">
     <div class="heading col-md-12">
-      <div class="col-md-6">
-        <h4>Activity</h4>
-      </div>
-      <div class="col-md-6">
-        <div class="create_new text-right">
+      <div class="col-md-12">
+        <h1 align="center">Activity</h1>
+        <p>
+          <div class="create_new text-right">
+            <a href="{% url 'activity:add_activity' %}"><i class="fa fa-plus"></i> Add New Activity</a>
+          </div>
+        </p>
 
-          <a href="{% url 'activity:add_activity' %}"><i class="fa fa-plus"></i> Add New Activity</a>
-        </div>
       </div>
+
     </div>
   </div>
+</div>
   <!-- heading_create ends here -->
   <!-- filter_row starts here -->
   <div class="filter_row row marl">
