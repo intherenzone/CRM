@@ -21,22 +21,14 @@ from planner.forms import ReminderForm
 # Create your views here.
 @login_required
 def activity_list(request):
-    activity_obj = Activity.objects.all()
-    page = request.POST.get('per_page')
-    #first_name = request.POST.get('first_name')
-    #last_name = request.POST.get('last_name')
-    #city = request.POST.get('city')
+    status = ['in process', 'converted', 'recycled', 'assigned', 'dead']
+    activity_obj = sorted(Activity.objects.all().order_by('enddate', 'startdate'), key=lambda p: status.index(p.status))
 
-    email = request.POST.get('email')
-    #if first_name:
-    #    lead_obj = Lead.objects.filter(first_name__icontains=first_name)
-    #if last_name:
-    #    lead_obj = Lead.objects.filter(last_name__icontains=last_name)
-    #if city:
-    #    lead_obj = Lead.objects.filter(address=Address.objects.filter
-    #                                   (city__icontains=city))
-    if email:
-        lead_obj = Lead.objects.filter(email__icontains=email)
+    page = request.POST.get('per_page')
+
+    # email = request.POST.get('email')
+    # if email:
+    # activity_obj = Activity.objects.filter(email__icontains=email)
 
     return render(request, 'activity/activity.html', {
         'activity_obj': activity_obj, 'per_page': page})
