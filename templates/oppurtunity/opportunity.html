@@ -3,20 +3,23 @@
 {% load paginate %}
 {% block content %}
 <!-- main_container starts here -->
+
 <div class="main_container">
   <!-- heading_create starts here -->
   <div class="row marl heading_create">
     <div class="heading col-md-12">
-      <div class="col-md-6">
-        <h4>Opportunities</h4>
-      </div>
-      <div class="col-md-6">
+      <div class="col-md-12" align="center">
+        <h1>Opportunities</h1>
+
+      <p>
         <div class="create_new text-right">
           <a href="{% url 'oppurtunities:save' %}"><i class="fa fa-plus"></i> Add New Opportunity</a>
         </div>
+      </p>
+      </div>
       </div>
     </div>
-  </div>
+
   <!-- heading_create ends here -->
   <!-- filter_row starts here -->
   <div class="filter_row row marl">
