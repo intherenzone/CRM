@@ -15,7 +15,6 @@ urlpatterns = [
     url(r'^organizations/', include('organizations.urls', namespace='organizations')),
     url(r'^oppurtunities/', include('oppurtunity.urls', namespace='oppurtunities')),
     url(r'^activities/', include('activity.urls', namespace='activities')),
-    url(r'^customers/', include('customer.urls', namespace='customers')),
     url(r'^cases/', include('cases.urls', namespace='cases')),
     # url(r'^emails/', include('emails.urls', namespace='emails')),
     # url(r'^planner/', include('planner.urls', namespace='planner')),

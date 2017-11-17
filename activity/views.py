@@ -59,13 +59,7 @@ def add_activity(request):
         #address_form = BillingAddressForm(request.POST)
         if form.is_valid():
             activity_obj = form.save(commit=False)
-            #address_object = address_form.save()
-            #org_obj.address = address_object
-            #activity_obj.created_by = request.user
             activity_obj.save()
-            #activity_obj.assigned_to.add(*assignedto_list)
-            #lead_obj.teams.add(*teams_list)
-
             if request.POST.get("savenewform"):
                 return HttpResponseRedirect(reverse("activity:add_activity"))
             else:

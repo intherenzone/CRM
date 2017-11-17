@@ -7,21 +7,19 @@ class ContactForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         assigned_users = kwargs.pop('assigned_to', [])
-        contact_account = kwargs.pop('account', [])
         super(ContactForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs = {"class": "form-control"}
         self.fields['description'].widget.attrs.update({
             'rows': '6'})
         self.fields['assigned_to'].queryset = assigned_users
-        self.fields['account'].queryset = contact_account
         self.fields['assigned_to'].required = False
         self.fields['teams'].required = False
 
     class Meta:
         model = Contact
         fields = (
-            'assigned_to', 'teams', 'first_name', 'last_name', 'account', 'email', 'phone', 'address', 'description'
+            'assigned_to', 'teams', 'first_name', 'last_name', 'email', 'phone', 'address', 'description'
         )
 
     def clean_phone(self):

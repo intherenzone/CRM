@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'oppurtunity',
     'planner',
     'organizations',
-    'customer',
     'simple_pagination',
     #'simple_history',
 ]

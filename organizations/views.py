@@ -5,12 +5,12 @@ from django.urls import reverse
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import modelformset_factory
-from organizations.models import Organizations
+from organizations.models import Organization
 #from leads.models import Lead
 from contacts.forms import ContactForm
 from common.models import User, Address, Comment, Team
 from common.utils import LEAD_STATUS, LEAD_SOURCE, INDCHOICES, TYPECHOICES, COUNTRIES
-from organizations.forms import OrganizationsForm
+from organizations.forms import OrganizationForm
 from accounts.forms import AccountForm
 from common.forms import BillingAddressForm
 from accounts.models import Account
@@ -21,21 +21,20 @@ from planner.forms import ReminderForm
 
 @login_required
 def organizations_list(request):
-    org_obj = Organizations.objects.all()
+    org_obj = Organization.objects.all()
     page = request.POST.get('per_page')
     Name = request.POST.get('Name')
-    #last_name = request.POST.get('last_name')
     city = request.POST.get('city')
     email = request.POST.get('email')
     if Name:
-        org_obj = Organizations.objects.filter(Name__icontains=Name)
+        org_obj = Organization.objects.filter(Name__icontains=Name)
     #if last_name:
     #    lead_obj = Lead.objects.filter(last_name__icontains=last_name)
     if city:
-        org_obj = Organizations.objects.filter(address=Address.objects.filter
+        org_obj = Organization.objects.filter(address=Address.objects.filter
                                        (city__icontains=city))
     if email:
-        org_obj = Organizations.objects.filter(email__icontains=email)
+        org_obj = Organization.objects.filter(email__icontains=email)
 
     return render(request, 'organizations/organizations.html', {
         'org_obj': org_obj, 'per_page': page})
@@ -52,7 +51,7 @@ def add_org(request):
     org_account = request.POST.get('account_name')
     org_email = request.POST.get('email')
     org_phone = request.POST.get('phone')
-    form = OrganizationsForm(assigned_to=users)
+    form = OrganizationForm(assigned_to=users)
     address_form = BillingAddressForm()
     if request.method == 'POST':
         form = OrganizationsForm(request.POST, assigned_to=users)
