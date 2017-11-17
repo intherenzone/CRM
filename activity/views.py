@@ -1,33 +1,25 @@
-from django.shortcuts import render, get_object_or_404
+import json
+
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from django.db.models import Q
-from django.views.decorators.csrf import csrf_exempt
-from django.forms.models import modelformset_factory
+
+from contacts.models import Contact
 from activity.models import Activity
 from activity.forms import ActivityForm
-from leads.models import Lead
-from contacts.forms import ContactForm
 from common.models import User, Address, Comment, Team
 from common.utils import LEAD_STATUS, LEAD_SOURCE, INDCHOICES, TYPECHOICES, COUNTRIES
-from leads.forms import LeadCommentForm, LeadForm
-from accounts.forms import AccountForm
-from common.forms import BillingAddressForm
-from accounts.models import Account
-from planner.models import Event, Reminder
-from planner.forms import ReminderForm
 
 # Create your views here.
 @login_required
 def activity_list(request):
-    activity_obj = Activity.objects.all()
+    activity_list = Activity.objects.all().prefetch_related("contacts")
+    contacts = Contact.objects.all()
     page = request.POST.get('per_page')
-    #first_name = request.POST.get('first_name')
-    #last_name = request.POST.get('last_name')
-    #city = request.POST.get('city')
-
-    email = request.POST.get('email')
+    activity_name = request.POST.get('name')
+    activity_contact = request.POST.get('contacts')
+    activity_email = request.POST.get('email')
     #if first_name:
     #    lead_obj = Lead.objects.filter(first_name__icontains=first_name)
     #if last_name:
@@ -35,11 +27,14 @@ def activity_list(request):
     #if city:
     #    lead_obj = Lead.objects.filter(address=Address.objects.filter
     #                                   (city__icontains=city))
-    if email:
-        lead_obj = Lead.objects.filter(email__icontains=email)
+    # if email:
+    #     lead_obj = Lead.objects.filter(email__icontains=email)
 
     return render(request, 'activity/activity.html', {
-        'activity_obj': activity_obj, 'per_page': page})
+        'activity_list': activity_list,
+        'contacts': contacts,
+        'per_page': page
+    })
 
 
 @login_required
