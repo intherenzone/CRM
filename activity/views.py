@@ -1,25 +1,35 @@
-import json
-
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-
-from contacts.models import Contact
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+from django.forms.models import modelformset_factory
 from activity.models import Activity
 from activity.forms import ActivityForm
+from leads.models import Lead
+from contacts.forms import ContactForm
 from common.models import User, Address, Comment, Team
 from common.utils import LEAD_STATUS, LEAD_SOURCE, INDCHOICES, TYPECHOICES, COUNTRIES
+from leads.forms import LeadCommentForm, LeadForm
+from accounts.forms import AccountForm
+from common.forms import BillingAddressForm
+from accounts.models import Account
+from planner.models import Event, Reminder
+from planner.forms import ReminderForm
+from contacts.models import Contact
 
 # Create your views here.
 @login_required
 def activity_list(request):
-    activity_list = Activity.objects.all().prefetch_related("contacts")
+    activity_obj = Activity.objects.all()
     contacts = Contact.objects.all()
     page = request.POST.get('per_page')
-    activity_name = request.POST.get('name')
-    activity_contact = request.POST.get('contacts')
-    activity_email = request.POST.get('email')
+    #first_name = request.POST.get('first_name')
+    #last_name = request.POST.get('last_name')
+    #city = request.POST.get('city')
+
+    email = request.POST.get('email')
     #if first_name:
     #    lead_obj = Lead.objects.filter(first_name__icontains=first_name)
     #if last_name:
@@ -27,42 +37,41 @@ def activity_list(request):
     #if city:
     #    lead_obj = Lead.objects.filter(address=Address.objects.filter
     #                                   (city__icontains=city))
-    # if email:
-    #     lead_obj = Lead.objects.filter(email__icontains=email)
+    if email:
+        activity_obj = Activity.objects.filter(email__icontains=email)
 
     return render(request, 'activity/activity.html', {
-        'activity_list': activity_list,
-        'contacts': contacts,
-        'per_page': page
-    })
+        'activity_obj': activity_obj, 'per_page': page, 'contacts': contacts,})
 
 
 @login_required
 def add_activity(request):
-    #accounts = Account.objects.all()
-    #users = User.objects.filter(is_active=True).order_by('email')
-    #teams = Team.objects.all()
-    #assignedto_list = request.POST.getlist('assigned_to')
-    #teams_list = request.POST.getlist('teams')
-    #org_account = request.POST.get('account_name')
-    activity_email = request.POST.get('email')
-    #_phone = request.POST.get('phone')
-    form = ActivityForm()
-    #address_form = BillingAddressForm()
+    users = User.objects.filter(is_active=True).order_by('email')
+
+    #activity_email = request.POST.get('email')
+
+    form = ActivityForm(assigned_to=users)
+    assignedto_list = request.POST.getlist('assigned_to')
+
+
     if request.method == 'POST':
-        form = ActivityForm(request.POST)
+        form = ActivityForm(request.POST,assigned_to=users)
         #address_form = BillingAddressForm(request.POST)
         if form.is_valid():
             activity_obj = form.save(commit=False)
+            activity_obj.created_by = request.user
             activity_obj.save()
+            activity_obj.assigned_to.add(*assignedto_list)
+            if request.is_ajax():
+                return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
-                return HttpResponseRedirect(reverse("activity:add_activity"))
+                return HttpResponseRedirect(reverse("activity:save"))
             else:
-                return HttpResponseRedirect(reverse('activity:list'))
+                return HttpResponseRedirect(reverse("activity:list"))
         else:
             return render(request, 'activity/create_activity.html', {
-                          'activity_form': form}) #address_form': address_form,})
+                          'activity_form': form, }) #address_form': address_form,})
     else:
         return render(request, 'activity/create_activity.html', {
-                      'activity_form': form
+                      'activity_form': form,
                       })
