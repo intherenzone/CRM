@@ -1,8 +1,53 @@
-{% extends 'base.html' %}
-{% block content %}
-<h1>Registration</h1>
-    <form method="POST" class="user-form">
-    {% csrf_token %}
-        {{ reg_form.as_p }}
-        <button class="btn btn-primary" type="submit">Submit</button></form>
-{% endblock %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CRM Login</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Custom styling plus plugins -->
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <!-- <link href="css/main.css" rel="stylesheet"> -->
+</head>
+
+<body class="login_register_body">
+<div class="container">
+    <div class="row marl login_row">
+        <div class="col-md-offset-5 col-md-5 col-md-offset-4">
+            <div class="login_block">
+                <div class="login_form_block">
+                    <div class="welcome">Create your crm account</div>
+                    <style>
+                    input[type=text],input[type=email],input[type=password] {
+                    width: 100%;
+                    padding: 12px 20px;
+                    margin: 8px 0;
+                    box-sizing: border-box;
+                    }
+                    </style>
+                    <form method="post" action=".">
+                            <div align="center">
+                                {{form.as_p}}
+　　　　                        {% csrf_token %}
+                                <button type="submit" class="btn btn-default">REGISTER NOW</button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
+</body>
+</html>
