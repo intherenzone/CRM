@@ -90,7 +90,7 @@
           {% if not activity_obj %}
             <button class="btn btn-success save savenew" type="submit">Save & New</button>
           {% endif %}
-          <a href="{% url 'activity:list' %}" class="btn btn-default">Cancel</a>
+          <a href="{% url 'activities:list' %}" class="btn btn-default">Cancel</a>
         </div>
       </div>
     </div>
@@ -98,8 +98,16 @@
   </form>
 {% endblock %}
 {% block js_block %}
-<script src="{% static 'js/activities/contacts.js' %}"></script>
+  <script src="{% static 'js/activities/contacts.js' %}"></script>
   <script type="text/javascript">
+    $(function () {
+       var date = new Date();
+       var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        $('#datepicker1').datetimepicker({
+            'format': 'YYYY-MM-DD',
+            minDate:today
+        }).attr('readonly', 'true')
+    });
     $(".savenew").on('click', function(e){
       e.preventDefault()
       $("#save_new_form").val('true')
