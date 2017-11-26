@@ -22,8 +22,12 @@
     <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
+          <div class="panel-heading-list text-center">
+            Customize Searching
+          </div>
         </div>
-        <form id="contacts_filter" action="" method="POST">{%csrf_token%}
+        <form id="contacts_filter" action="" method="POST">
+          {%csrf_token%}
           <div class="panel-content text-center">
             <div class="filter_col col-md-4">
               <div class="form-group">
@@ -36,10 +40,42 @@
                 </select>
               </div>
             </div>
-            <div class="filter_col col-md-4">
+            <div style = "clear:both">
+              <br>
+              <h6>Contact Information</h6>
+            </div>
+            <div style = "clear:both" class="filter_col col-md-4">
               <div class="form-group">
                 <label for="exampleInputEmail1">NAME</label>
                 <input type="text" class="form-control" placeholder="First Name" name="first_name" value="{{request.POST.first_name}}">
+              </div>
+            </div>
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">EMAIL</label>
+                <input type="text" class="form-control" placeholder="Email" name="email" value="{{request.POST.email}}">
+              </div>
+            </div>
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">PHONE</label>
+                <input type="text" class="form-control" placeholder="Phone" name="phone" value="{{request.POST.phone}}">
+              </div>
+            </div>
+            <div style = "clear:both">
+              <br>
+              <h6>Address Information</h6>
+            </div>
+            <div style = "clear:both" class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">COUNTRY</label>
+                <input type="text" class="form-control" placeholder="Country" name="Country" value="{{request.POST.country}}">
+              </div>
+            </div>
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">STATE</label>
+                <input type="text" class="form-control" placeholder="State" name="state" value="{{request.POST.state}}">
               </div>
             </div>
             <div class="filter_col col-md-4">
@@ -48,8 +84,10 @@
                 <input type="text" class="form-control" placeholder="City" name="city" value="{{request.POST.city}}">
               </div>
             </div>
-            <div class="filter_col text-center">
+
+            <div style = "clear:both" class="filter_col text-center">
               <div class="form-group">
+                <br>
                 <button  class="btn btn-primary" type="submit">Search</button>
                 <a href="{% url 'contacts:list' %}" class="btn btn-default">Clear</a>
               </div>
