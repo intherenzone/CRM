@@ -1,5 +1,5 @@
 from django import forms
-from .models import Account
+from accounts.models import Account
 from common.models import Comment
 
 
