@@ -19,7 +19,7 @@ class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
         fields = (
-            'assigned_to', 'teams', 'name', 'phone', 'email', 'website', 'industry', 'billing_address', 'shipping_address', 'description'
+            'assigned_to', 'teams', 'first_name', 'last_name', 'phone', 'email', 'website', 'industry', 'billing_address', 'shipping_address', 'description'
         )
 
     def clean_phone(self):
