@@ -48,7 +48,7 @@ def activity_list(request):
 def add_activity(request):
     users = User.objects.filter(is_active=True).order_by('email')
     contacts = Contact.objects.all()
-    form = ActivityForm(assigned_to=users)
+    form = ActivityForm(assigned_to=users, contacts=contacts)
     assignedto_list = request.POST.getlist('assigned_to')
     contacts_list = request.POST.getlist("contacts")
 
@@ -69,7 +69,7 @@ def add_activity(request):
             else:
                 return HttpResponseRedirect(reverse("activities:list"))
         else:
-            print('here')
+            print(form.errors)
             if request.is_ajax():
                 return JsonResponse({'error': True, 'activity_errors': form.errors})
             return render(request, 'activity/create_activity.html', {
