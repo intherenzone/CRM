@@ -6,7 +6,9 @@ body {
     margin: 0;
     padding-top: 60px;
 }
-
+.h3 {
+     text-align: center;
+}
 .login_register_body {
     background: #808080;
 }
@@ -115,11 +117,11 @@ header .navbar-default {
 }
 
 header .navbar-default .navbar-brand {
-    color: #ed6364;
+    color:#ffa500;
 }
 
 header .navbar-default .navbar-brand:hover {
-    color: #ed6364;
+    color: #ffa500;
 }
 
 header .navbar-default .navbar-nav > li > a {
@@ -163,7 +165,7 @@ header .navbar-default .navbar-nav li .dropdown-menu li a {
 
 header .navbar-default .navbar-nav.navbar-right .dropdown > a {
     background: #657b88;
-    color: #fff;
+    color: #000;
     border-right: 1px solid #718895;
 }
 
@@ -176,11 +178,11 @@ header .navbar-default .navbar-form .btn {
     border-radius: 3px;
     padding: 7px 12px;
     border: none;
-    background: #41B871;
+    background: #fff;
 }
 
 header .navbar-default .navbar-form .btn.btn-default {
-    color: #fff;
+    color: #000;
 }
 
 /* inner_pages ends here */
@@ -269,7 +271,7 @@ header .navbar-default .navbar-form .btn.btn-default {
 }
 
 .main_container .heading_create .create_new a {
-    background: #ed6364;
+    background:#ffa500;
     color: #fff;
     font-size: 12px;
     font-weight: 500;
@@ -328,7 +330,7 @@ header .navbar-default .navbar-form .btn.btn-default {
 }
 
 .main_container .heading_create .search-row .extra_option_btn.add-filter-button {
-    background-color: #099CBE;
+    background-color: #ffa500;
 }
 
 .main_container .heading_create .search-row .dropdown-menu {
@@ -482,10 +484,12 @@ header .navbar-default .navbar-form .btn.btn-default {
     margin: 0;
     display: inline-block;
     background: none;
+    font-size:17px;
 }
 
 .breadcrumb > li + li {
     color: #5a6e79;
+    font-size:17px;
 }
 
 .breadcrumb > li + li:before {
@@ -551,6 +555,17 @@ header .navbar-default .navbar-form .btn.btn-default {
 
 /* overview_form_block ends here */
 /* details_block starts here */
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
 .details_block .form-control {
     border-radius: 0;
     box-shadow: none;
@@ -567,8 +582,8 @@ header .navbar-default .navbar-form .btn.btn-default {
 }
 
 .buttons_row button.save {
-    background: #099CBE;
-    color: #fff;
+    background: #fff;
+    color: #000;
 }
 
 /* details_block ends here */
@@ -581,8 +596,13 @@ header .navbar-default .navbar-form .btn.btn-default {
 }
 
 .buttons_row button.save {
-    background: #099CBE;
-    color: #fff;
+    background-color: #fff;
+    color: #000;
+}
+
+.button.save:hover, .button.save:focus, .button.save:active, .button.save.active, .open > .dropdown-toggle.button.save {
+    color: #ffa500;
+    background:#fff;
 }
 
 .fade {
@@ -631,10 +651,39 @@ content:"*";
     margin-top: 20px;
 }
 
+
+
+
+
 .btn-primary {
     color: #000;
-    background-color: #099CBE;
-    border-color: #ffffff;
+    background-color: #fff;
+    border-color: #000;
+}
+
+.btn_default{
+    background-color:#fff;
+    border-color: #000;
+}
+.btn-success{
+    color:#000;
+    background-color:#fff;
+    border-color: #000;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+    color: #ffa500;
+    background:#fff;
+}
+
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+    color: #ffa500;
+    background-color:#e5e5e5;
+    border-color:#000;
+}
+.btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open > .dropdown-toggle.btn-success {
+    color: #ffa500;
+    background-color:#fff;
 }
 
 .table_container_row .panel-default .panel-heading-list {
@@ -688,7 +737,7 @@ input[type="checkbox"]:checked + label span {
 .pagination ul li a {
     padding: 8px 10px;
     border: 1px solid #fff;
-    font-size: 13px;
+    font-size: 15px;
     margin: 15px 0px;
     cursor: pointer;
 }
