@@ -3,12 +3,12 @@
 {% block breadcrumb %}
 <h3 align="center">
   <ol class="breadcrumb">
-    <li><a href="{% url 'activity:list' %}">Activity</a></li>
+    <li><a href="{% url 'activities:list' %}">Activities</a></li>
     <li class="active">Create</li>
   </ol></h3>
 {% endblock %}
 {%block content%}
-  <form id="add_form" method="POST" action="" novalidate>{%csrf_token%}
+  <form class= "form_user" method="POST" action="" novalidate>{% csrf_token %}
     <div class="overview_form_block row marl">
       <div class="col-md-12">
         <div class="panel panel-default">
@@ -21,43 +21,15 @@
                 <div class="filter_col col-md-12">
                   <div class="form-group">
                     <label for="exampleInputEmail1" class="name" >Name</label>
-                    <div class="row">
-                      <div class="filter_col col-md-6">
-                        {{ activity_form.Name }}
-                        {{ activity_form.Name.errors }}
-                      </div>
-                    </div>
+                    {{ activity_form.name }}
+                    <span>{{ activity_form.name.errors }}</span>
                   </div>
                 </div>
-                <div class="filter_col col-md-12">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1" {% if request.POST.status == "converted" %} class="required" {% endif %}>Organization Name</label>
-                    {{ activity_form.org }}
-                    {{ activity_form.org.errors }}
-                  </div>
-                </div>
-
                 <div class="filter_col col-md-12">
                   <div class="form-group ">
-                    <label for="exampleInputEmail1">Start date/label>
+                    <label for="exampleInputEmail1">Start date</label>
                     {{ activity_form.startdate }}
-                    {{ activity_form.startdate.errors }}
-                  </div>
-                </div>
-                <div class="filter_col col-md-12">
-                  <div class="form-group ">
-                    <label for="exampleInputEmail1" class="required">Email Address</label>
-                    {{ activity_form.email }}
-                    {{ oactivity_form.email.errors }}
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="filter_col col-md-12">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1"/>Status</label>
-                    {{ activity_form.status }}
-                    {{ activity_form.status.errors }}
+                    <span>{{ activity_form.startdate.errors }}</span>
                   </div>
                 </div>
                 <div class="filter_col col-md-12">
@@ -68,49 +40,79 @@
                   </div>
                 </div>
                 <div class="filter_col col-md-12">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1"/>Activity Type</label>
-                    {{ activity_form.activity_type }}
-                    {{ activity_form.activity_type.errors }}
+                  <div class="form-group ">
+                    <label for="exampleInputEmail1" class="required">Email Address</label>
+                    {{ activity_form.email }}
+                    <span>{{ activity_form.email.errors }}</span>
                   </div>
                 </div>
                 <div class="filter_col col-md-12">
                   <div class="form-group">
-                    <label for="exampleInputEmail1"/>Creator</label>
-                    {{ activity_form.created_by}}
-                    {{ activity_form.created_by.errors }}
+                    <label for="exampleInputEmail1">Assigned Users</label>
+                    {{ activity_form.assigned_to }}
                   </div>
                 </div>
               </div>
-              <div class="filter_col col-md-12">
+              <div class="col-md-6">
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Contacts</label>
+                    {{ activity_form.contacts }}
+                    <span>{{activity_form.contacts.errors}}</span>
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1"/>Status</label>
+                    {{ activity_form.status }}
+                    <span>{{ activity_form.status.errors }}</span>
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1"/>Activity Type</label>
+                    {{ activity_form.activity_type }}
+                    <span>{{ activity_form.activity_type.errors }}</span>
+                  </div>
+                </div>
                 <div class="form-group col-md-12">
                   <label for="exampleInputEmail1" >Description</label>
                   {{ activity_form.description }}
-                  {{ activity_form.description.errors }}
+                  <span>{{ activity_form.description.errors }}</span>
                 </div>
-              </div>
             </div>
           </div>
           <br clear="all">
+          <input type="hidden" id="save_new_form" name="savenewform">
+        </div>
+        <!-- overview ends here -->
+        <div class="row marl buttons_row text-center">
+          <button  class="btn btn-default save" type="submit" id="saveform">Save</button>
+          {% if not activity_obj %}
+            <button class="btn btn-success save savenew" type="submit">Save & New</button>
+          {% endif %}
+          <a href="{% url 'activities:list' %}" class="btn btn-default">Cancel</a>
         </div>
       </div>
-      <input type="hidden" id="save_new_form" name="savenewform">
     </div>
-    <div class="row marl buttons_row text-center">
-      <button  class="btn btn-default save" type="submit">Save</button>
-      {% if not activity_obj %}
-        <button class="btn btn-success save savenew" type="submit">Save & New</button>
-      {% endif %}
-      <a href="{% url 'activity:list' %}" class="btn btn-default" id="create_activity_cancel">Cancel</a>
-    </div>
+  </div>
   </form>
 {% endblock %}
 {% block js_block %}
+  <script src="{% static 'js/activities/contacts.js' %}"></script>
   <script type="text/javascript">
+    $(function () {
+       var date = new Date();
+       var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        $('#datepicker1').datetimepicker({
+            'format': 'YYYY-MM-DD',
+            minDate:today
+        }).attr('readonly', 'true')
+    });
     $(".savenew").on('click', function(e){
       e.preventDefault()
       $("#save_new_form").val('true')
-      $('#add_form').submit()
+      $('.form_user').submit()
     });
   </script>
 {% endblock js_block %}
