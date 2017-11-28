@@ -91,7 +91,7 @@
                 <td>{{ activity.org }}</td>
                 <td>
                   <a class="btn btn-info">View</a>
-                  <a class="btn btn-success">Edit</a>
+                  <a href="{% url 'activities:edit_activity' activity.id%}" class="btn btn-success">Edit</a>
                   <a href="{% url 'activities:remove_activity' activity.id %}" class="btn btn-danger delete">Delete</a>
                 </td>
               </tr>

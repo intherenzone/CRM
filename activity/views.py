@@ -61,7 +61,7 @@ def add_activity(request):
             activity_obj.created_by = request.user
             activity_obj.save()
             activity_obj.assigned_to.add(*assignedto_list)
-            activity_obj.contacts.add(*contacts_list)
+            #activity_obj.contacts.add(*contacts_list)
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
@@ -102,3 +102,47 @@ def remove_activity(request, pk):
         return JsonResponse({'error': False})
     else:
         return HttpResponseRedirect(reverse('activities:list'))
+
+
+
+@login_required
+def edit_activity(request,pk):
+    activity_obj = get_object_or_404(Activity,id=pk)
+    users = User.objects.filter(is_active=True).order_by('email')
+    contacts = Contact.objects.all()
+    form = ActivityForm(instance=activity_obj, assigned_to=users, contacts=contacts)
+    assignedto_list = request.POST.getlist('assigned_to')
+    contacts_list = request.POST.getlist("contacts")
+    if request.method == 'POST':
+        form = ActivityForm(request.POST, instance=activity_obj, assigned_to=users, contacts=contacts)
+        # address_form = BillingAddressForm(request.POST)
+        if form.is_valid():
+            activity_obj = form.save(commit=False)
+            activity_obj.created_by = request.user
+            activity_obj.save()
+            activity_obj.assigned_to.clear()
+            activity_obj.assigned_to.add(*assignedto_list)
+            #activity_obj.contacts.add(*contacts_list)
+            if request.is_ajax():
+                return JsonResponse({'error': False})
+            return HttpResponseRedirect(reverse('activities:list'))
+        else:
+            print(form.errors)
+            if request.is_ajax():
+                return JsonResponse({'error': True, 'activity_errors': form.errors})
+            return render(request, 'activity/create_activity.html', {
+                          'activity_form': form,
+                          'activity_obj': activity_obj,
+                          'users': users,
+                          'assignedto_list': assignedto_list,
+                          'contacts_list': contacts_list
+                    })
+    else:
+        return render(request, 'activity/create_activity.html', {
+                      'activity_form': form,
+                      'activity_obj': activity_obj,
+                      'users': users,
+                      'assignedto_list': assignedto_list,
+                      'contacts_list': contacts_list
+                })
+
