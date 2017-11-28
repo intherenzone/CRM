@@ -25,6 +25,7 @@ def activity_list(request):
     activity_obj_list = Activity.objects.all()
     page = request.POST.get('per_page')
 
+    name = request.POST.get('name')
     email = request.POST.get('email')
     status = request.POST.get('status')
     activity_type = request.POST.get('activity_type')
@@ -33,6 +34,8 @@ def activity_list(request):
     #created_by = request.POST.get('created_by')
     #assigned_to = request.POST.get('assigned_to')
 
+    if name:
+        activity_obj_list = activity_obj_list.filter(name__icontains=name)
     if email:
         activity_obj_list = activity_obj_list.filter(email__icontains=email)
     if status:
@@ -40,9 +43,9 @@ def activity_list(request):
     if activity_type:
         activity_obj_list = activity_obj_list.filter(activity_type__icontains=activity_type)
     if startdate:
-        activity_obj_list = activity_obj_list.filter(startdate__icontains=startdate)
+        activity_obj_list = activity_obj_list.filter(startdate__gte=startdate)
     if enddate:
-        activity_obj_list = activity_obj_list.filter(enddate__icontains=enddate)
+        activity_obj_list = activity_obj_list.filter(enddate__lte=enddate)
 
 
     SS = ['in process', 'converted', 'recycled', 'assigned', 'dead']
