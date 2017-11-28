@@ -93,3 +93,12 @@ def contacts(request):
         new = {i.pk: i.first_name}
         data.update(new)
     return JsonResponse(data)
+
+@login_required
+def remove_activity(request, pk):
+    activity_record = get_object_or_404(Activity, id=pk)
+    activity_record.delete()
+    if request.is_ajax():
+        return JsonResponse({'error': False})
+    else:
+        return HttpResponseRedirect(reverse('activities:list'))

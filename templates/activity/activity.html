@@ -72,7 +72,7 @@
                 <th width="25%" style="text-align:center;">NAME</th>
                 <th width="15%" style="text-align:center;">STATUS</th>
                 <!-- <th width="20%" style="text-align:center;">ASSIGNED USER</th> -->
-                <th width="15%" style="text-align:center;">CREATED ON</th>
+                <th width="15%" style="text-align:center;">START DATE</th>
                 <th width="30%" style="text-align:center;">ORGANIZATION</th>
               </tr>
             </thead>
@@ -85,14 +85,14 @@
               {% for activity in activity_obj %}
               <tr class="text-center">
                 <td scope="row">{{ forloop.counter }}</td>
-                <td><a >{{ activity.Name }}</a></td>
+                <td><a >{{ activity.name }}</a></td>
                 <td>{{ activity.status }}</td>
-                <td>{{ activity.created_on }}</td>
+                <td>{{ activity.startdate }}</td>
                 <td>{{ activity.org }}</td>
                 <td>
                   <a class="btn btn-info">View</a>
                   <a class="btn btn-success">Edit</a>
-                  <a class="btn btn-danger">Delete</a>
+                  <a href="{% url 'activities:remove_activity' activity.id %}" class="btn btn-danger delete">Delete</a>
                 </td>
               </tr>
               {% endfor %}
