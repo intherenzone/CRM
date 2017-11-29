@@ -146,3 +146,6 @@ def edit_activity(request,pk):
                       'contacts_list': contacts_list
                 })
 
+
+
+
