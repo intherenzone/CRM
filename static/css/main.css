@@ -91,7 +91,9 @@ body {
     padding: 10px 20px;
 }
 
-.login_form_block .btn:hover {
+.login_form_block .btn:hover
+
+ {
     text-decoration: none;
 }
 
@@ -555,6 +557,10 @@ header .navbar-default .navbar-form .btn.btn-default {
 
 /* overview_form_block ends here */
 /* details_block starts here */
+.a button{
+ border-radius: 0;
+}
+
 .button {
     background-color: #4CAF50; /* Green */
     border: none;
@@ -566,6 +572,7 @@ header .navbar-default .navbar-form .btn.btn-default {
     font-size: 16px;
 }
 
+
 .details_block .form-control {
     border-radius: 0;
     box-shadow: none;
@@ -574,6 +581,7 @@ header .navbar-default .navbar-form .btn.btn-default {
 
 .buttons_row {
     margin-bottom: 20px;
+    border-radius: 0;
 }
 
 .buttons_row button {
