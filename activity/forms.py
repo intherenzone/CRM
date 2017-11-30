@@ -4,6 +4,7 @@ from contacts.models import Contact
 from common.models import Address, User, Team
 from organizations.models import Organization
 from common.utils import LEAD_STATUS, LEAD_STATUS
+from common.models import Comment
 
 ACTIVITY_TYPE=(
    ('Email', 'Email'),
@@ -40,3 +41,10 @@ class ActivityForm(forms.ModelForm):
         fields = (
             'name', 'email', 'contacts', 'startdate', 'enddate', 'activity_type', 'description', 'status', 'assigned_to'
         )
+
+class ActivityCommentForm(forms.ModelForm):
+    comment = forms.CharField(max_length=64, required=True)
+
+    class Meta:
+        model = Comment
+        fields = ('comment', 'contact', 'commented_by')
