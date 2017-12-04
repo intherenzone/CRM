@@ -22,8 +22,11 @@ def contacts_list(request):
     first_name = request.POST.get('first_name')
     account = request.POST.get('account')
     city = request.POST.get('city')
+    country = request.POST.get('country')
+    state = request.POST.get('state')
     phone = request.POST.get('phone')
     email = request.POST.get('email')
+
     if first_name:
         contact_obj_list = contact_obj_list.filter(first_name__icontains=first_name)
     if account:
@@ -31,10 +34,17 @@ def contacts_list(request):
     if city:
         a = Address.objects.filter(city__icontains=city)
         contact_obj_list = contact_obj_list.filter(address__in=a)
+    if state:
+        a = Address.objects.filter(state__icontains=state)
+        contact_obj_list = contact_obj_list.filter(address__in=a)
+    if country:
+        a = Address.objects.filter(country__icontains=country)
+        contact_obj_list = contact_obj_list.filter(address__in=a)
     if phone:
         contact_obj_list = contact_obj_list.filter(phone__icontains=phone)
     if email:
         contact_obj_list = contact_obj_list.filter(email__icontains=email)
+
     return render(request, 'contacts/contacts.html', {
         'contact_obj_list': contact_obj_list,
         'per_page': page

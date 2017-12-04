@@ -1,5 +1,5 @@
 from django import forms
-from .models import Account
+from accounts.models import Account
 from common.models import Comment
 
 
@@ -18,8 +18,9 @@ class AccountForm(forms.ModelForm):
 
     class Meta:
         model = Account
-        fields = ('assigned_to', 'teams', 'name', 'phone', 'email', 'website', 'industry',
-                  'billing_address', 'shipping_address', 'description')
+        fields = (
+            'assigned_to', 'teams', 'first_name', 'last_name', 'phone', 'email', 'website', 'industry', 'billing_address', 'shipping_address', 'description'
+        )
 
     def clean_phone(self):
         client_phone = self.cleaned_data.get('phone', None)
@@ -28,8 +29,7 @@ class AccountForm(forms.ModelForm):
                 ph_length = str(client_phone)
                 if len(ph_length) < 10 or len(ph_length) > 13:
                     raise forms.ValidationError('Phone number must be minimum 10 Digits and maximum of 13 Digits')
-
-        except (ValueError, TypeError):
+        except (ValueError):
             raise forms.ValidationError('Phone Number should contain only Numbers')
         return client_phone
 

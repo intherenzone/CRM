@@ -7,7 +7,8 @@ from common.utils import INDCHOICES
 
 
 class Account(models.Model):
-    name = models.CharField(pgettext_lazy("Name of Account", "Name"), max_length=64)
+    first_name = models.CharField(_("First name"), max_length=255)
+    last_name = models.CharField(_("Last name"), max_length=255)
     email = models.EmailField()
     phone = models.CharField(max_length=20)
     industry = models.CharField(_("Industry Type"), max_length=255, choices=INDCHOICES, blank=True, null=True)
@@ -22,4 +23,4 @@ class Account(models.Model):
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return self.first_name + ' ' + self.last_name

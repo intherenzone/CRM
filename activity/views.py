@@ -22,14 +22,34 @@ from contacts.models import Contact
 # Create your views here.
 @login_required
 def activity_list(request):
-    status = ['in process', 'converted', 'recycled', 'assigned', 'dead']
-    activity_obj = sorted(Activity.objects.all().order_by('enddate', 'startdate'), key=lambda p: status.index(p.status))
-
+    activity_obj_list = Activity.objects.all()
     page = request.POST.get('per_page')
 
-    # email = request.POST.get('email')
-    # if email:
-    # activity_obj = Activity.objects.filter(email__icontains=email)
+    name = request.POST.get('name')
+    email = request.POST.get('email')
+    status = request.POST.get('status')
+    activity_type = request.POST.get('activity_type')
+    startdate = request.POST.get('startdate')
+    enddate = request.POST.get('enddate')
+    #created_by = request.POST.get('created_by')
+    #assigned_to = request.POST.get('assigned_to')
+
+    if name:
+        activity_obj_list = activity_obj_list.filter(name__icontains=name)
+    if email:
+        activity_obj_list = activity_obj_list.filter(email__icontains=email)
+    if status:
+        activity_obj_list = activity_obj_list.filter(status__icontains=status)
+    if activity_type:
+        activity_obj_list = activity_obj_list.filter(activity_type__icontains=activity_type)
+    if startdate:
+        activity_obj_list = activity_obj_list.filter(startdate__gte=startdate)
+    if enddate:
+        activity_obj_list = activity_obj_list.filter(enddate__lte=enddate)
+
+
+    SS = ['in process', 'converted', 'recycled', 'assigned', 'dead']
+    activity_obj = sorted(activity_obj_list.order_by('enddate', 'startdate'), key=lambda p: SS.index(p.status))
 
     return render(request, 'activity/activity.html', {
         'activity_obj': activity_obj, 'per_page': page, 'contacts': contacts,})
