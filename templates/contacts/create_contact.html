@@ -60,13 +60,13 @@
                     </div>
                   </div>
                 </div>
-                <div class="filter_col col-md-12">
+                <!-- <div class="filter_col col-md-12"> Don't need account for a contact
                   <div class="form-group">
                     <label for="exampleInputEmail1">Account</label>
                     {{ contact_form.account }}
                     {{ contact_form.account.errors }}
                   </div>
-                </div>
+                </div> -->
                 <div class="filter_col col-md-12">
                   <div class="form-group ">
                     <label for="exampleInputEmail1" class="required" >Phone</label>
@@ -125,8 +125,8 @@
       </div>
       <input type="hidden" id="save_new_form" name="savenewform">
     </div>
-    <div class="row marl buttons_row text-center">
-      <button  class="btn btn-default save" type="submit">Save</button>
+    <div class="row marl text-center">
+      <button  class="btn btn-success save" type="submit">Save</button>
       {% if not contact_obj %}
         <button class="btn btn-success save savenew" type="submit">Save & New</button>
       {% endif %}

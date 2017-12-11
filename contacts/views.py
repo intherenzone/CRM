@@ -20,7 +20,6 @@ def contacts_list(request):
     #organization = Organization.objects.all()
     page = request.POST.get('per_page')
     first_name = request.POST.get('first_name')
-    account = request.POST.get('account')
     city = request.POST.get('city')
     country = request.POST.get('country')
     state = request.POST.get('state')
@@ -29,8 +28,8 @@ def contacts_list(request):
 
     if first_name:
         contact_obj_list = contact_obj_list.filter(first_name__icontains=first_name)
-    if account:
-        contact_obj_list = contact_obj_list.filter(account=account)
+    # if account:
+    #     contact_obj_list = contact_obj_list.filter(account=account)
     if city:
         a = Address.objects.filter(city__icontains=city)
         contact_obj_list = contact_obj_list.filter(address__in=a)

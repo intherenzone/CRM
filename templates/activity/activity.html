@@ -31,13 +31,13 @@
           <div class="panel-content text-center">
             <div class="filter_col col-md-4">
               <div class="form-group">
-                <label for="exampleInputEmail1">Name</label>
+                <label for="exampleInputEmail1">NAME</label>
                 <input type="text" class="form-control" placeholder="Name" id="id_name" name="name" {% if request.POST %} value="{{request.POST.name}}" {% endif %}>
               </div>
             </div>
             <div class="filter_col col-md-4">
               <div class="form-group">
-                <label for="exampleInputEmail1">Activity Status</label>
+                <label for="exampleInputEmail1">ACTIVITY STATUS</label>
                 <select class="form-control" id="id_status" name="status" >
                   <option value="">--Status of Activity--</option>
                   <option value="in process">In Process</option>
@@ -50,7 +50,7 @@
             </div>
             <div class="filter_col col-md-4">
               <div class="form-group">
-                <label for="exampleInputEmail1">Activity Type</label>
+                <label for="exampleInputEmail1">ACTIVITY TYPE</label>
                 <select class="form-control" id="id_activity_type" name="activity_type" >
                   <option value="">--Types of Activity--</option>
                   <option value="email">Email</option>
@@ -65,13 +65,13 @@
             </div>
             <div style = "clear:both" class="filter_col col-md-4">
               <div class="form-group">
-                <label for="exampleInputEmail1">Start Date</label>
+                <label for="exampleInputEmail1">START DATE</label>
                 <input type="text" class="form-control" placeholder="Activity starts after (including) YYYY-MM-DD HH:MM:SS (24-hour)" name="startdate" value="{{request.POST.startdate}}">
               </div>
             </div>
             <div class="filter_col col-md-4">
               <div class="form-group">
-                <label for="exampleInputEmail1">End Date</label>
+                <label for="exampleInputEmail1">END DATE</label>
                 <input type="text" class="form-control" placeholder="Activity ends before (including) YYYY-MM-DD HH:MM:SS (24-hour)" name="enddate" value="{{request.POST.enddate}}">
               </div>
             </div>
@@ -108,6 +108,7 @@
                 <!-- <th width="20%" style="text-align:center;">ASSIGNED USER</th> -->
                 <th width="15%" style="text-align:center;">START DATE</th>
                 <th width="30%" style="text-align:center;">ORGANIZATION</th>
+                <th width="30%" style="text-align:center;">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
