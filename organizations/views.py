@@ -26,15 +26,28 @@ def organizations_list(request):
     Name = request.POST.get('Name')
     city = request.POST.get('city')
     email = request.POST.get('email')
+    phone = request.POST.get('phone')
+    status = request.POST.get('status')
+    source = request.POST.get('source')
+
     if Name:
-        org_obj = Organization.objects.filter(Name__icontains=Name)
+        org_obj = org_obj.filter(Name__icontains=Name)
     #if last_name:
     #    lead_obj = Lead.objects.filter(last_name__icontains=last_name)
     if city:
-        org_obj = Organization.objects.filter(address=Address.objects.filter
+        org_obj = org_obj.filter(address=Address.objects.filter
                                        (city__icontains=city))
     if email:
-        org_obj = Organization.objects.filter(email__icontains=email)
+        org_obj = org_obj.filter(email__icontains=email)
+
+    if phone:
+        org_obj = org_obj.filter(phone__icontains=phone)
+
+    if status:
+        org_obj = org_obj.filter(status__icontains=status)
+
+    if source:
+        org_obj = org_obj.filter(status__icontains=source)
 
     return render(request, 'organizations/organizations.html', {
         'org_obj': org_obj, 'per_page': page})

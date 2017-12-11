@@ -15,7 +15,7 @@ ACTIVITY_TYPE=(
 class Activity(models.Model):
     name = models.CharField(("Activity Name"), null = True, max_length=255)
     email = models.EmailField()
-    contact = models.ForeignKey(Contact, related_name='activity_contact', on_delete=models.CASCADE)
+    contacts = models.ManyToManyField(Contact)
     startdate = models.DateTimeField(_("Start date"), auto_now_add=False)
     enddate = models.DateTimeField(_("End date"), auto_now_add=False)
     created_by = models.ForeignKey(User, related_name='activity_created_by', on_delete=models.CASCADE)
@@ -27,4 +27,4 @@ class Activity(models.Model):
 
 
     def __str__(self):
-        return self.Name
+        return self.name

@@ -11,7 +11,7 @@
         <h1 align="center">Organizations</h1>
         <p>
           <div class="create_new text-right">
-            <a href="{% url 'organizations:add_org' %}"><i class="fa fa-plus"></i> Add New Organizations</a>
+            <a href="{% url 'organizations:add_org' %}"><i class="fa fa-plus"></i> Add New Organization</a>
           </div>
         </p>
 
@@ -26,6 +26,9 @@
     <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
+          <div class="panel-heading-list text-center">
+            Customize Searching
+          </div>
         </div>
         <form id="organizations_filter" action="" method="POST">{%csrf_token%}
           <div class="panel-content text-center">
@@ -35,7 +38,7 @@
                 <input type="text" class="form-control" placeholder="Name" name="Name" value="{{request.POST.Name}}">
               </div>
             </div>
-            <div class="filter_col col-md-4">
+            <div style = "clear:both" class="filter_col col-md-4">
               <div class="form-group">
                 <label for="exampleInputEmail1">Lead Status</label>
                 <select class="form-control" id="id_status" name="status" >
@@ -46,8 +49,43 @@
                 </select>
               </div>
             </div>
-            <div class="filter_col text-center">
+            <div class="filter_col col-md-4">
               <div class="form-group">
+                <label for="exampleInputEmail1">Lead Source</label>
+                <select class="form-control" id="id_source" name="spurce" >
+                  <option value="">--Source of Organizations--</option>
+                  {% for each_source in source %}
+                  <option value="{{each_source.0}}" {% if request.POST.source %} {% ifequal each_source.0 request.POST.source %}selected{% endifequal %}{% endif %} >{{each_source.1}} </option>
+                  {% endfor%}
+                </select>
+              </div>
+            </div>
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">City</label>
+                <input type="text" class="form-control" placeholder="City" name="City" value="{{request.POST.city}}">
+              </div>
+            </div>
+            <div style = "clear:both">
+              <br>
+              <h6>Contact Person Informaiton</h6>
+            </div>
+            <div style = "clear:both" class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Eamil</label>
+                <input type="text" class="form-control" placeholder="Email" name="Email" value="{{request.POST.email}}">
+              </div>
+            </div>
+            <div  class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Phone</label>
+                <input type="text" class="form-control" placeholder="Phone" name="Phone" value="{{request.POST.phone}}">
+              </div>
+            </div>
+
+            <div  style = "clear:both" class="filter_col text-center">
+              <div class="form-group">
+                <br>
                 <button class="btn btn-primary" type="submit">Search</button>
                <a href="{% url 'organizations:list' %}" class="btn btn-default">Clear</a>
               </div>

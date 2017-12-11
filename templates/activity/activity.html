@@ -8,46 +8,77 @@
   <div class="row marl heading_create">
     <div class="heading col-md-12">
       <div class="col-md-12">
-        <h1 align="center">Activity</h1>
+        <h1 align="center">Activities</h1>
         <p>
-          <div class="create_new text-right">
-            <a href="{% url 'activity:add_activity' %}"><i class="fa fa-plus"></i> Add New Activity</a>
-          </div>
-        </p>
-
-      </div>
-
+        <div class="create_new text-right">
+          <a href="{% url 'activity:add_activity' %}"><i class="fa fa-plus"></i> Add New Activity</a>
+        </div></p>
+     </div>
     </div>
   </div>
-</div>
+
   <!-- heading_create ends here -->
   <!-- filter_row starts here -->
   <div class="filter_row row marl">
     <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
+          <div class="panel-heading-list text-center">
+            Customize Searching
+          </div>
         </div>
         <form id="activity_filter" action="" method="POST">{%csrf_token%}
           <div class="panel-content text-center">
             <div class="filter_col col-md-4">
               <div class="form-group">
-                <label for="exampleInputEmail1">Name</label>
-                <input type="text" class="form-control" placeholder="Name" name="Name" value="{{request.POST.Name}}">
+                <label for="exampleInputEmail1">NAME</label>
+                <input type="text" class="form-control" placeholder="Name" id="id_name" name="name" {% if request.POST %} value="{{request.POST.name}}" {% endif %}>
               </div>
             </div>
             <div class="filter_col col-md-4">
               <div class="form-group">
-                <label for="exampleInputEmail1">Activity type</label>
+                <label for="exampleInputEmail1">ACTIVITY STATUS</label>
                 <select class="form-control" id="id_status" name="status" >
                   <option value="">--Status of Activity--</option>
-                  {% for each_status in status %}
-                  <option value="{{each_status.0}}" {% if request.POST.status %} {% ifequal each_status.0 request.POST.status %}selected{% endifequal %}{% endif %} >{{each_status.1}} </option>
-                  {% endfor%}
+                  <option value="in process">In Process</option>
+                  <option value="converted">Converted</option>
+                  <option value="recycled">Recycled</option>
+                  <option value="assigned">Assigned</option>
+                  <option value="dead">Dead</option>
                 </select>
               </div>
             </div>
-            <div class="filter_col text-center">
+            <div class="filter_col col-md-4">
               <div class="form-group">
+                <label for="exampleInputEmail1">ACTIVITY TYPE</label>
+                <select class="form-control" id="id_activity_type" name="activity_type" >
+                  <option value="">--Types of Activity--</option>
+                  <option value="email">Email</option>
+                  <option value="phone call">Phone Call</option>
+                  <option value="meeting">Meeting</option>
+                </select>
+              </div>
+            </div>
+            <div style = "clear:both" class="filter_col text-center">
+              <br>
+              <h6>Schedule Information</h6>
+            </div>
+            <div style = "clear:both" class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">START DATE</label>
+                <input type="text" class="form-control" placeholder="Activity starts after (including) YYYY-MM-DD HH:MM:SS (24-hour)" name="startdate" value="{{request.POST.startdate}}">
+              </div>
+            </div>
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">END DATE</label>
+                <input type="text" class="form-control" placeholder="Activity ends before (including) YYYY-MM-DD HH:MM:SS (24-hour)" name="enddate" value="{{request.POST.enddate}}">
+              </div>
+            </div>
+
+            <div style = "clear:both" class="filter_col text-center">
+              <div class="form-group">
+                <br>
                 <button class="btn btn-primary" type="submit">Search</button>
                 <a href="{% url 'activity:list' %}" class="btn btn-default">Clear</a>
               </div>
@@ -71,12 +102,13 @@
           <table class="table table-bordered table-striped table-condensed">
             <thead>
               <tr>
-                <th width="15%" style="text-align:center;">S.No</th>
-                <th width="25%" style="text-align:center;">NAME</th>
-                <th width="15%" style="text-align:center;">STATUS</th>
+                <th width="5%" style="text-align:center;">S.No</th>
+                <th width="15%" style="text-align:center;">NAME</th>
+                <th width="10%" style="text-align:center;">STATUS</th>
                 <!-- <th width="20%" style="text-align:center;">ASSIGNED USER</th> -->
-                <th width="15%" style="text-align:center;">CREATED ON</th>
+                <th width="15%" style="text-align:center;">START DATE</th>
                 <th width="30%" style="text-align:center;">ORGANIZATION</th>
+                <th width="30%" style="text-align:center;">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -88,14 +120,14 @@
               {% for activity in activity_obj %}
               <tr class="text-center">
                 <td scope="row">{{ forloop.counter }}</td>
-                <td><a >{{ activity.Name }}</a></td>
+                <td><a >{{ activity.name }}</a></td>
                 <td>{{ activity.status }}</td>
-                <td>{{ activity.created_on }}</td>
+                <td>{{ activity.startdate }}</td>
                 <td>{{ activity.org }}</td>
                 <td>
-                  <a class="btn btn-info">View</a>
-                  <a class="btn btn-success">Edit</a>
-                  <a class="btn btn-danger">Delete</a>
+                  <a href="{% url 'activities:view_activity' activity.id %}" class="btn btn-info">View</a>
+                  <a href="{% url 'activities:edit_activity' activity.id%}" class="btn btn-success">Edit</a>
+                  <a href="{% url 'activities:remove_activity' activity.id %}" class="btn btn-danger delete">Delete</a>
                 </td>
               </tr>
               {% endfor %}
