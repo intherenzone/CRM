@@ -57,7 +57,9 @@
                 <div class="filter_col col-md-12" id="iname">
                   <div class="form-group" >
                     <label class="activity_field_label" for="id_contacts" data-name="name">Contact</label>
-                    <div class="activity_field" id="activity_contacts" data-name="name">{{ activity_record.contacts }}</div>
+                    <div class="activity_field" id="activity_contacts" data-name="name">{% for contact in activity_record.contacts.all %}
+                                                                                                  {{ contact }}
+                                                                                              {% endfor %}</div>
                   </div>
                 </div>
                 <div class="filter_col col-md-12" id="iname">
@@ -211,5 +213,3 @@
 {% block js_block %}
   <script src="{% static 'js/activities/view_activity.js' %}"></script>
 {% endblock js_block %}
-
-

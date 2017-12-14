@@ -72,7 +72,7 @@ def add_activity(request):
             activity_obj.created_by = request.user
             activity_obj.save()
             activity_obj.assigned_to.add(*assignedto_list)
-            #activity_obj.contacts.add(*contacts_list)
+            activity_obj.contacts.add(*contacts_list)
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
@@ -133,7 +133,7 @@ def edit_activity(request,pk):
             activity_obj.save()
             activity_obj.assigned_to.clear()
             activity_obj.assigned_to.add(*assignedto_list)
-            #activity_obj.contacts.add(*contacts_list)
+            activity_obj.contacts.add(*contacts_list)
             if request.is_ajax():
                 return JsonResponse({'error': False})
             return HttpResponseRedirect(reverse('activities:list'))
@@ -226,12 +226,3 @@ def remove_comment(request):
             return JsonResponse({"error": "You Dont have permisions to delete"})
     else:
         return HttpResponse("Something Went Wrong")
-
-
-
-
-
-
-
-
-
