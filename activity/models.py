@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
+
 from common.models import User, Address, Team
 from common.utils import LEAD_STATUS, LEAD_SOURCE
 from contacts.models import Contact

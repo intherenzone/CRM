@@ -6,95 +6,257 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import modelformset_factory
 from organizations.models import Organization
-#from leads.models import Lead
-from contacts.forms import ContactForm
+from organizations.forms import OrganizationForm, OrganizationCommentForm
 from common.models import User, Address, Comment, Team
-from common.utils import LEAD_STATUS, LEAD_SOURCE, INDCHOICES, TYPECHOICES, COUNTRIES
-from organizations.forms import OrganizationForm
-from accounts.forms import AccountForm
 from common.forms import BillingAddressForm
-from accounts.models import Account
-from planner.models import Event, Reminder
-from planner.forms import ReminderForm
+from common.utils import LEAD_STATUS, LEAD_SOURCE
+from oppurtunity.models import Opportunity, STAGES, SOURCES
+from contacts.models import Contact
 
-# Create your views here.
+
+
+# CRUD Operations Start
+
 
 @login_required
 def organizations_list(request):
     org_obj = Organization.objects.all()
     page = request.POST.get('per_page')
-    Name = request.POST.get('Name')
+    name = request.POST.get('name')
     city = request.POST.get('city')
-    email = request.POST.get('email')
     phone = request.POST.get('phone')
-    status = request.POST.get('status')
-    source = request.POST.get('source')
+    email = request.POST.get('email')
+    status= request.POST.get('lead_status')
+#    source= request.POST.get('lead_source')
 
-    if Name:
-        org_obj = org_obj.filter(Name__icontains=Name)
-    #if last_name:
-    #    lead_obj = Lead.objects.filter(last_name__icontains=last_name)
+    if name:
+        org_obj = Organization.objects.filter(name__icontains=name)
     if city:
-        org_obj = org_obj.filter(address=Address.objects.filter
-                                       (city__icontains=city))
-    if email:
-        org_obj = org_obj.filter(email__icontains=email)
-
+        a = Address.objects.filter(city__icontains=city)
+        org_obj = Organization.objects.filter(address__in=a)
     if phone:
-        org_obj = org_obj.filter(phone__icontains=phone)
-
+        org_obj = Organization.objects.filter(phone__icontains=phone)
+    if email:
+        org_obj = Organization.objects.filter(email__icontains=email)
     if status:
-        org_obj = org_obj.filter(status__icontains=status)
+        org_obj = Organization.objects.filter(status__icontains=status)
+#    if source:
+#        org_obj = Organization.objects.filter(source__icontains=source)
 
-    if source:
-        org_obj = org_obj.filter(status__icontains=source)
 
     return render(request, 'organizations/organizations.html', {
-        'org_obj': org_obj, 'per_page': page})
-
+        'org_obj': org_obj,
+        'statuses': LEAD_STATUS,
+        'per_page': page
+#        'sources': LEAD_SOURCE,
+    })
 
 
 @login_required
-def add_org(request):
-    accounts = Account.objects.all()
+def add_organization(request):
     users = User.objects.filter(is_active=True).order_by('email')
-    #teams = Team.objects.all()
-    assignedto_list = request.POST.getlist('assigned_to')
-    #teams_list = request.POST.getlist('teams')
-    org_account = request.POST.get('account_name')
-    org_email = request.POST.get('email')
-    org_phone = request.POST.get('phone')
     form = OrganizationForm(assigned_to=users)
     address_form = BillingAddressForm()
+    teams = Team.objects.all()
+    assignedto_list = request.POST.getlist('assigned_to')
+    teams_list = request.POST.getlist('teams')
     if request.method == 'POST':
-        form = OrganizationsForm(request.POST, assigned_to=users)
+        form = OrganizationForm(request.POST, assigned_to=users)
         address_form = BillingAddressForm(request.POST)
-        if address_form.is_valid():
+        if form.is_valid() and address_form.is_valid():
+            address_obj = address_form.save()
             org_obj = form.save(commit=False)
-            address_object = address_form.save()
-            org_obj.address = address_object
+            org_obj.address = address_obj
             org_obj.created_by = request.user
             org_obj.save()
             org_obj.assigned_to.add(*assignedto_list)
-            #lead_obj.teams.add(*teams_list)
-            if request.POST.get('status') == "converted":
-                Account.objects.create(
-                    created_by=request.user, name=org_account,
-                    email=org_email, phone=org_phone
-                )
+            org_obj.teams.add(*teams_list)
+            if request.is_ajax():
+                return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
-                return HttpResponseRedirect(reverse("organizations:add_org"))
+                return HttpResponseRedirect(reverse("organizations:add_organization"))
             else:
                 return HttpResponseRedirect(reverse('organizations:list'))
         else:
-            return render(request, 'organizations/create_org.html', {
-                          'org_form': form, 'address_form': address_form,
-                          'accounts': accounts,
+            if request.is_ajax():
+                return JsonResponse({'error': True, 'organization_errors': form.errors})
+            return render(request, 'organizations/create_organization.html', {
+                          'organization_form': form,
+                          'address_form': address_form,
                           'users': users,
-                          'status': LEAD_STATUS, 'source': LEAD_SOURCE,
-                          'assignedto_list': assignedto_list})
+                          'statuss': LEAD_STATUS,
+                          'source': LEAD_SOURCE,
+                          'teams': teams,
+                          'assignedto_list': assignedto_list,
+                          'teams_list': teams_list
+            })
     else:
-        return render(request, 'organizations/create_org.html', {
-                      'org_form': form, 'address_form': address_form,
-                      'accounts': accounts,
-                      'users': users, 'status': LEAD_STATUS, 'source': LEAD_SOURCE})
+        return render(request, 'organizations/create_organization.html', {
+                      'organization_form': form,
+                      'address_form': address_form,
+                      'users': users,
+                      'statuss': LEAD_STATUS,
+                      'source': LEAD_SOURCE,
+                      'teams': teams,
+                      'assignedto_list': assignedto_list,
+                      'teams_list': teams_list
+        })
+
+
+@login_required
+def view_organization(request, organization_id):
+    organization_record = get_object_or_404(Organization, id=organization_id)
+    comments = organization_record.organization_comments.all()
+    # opportunity_list = Opportunity.objects.filter(account=organization_record)
+    # contacts = Contact.objects.filter(account=organization_record)
+    #users = User.objects.filter(is_active=True).order_by('email')
+    #teams = Team.objects.all()
+    return render(request, 'organizations/view_organization.html', {
+        'organization_record': organization_record,
+        # 'opportunity_list': opportunity_list,
+        # 'stages': STAGES,
+        # 'sources': SOURCES,
+    #    'comments': comments
+    #    'teams': teams,
+        # 'contacts': contacts,
+    #    'users': users
+    })
+
+
+@login_required
+def edit_organization(request, pk):
+    org_obj = get_object_or_404(Organization, id=pk)
+    address_obj = get_object_or_404(Address, id=org_obj.address.id)
+    users = User.objects.filter(is_active=True).order_by('email')
+    form = OrganizationForm(
+        instance=org_obj,assigned_to=users)
+    address_form = BillingAddressForm(instance=address_obj)
+    teams = Team.objects.all()
+    assignedto_list = request.POST.getlist('assigned_to')
+    teams_list = request.POST.getlist('teams')
+    if request.method == 'POST':
+        form = OrganizationForm(
+            request.POST, instance=org_obj,assigned_to=users)
+        address_form = BillingAddressForm(request.POST, instance=address_obj)
+        if  form.is_valid() and address_form.is_valid():
+            address_obj = address_form.save()
+            org_obj = form.save(commit=False)
+            org_obj.address = address_obj
+            org_obj.created_by = request.user
+            if request.POST.get('stage') in ['CLOSED WON', 'CLOSED LOST']:
+                org_obj.closed_by = request.user
+                org_obj.save()
+                org_obj.assigned_to.clear()
+                org_obj.assigned_to.add(*assignedto_list)
+                org_obj.teams.clear()
+                org_obj.teams.add(*teams_list)
+            if request.is_ajax():
+                return JsonResponse({'error': False})
+            return HttpResponseRedirect(reverse('organizations:list'))
+        else:
+            if request.is_ajax():
+                return JsonResponse({'error': True, 'organization_errors': form.errors})
+            return render(request, 'organizations/create_organization.html', {
+                'organization_form': form,
+                'address_form': address_form,
+                'org_obj': org_obj,
+                'teams': teams,
+                'users': users,
+                'assignedto_list': assignedto_list,
+                'teams_list': teams_list
+
+            })
+    else:
+        return render(request, 'organizations/create_organization.html', {
+                'organization_form': form,
+                'address_form': address_form,
+                'org_obj': org_obj,
+                'teams': teams,
+                'users': users,
+                'assignedto_list': assignedto_list,
+                'teams_list': teams_list
+        })
+
+
+@login_required
+def remove_organization(request, pk):
+    organization_record = get_object_or_404(Organization, id=pk)
+    organization_record.delete()
+    if request.is_ajax():
+        return JsonResponse({'error': False})
+    else:
+        return HttpResponseRedirect(reverse('organizations:list'))
+
+# CRUD Operations Ends
+# Comments Section Starts
+
+
+@login_required
+def add_comment(request):
+    if request.method == 'POST':
+        organization = get_object_or_404(Organization, id=request.POST.get('organizationid'))
+        if request.user in organization.assigned_to.all() or request.user == organization.created_by:
+            form = OrganizationCommentForm(request.POST)
+            if form.is_valid():
+                organization_comment = form.save(commit=False)
+                organization_comment.comment = request.POST.get('comment')
+                organization_comment.commented_by = request.user
+                organization_comment.organization = organization
+                organization_comment.save()
+                data = {"comment_id": organization_comment.id,
+                        "comment": organization_comment.comment,
+                        "commented_on": organization_comment.commented_on,
+                        "commented_by": organization_comment.commented_by.email}
+                return JsonResponse(data)
+            else:
+                return JsonResponse({"error": form['comment'].errors})
+        else:
+            data = {'error': "You Dont Have permissions to Comment"}
+            return JsonResponse(data)
+
+
+@login_required
+def edit_comment(request):
+    if request.method == "POST":
+        comment = request.POST.get('comment')
+        comment_id = request.POST.get("commentid")
+        com = get_object_or_404(Comment, id=comment_id)
+        form = OrganizationCommentForm(request.POST)
+        if request.user == com.commented_by:
+            if form.is_valid():
+                com.comment = comment
+                com.save()
+                data = {"comment": com.comment, "commentid": comment_id}
+                return JsonResponse(data)
+            else:
+                return JsonResponse({"error": form['comment'].errors})
+        else:
+            return JsonResponse({"error": "You dont have authentication to edit"})
+    else:
+        return render(request, "404.html")
+
+
+@login_required
+def remove_comment(request):
+    if request.method == 'POST':
+        comment_id = request.POST.get('comment_id')
+        comment = get_object_or_404(Comment, id=comment_id)
+        if request.user == comment.commented_by:
+            comment.delete()
+            data = {"cid": comment_id}
+            return JsonResponse(data)
+        else:
+            return JsonResponse({"error": "You Dont have permisions to delete"})
+    else:
+        return HttpResponse("Something Went Wrong")
+
+# Other Views
+
+
+@login_required
+def get_organizations(request):
+    if request.method == 'GET':
+        organizations = Organization.objects.filter()
+        return render(request, 'organizations/organizations_list.html', {'organizations': organizations})
+    else:
+        return HttpResponse('Invalid Method or Not Authenticated in load_calls')
