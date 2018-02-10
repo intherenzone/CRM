@@ -140,12 +140,12 @@
 {% endblock %}
 {% block js_block %}
 <script type="text/javascript">
-$('.delete').click(function(e){
- e.preventDefault()
- url = $(this).attr('href')
- if (!confirm('Are you sure you want to delete?'))
- return;
- window.location = $(this).attr('href')
+  $('.delete').click(function(e){
+   e.preventDefault()
+   url = $(this).attr('href')
+   if (!confirm('Are you sure you want to delete?'))
+    return;
+   window.location = $(this).attr('href')
 })
 
 

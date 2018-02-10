@@ -19,7 +19,7 @@ class OrganizationForm(forms.ModelForm):
         model = Organization
         fields = (
             'assigned_to','teams','name',
-            'phone', 'email', 'status', 'source', 'website', 'address', 'description'
+            'phone', 'email', 'source', 'website', 'address', 'description'
                   )
 
     def clean_phone(self):

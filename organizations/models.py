@@ -20,9 +20,9 @@ class Organization(models.Model):
     description = models.TextField(blank=True, null=True)
     assigned_to = models.ManyToManyField(User, related_name="organization_assigned_to")
     teams = models.ManyToManyField(Team)
-    #created_by = models.ForeignKey(User, related_name='organization_created_by', null= True, on_delete=models.CASCADE)
-    #created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
-    #is_active = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, related_name='organization_created_by', null= True, on_delete=models.CASCADE)
+    created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
