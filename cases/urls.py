@@ -16,5 +16,5 @@ urlpatterns = [
     # comments
     url(r'^comment/add/$', views.add_comment, name='add_comment'),
     url(r'^comment/edit/$', views.edit_comment, name='edit_comment'),
-    url(r'^comment/remove/$', views.remove_comment, name='remove_comment'),
+    url(r'^comment/remove/$', views.remove_comment, name='remove_comment')
 ]

@@ -21,7 +21,7 @@
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'organizations:edit_organization' organization_record.id %}">Edit</a></li>
-                    <li class="remove_organization" ><a href="{% url 'organizations:remove_organization' organization_record.id %}" id="remove_organization">REMOVE</a></li>
+                    <li class="delete" ><a href="{% url 'organizations:remove_organization' organization_record.id %}" id="remove_organization">REMOVE</a></li>
                   </ul>
                 </div>
               </span>
@@ -98,6 +98,7 @@
                 <form id="comment_form" method="POST" enctype="multipart/form-data">{% csrf_token %}
                   <div class="form-group">
                     <textarea class="form-control" textarea cols="40" rows="3" id="id_comments" name="comment" placeholder="Submit Your Comments Here"></textarea><span><i id="CommentError" style="display:none; color:red"></i></span>
+                    </br>
                     <button class="btn btn-default save" style="text-align: center;" id="comment_submit" type="submit">Submit</button>
                   </div>
                   <input type="hidden" value="{{organization_record.id}}" name="organizationid">
@@ -180,7 +181,7 @@
                     {%if not organization_record.teams %}
                       Not Assigned Yet
                     {% else %}
-                      {% for team in organization_record.name.all %}
+                      {% for team in organization_record.teams.all %}
                         <li>{{ team }}</li>
                       {% endfor %}
                     {% endif %}
@@ -211,7 +212,16 @@
   </div>
 
 
-  {% endblock%}
+  {% endblock %}
   {% block js_block %}
-    <script src="{% static 'js/organizations/view_organization.js' %}"></script>
+  <script type="text/javascript">
+    $('.delete').click(function(e){
+     e.preventDefault()
+     url = $(this).attr('href')
+     if (!confirm('Are you sure you want to delete?'))
+      return;
+     window.location = $(this).attr('href')
+  });
+  </script>
+  <script src="{% static 'js/organizations/view_organization.js' %}"></script>
   {% endblock js_block %}

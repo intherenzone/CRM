@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-  <li><a href="{% url 'activities:list' %}">Activities</a></li>
+  <li><a href="{% url 'activity:list' %}">Activities</a></li>
   <li class="active">view</li>
 </ol>
 {%endblock%}
@@ -20,8 +20,8 @@
                   <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu">
-                    <li><a href="{% url 'activities:edit_activity' activity_record.id %}">Edit</a></li>
-                    <li class="delete_activity" ><a href="{% url 'activities:remove_activity' activity_record.id %}" id="remove_activity">REMOVE</a></li>
+                    <li><a href="{% url 'activity:edit_activity' activity_record.id %}">Edit</a></li>
+                    <li class="delete" ><a href="{% url 'activity:remove_activity' activity_record.id %}" id="remove_activity">REMOVE</a></li>
                   </ul>
                 </div>
               </span>
@@ -54,38 +54,39 @@
                     <div class="activity_field" id="activity_email" data-name="name">{{ activity_record.email }}</div>
                   </div>
                 </div>
-                <div class="filter_col col-md-12" id="iname">
-                  <div class="form-group" >
-                    <label class="activity_field_label" for="id_contacts" data-name="name">Contact</label>
-                    <div class="activity_field" id="activity_contacts" data-name="name">{% for contact in activity_record.contacts.all %}
-                                                                                                  {{ contact }}
-                                                                                              {% endfor %}</div>
-                  </div>
-                </div>
-                <div class="filter_col col-md-12" id="iname">
-                  <div class="form-group" >
-                    <label class="activity_field_label" for="id_status" data-name="name">Status</label>
-                    <div class="activity_field" id="activity_status" data-name="name">{{ activity_record.status }}</div>
-                  </div>
-                </div>
-                <div class="filter_col col-md-12" id="iname">
-                  <div class="form-group" >
-                    <label class="activity_field_label" for="id_name" data-name="name">Activity Type</label>
-                    <div class="activity_field" id="activity_name" data-name="name">{{ activity_record.activity_type }}</div>
-                  </div>
-                </div>
               </div>
-                <div class="filter_col col-md-12">
-                  <div class="form-group">
-                    {% if activity_record.description %}
-                    <label class="activity_field_label" for="id_description" data-name="name">Description</label>
-                    <div class="activity_field" id="activity_description" data-name="name">{{ activity_record.description }}</div>
-                    {% endif %}
+                <div class="col-md-4">
+                  <div class="filter_col col-md-12" id="iname">
+                    <div class="form-group" >
+                      <label class="activity_field_label" for="id_contacts" data-name="name">Contact</label>
+                      <div class="activity_field" id="activity_contacts" data-name="name">{% for contact in activity_record.contacts.all %}{{ contact }}{% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="filter_col col-md-12" id="iname">
+                    <div class="form-group" >
+                      <label class="activity_field_label" for="id_status" data-name="name">Status</label>
+                      <div class="activity_field" id="activity_status" data-name="name">{{ activity_record.status }}</div>
+                    </div>
+                  </div>
+                  <div class="filter_col col-md-12" id="iname">
+                    <div class="form-group" >
+                      <label class="activity_field_label" for="id_name" data-name="name">Activity Type</label>
+                      <div class="activity_field" id="activity_name" data-name="name">{{ activity_record.activity_type }}</div>
+                    </div>
+                  </div>
+                  <div class="filter_col col-md-12">
+                    <div class="form-group">
+                      {% if activity_record.description %}
+                      <label class="activity_field_label" for="id_description" data-name="name">Description</label>
+                      <div class="activity_field" id="activity_description" data-name="name">{{ activity_record.description }}</div>
+                      {% endif %}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          
           <!-- Comments Section starts-->
           <div class="panel-heading view-pad">
             <h5>COMMENTS</h5>
@@ -99,7 +100,7 @@
                     </br>
                     <button class="btn btn-default save" style="text-align: center;" id="comment_submit" type="submit">Submit</button>
                   </div>
-                  <input type="hidden" value="{{contact_record.id}}" name="contactid">
+                  <input type="hidden" value="{{activity_record.id}}" name="activityid">
                 </form>
                 <ul class="list-group" id="comments_div">
                   {% for comment in comments %}
@@ -125,7 +126,7 @@
                 </ul>
               </div>
             </div>
-            <div class="modal fade" id="Comments_Contacts_Modal" role="dialog" data-keyboard="false" data-backdrop="static">
+            <div class="modal fade" id="Comments_Activity_Modal" role="dialog" data-keyboard="false" data-backdrop="static">
               <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -136,7 +137,7 @@
                     <div class="modal-body">
                       <div class="form-group">
                         <textarea class="form-control" textarea cols="40" rows="3" id="id_editcomment" name="comment" placeholder="Submit Your Comments"></textarea>
-                        <input type="hidden" value="{{ contact.id }}" name="contactid">
+                        <input type="hidden" value="{{ activity.id }}" name="activityid">
                         <input type="hidden" value="" name="commentid" id="commentid">
                       </div>
                     </div>
@@ -211,5 +212,14 @@
 <!-- activities VIEW ENDS -->
 {% endblock%}
 {% block js_block %}
-  <script src="{% static 'js/activities/view_activity.js' %}"></script>
+<script type="text/javascript">
+  $('.delete').click(function(e){
+   e.preventDefault()
+   url = $(this).attr('href')
+   if (!confirm('Are you sure you want to delete?'))
+    return;
+   window.location = $(this).attr('href')
+});
+</script>
+  <script src="{% static 'js/activity/view_activity.js' %}"></script>
 {% endblock js_block %}

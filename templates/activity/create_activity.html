@@ -3,7 +3,7 @@
 {% block breadcrumb %}
 <h3 align="center">
   <ol class="breadcrumb">
-    <li><a href="{% url 'activities:list' %}">Activities</a></li>
+    <li><a href="{% url 'activity:list' %}">Activities</a></li>
     <li class="active">Create</li>
   </ol></h3>
 {% endblock %}
@@ -83,15 +83,7 @@
             </div>
           </div>
           <br clear="all">
-          <!-- <input type="hidden" id="save_new_form" name="savenewform">
-        </div>
-        <!-- overview ends here -->
-        <!-- <div class="row marl buttons_row text-center">
-          <button  class="btn btn-default save" type="submit" id="saveform">Save</button>
-          {% if not activity_obj %}
-            <button class="btn btn-success save savenew" type="submit">Save & New</button>
-          {% endif %}
-          <a href="{% url 'activities:list' %}" class="btn btn-default">Cancel</a> -->
+
           <input type="hidden" id="save_new_form" name="savenewform">
         </div>
         <div class="row marl text-center">
@@ -99,7 +91,7 @@
           {% if not activity_obj %}
             <button class="btn btn-success save savenew" type="submit">Save & New</button>
           {% endif %}
-          <a href="{% url 'activities:list' %}" class="btn btn-default" id="create_activity_cancel">Cancel</a>
+          <a href="{% url 'activity:list' %}" class="btn btn-default" id="create_activity_cancel">Cancel</a>
         </div>
       </div>
     </div>
@@ -107,7 +99,7 @@
   </form>
 {% endblock %}
 {% block js_block %}
-  <script src="{% static 'js/activities/contacts.js' %}"></script>
+  <script src="{% static 'js/activity/activity.js' %}"></script>
   <script type="text/javascript">
     $(function () {
        var date = new Date();

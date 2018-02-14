@@ -22,9 +22,9 @@ class Activity(models.Model):
     created_by = models.ForeignKey(User, related_name='activity_created_by', on_delete=models.CASCADE)
     activity_type= models.CharField(_("Activity Type"), max_length=255, blank=True, null=True, choices=ACTIVITY_TYPE)
     description = models.TextField(blank=True, null=True)
-    status = models.CharField(_("Status of Activity"), max_length=255,
-                              blank=True, null=True, choices=LEAD_STATUS)
+    status = models.CharField(_("Status of Activity"), max_length=255, blank=True, null=True, choices=LEAD_STATUS)
     assigned_to = models.ManyToManyField(User, related_name="activity_assigned_users")
+
 
 
     def __str__(self):

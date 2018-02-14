@@ -2,16 +2,12 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from django.db.models import Q
-from django.views.decorators.csrf import csrf_exempt
-from django.forms.models import modelformset_factory
-from organizations.models import Organization
-from organizations.forms import OrganizationForm, OrganizationCommentForm
+
 from common.models import User, Address, Comment, Team
 from common.forms import BillingAddressForm
-from common.utils import LEAD_STATUS, LEAD_SOURCE
-from oppurtunity.models import Opportunity, STAGES, SOURCES
-from contacts.models import Contact
+from common.utils import LEAD_STATUS, LEAD_SOURCE, COUNTRIES
+from organizations.models import Organization
+from organizations.forms import OrganizationForm, OrganizationCommentForm
 
 
 
@@ -107,20 +103,9 @@ def add_organization(request):
 def view_organization(request, organization_id):
     organization_record = get_object_or_404(Organization, id=organization_id)
     comments = organization_record.organization_comments.all()
-    # opportunity_list = Opportunity.objects.filter(account=organization_record)
-    # contacts = Contact.objects.filter(account=organization_record)
-    #users = User.objects.filter(is_active=True).order_by('email')
-    #teams = Team.objects.all()
     return render(request, 'organizations/view_organization.html', {
         'organization_record': organization_record,
-        # 'opportunity_list': opportunity_list,
-        # 'stages': STAGES,
-        # 'sources': SOURCES,
-    #    'comments': comments
-    #    'teams': teams,
-        # 'contacts': contacts,
-    #    'users': users
-    })
+        'comments': comments})
 
 
 @login_required
@@ -203,8 +188,7 @@ def add_comment(request):
                 organization_comment.commented_by = request.user
                 organization_comment.organization = organization
                 organization_comment.save()
-                data = {"comment_id": organization_comment.id,
-                        "comment": organization_comment.comment,
+                data = {"comment_id": organization_comment.id,"comment": organization_comment.comment,
                         "commented_on": organization_comment.commented_on,
                         "commented_by": organization_comment.commented_by.email}
                 return JsonResponse(data)

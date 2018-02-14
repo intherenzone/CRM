@@ -74,6 +74,8 @@ class Comment(models.Model):
         'contacts.Contact', blank=True, null=True, related_name="contact_comments", on_delete=models.CASCADE)
     organization = models.ForeignKey(
         'organizations.Organization', blank=True, null=True, related_name="organization_comments", on_delete=models.CASCADE)
+    activity = models.ForeignKey(
+        'activity.Activity', blank=True, null=True, related_name="activity_comments", on_delete=models.CASCADE)
 
     def get_files(self):
         return Comment_Files.objects.filter(comment_id=self)

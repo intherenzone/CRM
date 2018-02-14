@@ -47,4 +47,4 @@ class ActivityCommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
-        fields = ('comment', 'contact', 'commented_by')
+        fields = ('comment', 'activity', 'commented_by')

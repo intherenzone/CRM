@@ -118,7 +118,7 @@
                 <td>
                   <a href="{% url 'organizations:view_organization' org.id %}" class="btn btn-info ">View</a>
                   <a href="{% url 'organizations:edit_organization' org.id %}" class="btn btn-success ">Edit</a>
-                  <a href="{% url 'organizations:remove_organization' org.id %}" class="btn btn-danger ">Delete</a>
+                  <a href="{% url 'organizations:remove_organization' org.id %}" class="btn btn-danger delete">Delete</a>
                 </td>
               </tr>
               {% endfor %}
@@ -146,10 +146,7 @@
    if (!confirm('Are you sure you want to delete?'))
     return;
    window.location = $(this).attr('href')
-})
-
-
-
+});
 
 
   $("a[rel='page']").click(function(e){

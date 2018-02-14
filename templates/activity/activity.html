@@ -125,9 +125,9 @@
                 <td>{{ activity.startdate }}</td>
                 <td>{{ activity.org }}</td>
                 <td>
-                  <a href="{% url 'activities:view_activity' activity.id %}" class="btn btn-info">View</a>
-                  <a href="{% url 'activities:edit_activity' activity.id%}" class="btn btn-success">Edit</a>
-                  <a href="{% url 'activities:remove_activity' activity.id %}" class="btn btn-danger delete">Delete</a>
+                  <a href="{% url 'activity:view_activity' activity.id %}" class="btn btn-info">View</a>
+                  <a href="{% url 'activity:edit_activity' activity.id%}" class="btn btn-success">Edit</a>
+                  <a href="{% url 'activity:remove_activity' activity.id %}" class="btn btn-danger delete">Delete</a>
                 </td>
               </tr>
               {% endfor %}
@@ -149,6 +149,13 @@
 {% endblock %}
 {% block js_block %}
 <script type="text/javascript">
+  $('.delete').click(function(e){
+    e.preventDefault()
+    url = $(this).attr('href')
+    if (!confirm('Are you sure you want to delete?'))
+      return;
+    window.location = $(this).attr('href')
+  });
   $("a[rel='page']").click(function(e){
     e.preventDefault();
     $('#activity_filter').attr("action", $(this).attr("href"));

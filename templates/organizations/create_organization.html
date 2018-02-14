@@ -139,7 +139,7 @@
     <div class="form-group row text-center">
       <button  class="btn btn-success" type="submit">Save</button>
       {% if not org_obj %}
-        <button class="btn btn-success " type="submit">Save & New</button>
+        <button class="btn btn-success save savenew" type="submit">Save & New</button>
       {% endif %}
       <a href="{% url 'organizations:list' %}" class="btn btn-default" id="create_org_cancel">Cancel</a>
     </div>
