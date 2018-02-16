@@ -35,17 +35,6 @@
                 <input type="text" class="form-control" placeholder="Name" name="name" value="{{request.POST.Name}}">
               </div>
             </div>
-            <div style = "clear:both" class="filter_col col-md-4">
-              <div class="form-group">
-                <label for="exampleInputEmail1">Lead Status</label>
-                <select class="form-control" id="id_lead_status" name="lead_status" >
-                  <option value="">--Status of Organizations--</option>
-                  {% for status in statuses %}
-                  <option value="{{status.0}}" {% if request.POST.lead_status %} {% ifequal status.0 request.POST.lead_status %}selected{% endifequal %}{% endif %} >{{status.1}} </option>
-                  {% endfor%}
-                </select>
-              </div>
-            </div>
             <div class="filter_col col-md-4">
               <div class="form-group">
                 <label for="exampleInputEmail1">City</label>
@@ -97,7 +86,6 @@
               <tr>
                 <th width="15%" style="text-align:center;">S.No</th>
                 <th width="25%" style="text-align:center;">ORGANIZATION NAME</th>
-                <th width="15%" style="text-align:center;">STATUS</th>
                 <!-- <th width="20%" style="text-align:center;">ASSIGNED USER</th> -->
                 <th width="15%" style="text-align:center;">CREATED ON</th>
                 <th width="30%" style="text-align:center;">ACTIONS</th>
@@ -113,7 +101,6 @@
               <tr class="text-center">
                 <td scope="row">{{ forloop.counter }}</td>
                 <td><a href="{% url 'organizations:view_organization' org.id %}" > {{ org.name }}</a></td>
-                <td>{{ org.status }}</td>
                 <td>{{ org.created_on }}</td>
                 <td>
                   <a href="{% url 'organizations:view_organization' org.id %}" class="btn btn-info ">View</a>
