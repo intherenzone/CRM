@@ -2,21 +2,13 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from django.db.models import Q
-from django.views.decorators.csrf import csrf_exempt
-from django.forms.models import modelformset_factory
+
 from activity.models import Activity
-from activity.forms import ActivityForm
-from leads.models import Lead
+from activity.forms import ActivityForm, ActivityCommentForm
 from contacts.forms import ContactForm
 from common.models import User, Address, Comment, Team
 from common.utils import LEAD_STATUS, LEAD_SOURCE, INDCHOICES, TYPECHOICES, COUNTRIES
-from leads.forms import LeadCommentForm, LeadForm
-from accounts.forms import AccountForm
 from common.forms import BillingAddressForm
-from accounts.models import Account
-from planner.models import Event, Reminder
-from planner.forms import ReminderForm
 from contacts.models import Contact
 
 # Create your views here.
@@ -52,7 +44,7 @@ def activity_list(request):
     activity_obj = sorted(activity_obj_list.order_by('enddate', 'startdate'), key=lambda p: SS.index(p.status))
 
     return render(request, 'activity/activity.html', {
-        'activity_obj': activity_obj, 'per_page': page, 'contacts': contacts,})
+        'activity_obj': activity_obj, 'per_page': page, 'contacts': contacts})
 
 
 @login_required
@@ -76,9 +68,9 @@ def add_activity(request):
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
-                return HttpResponseRedirect(reverse("activities:save"))
+                return HttpResponseRedirect(reverse("activity:add_activity"))
             else:
-                return HttpResponseRedirect(reverse("activities:list"))
+                return HttpResponseRedirect(reverse("activity:list"))
         else:
             print(form.errors)
             if request.is_ajax():
@@ -105,6 +97,15 @@ def contacts(request):
         data.update(new)
     return JsonResponse(data)
 
+
+@login_required
+def view_activity(request, activity_id):
+    activity_record = get_object_or_404(Activity, id=activity_id)
+    comments = activity_record.activity_comments.all()
+    return render(request, 'activity/view_activity.html', {
+        'activity_record': activity_record,
+        'comments': comments})
+
 @login_required
 def remove_activity(request, pk):
     activity_record = get_object_or_404(Activity, id=pk)
@@ -112,7 +113,7 @@ def remove_activity(request, pk):
     if request.is_ajax():
         return JsonResponse({'error': False})
     else:
-        return HttpResponseRedirect(reverse('activities:list'))
+        return HttpResponseRedirect(reverse('activity:list'))
 
 
 
@@ -136,7 +137,7 @@ def edit_activity(request,pk):
             activity_obj.contacts.add(*contacts_list)
             if request.is_ajax():
                 return JsonResponse({'error': False})
-            return HttpResponseRedirect(reverse('activities:list'))
+            return HttpResponseRedirect(reverse('activity:list'))
         else:
             print(form.errors)
             if request.is_ajax():
@@ -157,14 +158,7 @@ def edit_activity(request,pk):
                       'contacts_list': contacts_list
                 })
 
-@login_required
-def view_activity(request, pk):
-    activity_record = get_object_or_404(
-        Activity, id=pk)
-    #comments = activity_record.activity_comments.all()
-    return render(request, 'activity/view_activity.html', {
-        'activity_record': activity_record})
-#'comments': comments
+
 
 
 
@@ -174,13 +168,13 @@ def view_activity(request, pk):
 def add_comment(request):
     if request.method == 'POST':
         activity = get_object_or_404(Activity, id=request.POST.get('activityid'))
-        if request.user in activity.assigned_to.all():
+        if request.user in activity.assigned_to.all() or request.user == activity.created_by:
             form = ActivityCommentForm(request.POST)
             if form.is_valid():
                 activity_comment = form.save(commit=False)
                 activity_comment.comment = request.POST.get('comment')
                 activity_comment.commented_by = request.user
-                activity_comment.contact = contact
+                activity_comment.activity = activity
                 activity_comment.save()
                 data = {"comment_id": activity_comment.id, "comment": activity_comment.comment,
                         "commented_on": activity_comment.commented_on,

@@ -248,7 +248,7 @@ def remove_comment(request):
     else:
         return HttpResponse("Something Went Wrong")
 
-# Comments Section Ends
+
 # Other Views
 
 
@@ -258,4 +258,4 @@ def get_contacts(request):
         contacts = Contact.objects.filter()
         return render(request, 'contacts/contacts_list.html', {'contacts': contacts})
     else:
-        return HttpResponse('Invalid Method or Not Authanticated in load_calls')
+        return HttpResponse('Invalid Method or Not Authenticated in load_calls')
