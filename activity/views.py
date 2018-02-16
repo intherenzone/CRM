@@ -40,7 +40,7 @@ def activity_list(request):
         activity_obj_list = activity_obj_list.filter(enddate__lte=enddate)
 
 
-    SS = ['in process', 'converted', 'recycled', 'assigned', 'dead']
+    SS = ['in process', 'converted', 'recycled', 'assigned', 'dead', None]
     activity_obj = sorted(activity_obj_list.order_by('enddate', 'startdate'), key=lambda p: SS.index(p.status))
 
     return render(request, 'activity/activity.html', {

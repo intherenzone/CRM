@@ -22,7 +22,6 @@ def organizations_list(request):
     city = request.POST.get('city')
     phone = request.POST.get('phone')
     email = request.POST.get('email')
-    status= request.POST.get('lead_status')
 #    source= request.POST.get('lead_source')
 
     if name:
@@ -34,15 +33,12 @@ def organizations_list(request):
         org_obj = Organization.objects.filter(phone__icontains=phone)
     if email:
         org_obj = Organization.objects.filter(email__icontains=email)
-    if status:
-        org_obj = Organization.objects.filter(status__icontains=status)
 #    if source:
 #        org_obj = Organization.objects.filter(source__icontains=source)
 
 
     return render(request, 'organizations/organizations.html', {
         'org_obj': org_obj,
-        'statuses': LEAD_STATUS,
         'per_page': page
 #        'sources': LEAD_SOURCE,
     })
@@ -80,7 +76,6 @@ def add_organization(request):
                           'organization_form': form,
                           'address_form': address_form,
                           'users': users,
-                          'statuss': LEAD_STATUS,
                           'source': LEAD_SOURCE,
                           'teams': teams,
                           'assignedto_list': assignedto_list,
@@ -91,7 +86,6 @@ def add_organization(request):
                       'organization_form': form,
                       'address_form': address_form,
                       'users': users,
-                      'statuss': LEAD_STATUS,
                       'source': LEAD_SOURCE,
                       'teams': teams,
                       'assignedto_list': assignedto_list,
