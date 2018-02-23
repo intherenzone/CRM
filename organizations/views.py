@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from common.models import User, Address, Comment, Team
+from common.models import CRMUser, Address, Comment, Team
 from common.forms import BillingAddressForm
 from common.utils import LEAD_STATUS, LEAD_SOURCE, COUNTRIES
 from organizations.models import Organization
@@ -46,7 +46,7 @@ def organizations_list(request):
 
 @login_required
 def add_organization(request):
-    users = User.objects.filter(is_active=True).order_by('email')
+    users = CRMUser.objects.filter(is_active=True).order_by('email')
     form = OrganizationForm(assigned_to=users)
     address_form = BillingAddressForm()
     teams = Team.objects.all()
@@ -106,7 +106,7 @@ def view_organization(request, organization_id):
 def edit_organization(request, pk):
     org_obj = get_object_or_404(Organization, id=pk)
     address_obj = get_object_or_404(Address, id=org_obj.address.id)
-    users = User.objects.filter(is_active=True).order_by('email')
+    users = CRMUser.objects.filter(is_active=True).order_by('email')
     form = OrganizationForm(
         instance=org_obj,assigned_to=users)
     address_form = BillingAddressForm(instance=address_obj)

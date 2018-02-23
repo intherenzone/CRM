@@ -2,7 +2,7 @@ from django.contrib import admin
 from common.forms import *
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from common.models import User, Address, Team, Comment, Comment_Files
+from common.models import CRMUser, Address, Team, Comment, Comment_Files
 
 
 class UserAdmin(BaseUserAdmin):
@@ -36,7 +36,7 @@ class UserAdmin(BaseUserAdmin):
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 
-admin.site.register(User)
+admin.site.register(CRMUser)
 admin.site.unregister(Group)
 admin.site.register(Address)
 admin.site.register(Team)

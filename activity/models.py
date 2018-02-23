@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 
-from common.models import User, Address, Team
+from common.models import CRMUser, Address, Team
 from common.utils import LEAD_STATUS, LEAD_SOURCE
 from contacts.models import Contact
 
@@ -19,11 +19,11 @@ class Activity(models.Model):
     contacts = models.ManyToManyField(Contact)
     startdate = models.DateTimeField(_("Start date"), auto_now_add=False)
     enddate = models.DateTimeField(_("End date"), auto_now_add=False)
-    created_by = models.ForeignKey(User, related_name='activity_created_by', on_delete=models.CASCADE)
+    created_by = models.ForeignKey(CRMUser, related_name='activity_created_by', on_delete=models.CASCADE)
     activity_type= models.CharField(_("Activity Type"), max_length=255, blank=True, null=True, choices=ACTIVITY_TYPE)
     description = models.TextField(blank=True, null=True)
     status = models.CharField(_("Status of Activity"), max_length=255, blank=True, null=True, choices=LEAD_STATUS)
-    assigned_to = models.ManyToManyField(User, related_name="activity_assigned_users")
+    assigned_to = models.ManyToManyField(CRMUser, related_name="activity_assigned_users")
 
 
 

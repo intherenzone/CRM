@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from common.models import User, Address, Comment, Team
+from common.models import CRMUser, Address, Comment, Team
 from common.forms import BillingAddressForm
 from common.utils import COUNTRIES
 from organizations.models import Organization
@@ -58,7 +58,7 @@ def contacts_list(request):
 @login_required
 def add_contact(request):
     #organization = Organization.objects.filter()
-    users = User.objects.filter(is_active=True).order_by('email')
+    users = CRMUser.objects.filter(is_active=True).order_by('email')
     form = ContactForm(assigned_to=users)
     #form = ContactForm(assigned_to=users, orgnization=organization)
     address_form = BillingAddressForm()
@@ -124,7 +124,7 @@ def edit_contact(request, pk):
     contact_obj = get_object_or_404(Contact, id=pk)
     address_obj = get_object_or_404(Address, id=contact_obj.address.id)
     #organization = Organization.objects.filter()
-    users = User.objects.filter(is_active=True).order_by('email')
+    users = CRMUser.objects.filter(is_active=True).order_by('email')
     form = ContactForm(instance=contact_obj, assigned_to=users)
     #form = ContactForm(instance=contact_obj, assigned_to=users, organization=organization)
     address_form = BillingAddressForm(instance=address_obj)
