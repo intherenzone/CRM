@@ -11,6 +11,13 @@ from common.utils import LEAD_STATUS, LEAD_SOURCE, INDCHOICES, TYPECHOICES, COUN
 from common.forms import BillingAddressForm
 from contacts.models import Contact
 
+#for iCalendar
+from icalendar import Calendar, Event
+from icalendar import vCalAddress, vText
+from datetime import datetime
+import tempfile, os
+import pytz
+
 # Create your views here.
 @login_required
 def activity_list(request):
@@ -220,3 +227,35 @@ def remove_comment(request):
             return JsonResponse({"error": "You Dont have permisions to delete"})
     else:
         return HttpResponse("Something Went Wrong")
+
+#So there are several things we have to change
+#1.Calendar object's arguments should be passed with the data in database
+#2.Add more attributes to Calendar object and Event object
+#3.Dealing with datetime in event. Currently, it's utc but we want EST.
+#4.Find a way to export file to a customed directory just like downloading files
+#5.Create a option for user to select mutiple events, put them in the same iCal and export
+#6.Finally, adding a button
+@login_required
+def export_calendar(request):
+    #create a calendar object
+    cal= Calendar()
+    cal['dtstart'] = '20180224T080000'
+    cal['summary'] = 'Testing Calendar'
+    #These are required lines
+    cal.add('prodid', '-//My calendar product//mxm.dk//')
+    cal.add('version', '2.0')
+    #Create an event
+    event = Event()
+    event.add('summary', 'This is a testing ical file')
+    #Need to deal with UTC time to EST
+    event.add('dtstart', datetime(2018,2,24,8,0,0,tzinfo=pytz.utc))
+    event.add('dtend', datetime(2018,2,24,10,0,0,tzinfo=pytz.utc))
+    event.add('dtstamp', datetime(2018,2,23,16,0,0,tzinfo=pytz.utc))
+    organizer = vCalAddress('MAILTO:xxxx@paradymemanagement.com')
+    #Add event to calendar
+    cal.add_component(event)
+    directory = "d:/Paradyme Management/CRM Testing"
+    f = open(os.path.join(directory, 'test.ics'), 'wb')
+    f.write(cal.to_ical())
+    f.close()
+    return HttpResponse("Exported")

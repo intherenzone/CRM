@@ -15,4 +15,7 @@ urlpatterns = [
     url(r'^comment/add/$', views.add_comment, name='add_comment'),
     url(r'^comment/edit/$', views.edit_comment, name='edit_comment'),
     url(r'^comment/remove/$', views.remove_comment, name='remove_comment'),
+
+    #calendar
+    url(r'^calendar/export/$', views.export_calendar, name='export_calendar'),
     ]
