@@ -17,5 +17,5 @@ urlpatterns = [
     url(r'^comment/remove/$', views.remove_comment, name='remove_comment'),
 
     #calendar
-    url(r'^calendar/export/$', views.export_calendar, name='export_calendar'),
+    url(r'^(?P<activity_id>\d+)/calendar/export/$', views.export_calendar, name='export_calendar'),
     ]

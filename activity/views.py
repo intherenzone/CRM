@@ -229,28 +229,33 @@ def remove_comment(request):
         return HttpResponse("Something Went Wrong")
 
 #So there are several things we have to change
-#1.Calendar object's arguments should be passed with the data in database
+#--Done 1.Calendar object's arguments should be passed with the data in database
 #2.Add more attributes to Calendar object and Event object
-#3.Dealing with datetime in event. Currently, it's utc but we want EST.
+#--No need 3.Dealing with datetime in event. Currently, it's utc but we want EST.
 #4.Find a way to export file to a customed directory just like downloading files
 #5.Create a option for user to select mutiple events, put them in the same iCal and export
-#6.Finally, adding a button
+#6.Finally, add a button
 @login_required
-def export_calendar(request):
+def export_calendar(request,activity_id):
+    activity_record = get_object_or_404(Activity, id=activity_id)
+
     #create a calendar object
     cal= Calendar()
-    cal['dtstart'] = '20180224T080000'
+    cal['dtstart'] = activity_record.startdate
     cal['summary'] = 'Testing Calendar'
     #These are required lines
     cal.add('prodid', '-//My calendar product//mxm.dk//')
     cal.add('version', '2.0')
     #Create an event
     event = Event()
-    event.add('summary', 'This is a testing ical file')
+    event.add('summary', activity_record.name)
     #Need to deal with UTC time to EST
-    event.add('dtstart', datetime(2018,2,24,8,0,0,tzinfo=pytz.utc))
-    event.add('dtend', datetime(2018,2,24,10,0,0,tzinfo=pytz.utc))
-    event.add('dtstamp', datetime(2018,2,23,16,0,0,tzinfo=pytz.utc))
+    #event.add('dtstart', datetime(2018,2,24,8,0,0,tzinfo=pytz.utc))
+    #event.add('dtend', datetime(2018,2,24,10,0,0,tzinfo=pytz.utc))
+    #event.add('dtstamp', datetime(2018,2,23,16,0,0,tzinfo=pytz.utc))
+    event.add('dtstart', activity_record.startdate)
+    event.add('dtend', activity_record.enddate)
+    event.add('dtstamp', activity_record.startdate)
     organizer = vCalAddress('MAILTO:xxxx@paradymemanagement.com')
     #Add event to calendar
     cal.add_component(event)
