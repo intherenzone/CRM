@@ -232,7 +232,7 @@ def remove_comment(request):
 #--Done 1.Calendar object's arguments should be passed with the data in database
 #2.Add more attributes to Calendar object and Event object
 #--No need 3.Dealing with datetime in event. Currently, it's utc but we want EST.
-#4.Find a way to export file to a customed directory just like downloading files
+#--Done 4.Find a way to export file to a customed directory just like downloading files
 #5.Create a option for user to select mutiple events, put them in the same iCal and export
 #6.Finally, add a button
 @login_required
@@ -242,7 +242,7 @@ def export_calendar(request,activity_id):
     #create a calendar object
     cal= Calendar()
     cal['dtstart'] = activity_record.startdate
-    cal['summary'] = 'Testing Calendar'
+    cal['summary'] = 'Paradyme Management Calendar'
     #These are required lines
     cal.add('prodid', '-//My calendar product//mxm.dk//')
     cal.add('version', '2.0')
@@ -259,8 +259,6 @@ def export_calendar(request,activity_id):
     organizer = vCalAddress('MAILTO:xxxx@paradymemanagement.com')
     #Add event to calendar
     cal.add_component(event)
-    directory = "d:/Paradyme Management/CRM Testing"
-    f = open(os.path.join(directory, 'test.ics'), 'wb')
-    f.write(cal.to_ical())
-    f.close()
-    return HttpResponse("Exported")
+    response = HttpResponse(cal.to_ical(), content_type='text/calendar')
+    response['Content-Disposition'] = 'attachment; filename="test.ics"'
+    return response
