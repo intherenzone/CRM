@@ -1,0 +1,9 @@
+<div>
+  {% for activity in activities_this_user_is_assigned_to %}
+  <h3> {{activity.name}} </h3>
+  <h3> {{activity.startdate}} </h3>
+  <h3> {{activity.enddate}} </h3>
+  {% endfor %}
+  <h3> {{username}} </h3>
+  <h3> {{useremail}} </h3>
+</div>

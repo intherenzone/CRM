@@ -18,4 +18,5 @@ urlpatterns = [
 
     #calendar
     url(r'^(?P<activity_id>\d+)/calendar/export/$', views.export_calendar, name='export_calendar'),
+    url(r'^calendar/url/$', views.calendar_url, name='calendar_url'),
     ]

@@ -244,7 +244,7 @@ def export_calendar(request,activity_id):
     cal['dtstart'] = activity_record.startdate
     cal['summary'] = 'Paradyme Management Calendar'
     #These are required lines
-    cal.add('prodid', '-//My calendar product//mxm.dk//')
+    cal.add('prodid', '-//Paradyme Management//paradymemanagement.com//')
     cal.add('version', '2.0')
     #Create an event
     event = Event()
@@ -262,3 +262,35 @@ def export_calendar(request,activity_id):
     response = HttpResponse(cal.to_ical(), content_type='text/calendar')
     response['Content-Disposition'] = 'attachment; filename="test.ics"'
     return response
+
+@login_required
+def calendar_url(request):
+    #Get current username and email
+    username = None
+    useremail = None
+    if request.user.is_authenticated():
+        username = request.user.username
+        useremail = request.user.email
+
+    activity_obj_list = Activity.objects.all()
+    users = User.objects.filter(is_active=True).order_by('email')
+
+    activities_this_user_is_assigned_to= Activity.objects.filter(assigned_to__email=useremail)
+
+    cal= Calendar()
+    cal['summary'] = 'CRM-Paradyme Management'
+    cal.add('prodid', '-//Paradyme Management//paradymemanagement.com//')
+    cal.add('version', '2.0')
+    for activity in activities_this_user_is_assigned_to:
+        event = Event()
+        event.add('summary', activity.name)
+        event.add('dtstart', activity.startdate)
+        event.add('dtend', activity.enddate)
+        cal.add_component(event)
+
+    response = HttpResponse(cal.to_ical(), content_type='text/calendar')
+    response['Content-Disposition'] = 'attachment; filename="test.ics"'
+    return response
+    #return render(request, 'activity/calendar_url.html', {
+    #    'activities_this_user_is_assigned_to': activities_this_user_is_assigned_to, 'users': users, 'username': username, 'useremail': useremail
+    #    })
