@@ -1,9 +1,20 @@
-<div>
-  {% for activity in activities_this_user_is_assigned_to %}
-  <h3> {{activity.name}} </h3>
-  <h3> {{activity.startdate}} </h3>
-  <h3> {{activity.enddate}} </h3>
-  {% endfor %}
-  <h3> {{username}} </h3>
-  <h3> {{useremail}} </h3>
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load paginate %}
+{% block content %}
+<div class="main_container">
+<h2> Your calendar link is : activities/calendar/syn/{{username}} </h2>
+<h3> How to use this calendar link to automatically synchronize your calendar: </h3>
+<h3>
+  <ol>
+    <li>Go to <a href="https://www.google.com/calendar" target="_blank">Google Calendar</a></li>
+    <li>Click <b>Setting</b></li>
+    <li>Under Setting, click <b>Add Calendar</b></li>
+    <li>Under Add Calendar, choose <b>From URL</b></li>
+    <li>Copy your calendar link:<b> activities/calendar/syn/{{username}} </b>into the input box </li>
+    <li>Click <b>ADD CALENDAR</b></li>
+    <li>Once you finish, this calendar will be automatically update, <b>no further action needed</b></li>
+</h3>
 </div>
+
+{% endblock %}

@@ -228,13 +228,31 @@ def remove_comment(request):
     else:
         return HttpResponse("Something Went Wrong")
 
-#So there are several things we have to change
-#--Done 1.Calendar object's arguments should be passed with the data in database
-#2.Add more attributes to Calendar object and Event object
-#--No need 3.Dealing with datetime in event. Currently, it's utc but we want EST.
-#--Done 4.Find a way to export file to a customed directory just like downloading files
-#5.Create a option for user to select mutiple events, put them in the same iCal and export
-#6.Finally, add a button
+def calendar_syc(request, user):
+    activity_obj_list = Activity.objects.all()
+    this_user_object = User.objects.filter(username=user)[0]
+    this_user_useremail = this_user_object.email
+    activities_this_user_is_assigned_to= Activity.objects.filter(assigned_to__email=this_user_useremail)
+
+    cal= Calendar()
+    cal['summary'] = 'CRM-Paradyme Management'
+    cal.add('version', '2.0')
+    cal.add('X-WR-CALDESC', 'Calendar events for user, ' + this_user_object.username)
+    cal.add('X-WR-CALNAME', this_user_object.username + ' Calendar (Paradyme CRM)')
+    cal.add('method', 'PUBLISH')
+    cal.add('prodid', '-//Paradyme Management//paradymemanagement.com//')
+    for activity in activities_this_user_is_assigned_to:
+        event = Event()
+        event.add('summary', activity.name)
+        event.add('description', activity.description)
+        event.add('dtstart', activity.startdate)
+        event.add('dtend', activity.enddate)
+        cal.add_component(event)
+
+    response = HttpResponse(cal.to_ical(), content_type='text/calendar')
+    response['Content-Disposition'] = 'attachment; filename=' + this_user_object.username +'.ics'
+    return response
+
 @login_required
 def export_calendar(request,activity_id):
     activity_record = get_object_or_404(Activity, id=activity_id)
@@ -272,25 +290,6 @@ def calendar_url(request):
         username = request.user.username
         useremail = request.user.email
 
-    activity_obj_list = Activity.objects.all()
-    users = User.objects.filter(is_active=True).order_by('email')
-
-    activities_this_user_is_assigned_to= Activity.objects.filter(assigned_to__email=useremail)
-
-    cal= Calendar()
-    cal['summary'] = 'CRM-Paradyme Management'
-    cal.add('prodid', '-//Paradyme Management//paradymemanagement.com//')
-    cal.add('version', '2.0')
-    for activity in activities_this_user_is_assigned_to:
-        event = Event()
-        event.add('summary', activity.name)
-        event.add('dtstart', activity.startdate)
-        event.add('dtend', activity.enddate)
-        cal.add_component(event)
-
-    response = HttpResponse(cal.to_ical(), content_type='text/calendar')
-    response['Content-Disposition'] = 'attachment; filename="test.ics"'
-    return response
-    #return render(request, 'activity/calendar_url.html', {
-    #    'activities_this_user_is_assigned_to': activities_this_user_is_assigned_to, 'users': users, 'username': username, 'useremail': useremail
-    #    })
+    return render(request, 'activity/calendar_url.html', {
+        'username' : username
+        })
