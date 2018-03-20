@@ -228,7 +228,7 @@ def remove_comment(request):
     else:
         return HttpResponse("Something Went Wrong")
 
-def calendar_syc(request, user):
+def calendar_syn(request, user):
     activity_obj_list = Activity.objects.all()
     this_user_object = User.objects.filter(username=user)[0]
     this_user_useremail = this_user_object.email
@@ -255,30 +255,29 @@ def calendar_syc(request, user):
 
 @login_required
 def export_calendar(request,activity_id):
-    activity_record = get_object_or_404(Activity, id=activity_id)
+    activity = get_object_or_404(Activity, id=activity_id)
+    username = None
+    if request.user.is_authenticated():
+        username = request.user.username
 
-    #create a calendar object
     cal= Calendar()
-    cal['dtstart'] = activity_record.startdate
-    cal['summary'] = 'Paradyme Management Calendar'
-    #These are required lines
-    cal.add('prodid', '-//Paradyme Management//paradymemanagement.com//')
+    cal['summary'] = 'CRM-Paradyme Management'
     cal.add('version', '2.0')
+    cal.add('X-WR-CALDESC', 'Calendar events for user, ' + username)
+    cal.add('X-WR-CALNAME', username + ' Calendar (Paradyme CRM)')
+    cal.add('method', 'PUBLISH')
+    cal.add('prodid', '-//Paradyme Management//paradymemanagement.com//')
     #Create an event
     event = Event()
-    event.add('summary', activity_record.name)
-    #Need to deal with UTC time to EST
-    #event.add('dtstart', datetime(2018,2,24,8,0,0,tzinfo=pytz.utc))
-    #event.add('dtend', datetime(2018,2,24,10,0,0,tzinfo=pytz.utc))
-    #event.add('dtstamp', datetime(2018,2,23,16,0,0,tzinfo=pytz.utc))
-    event.add('dtstart', activity_record.startdate)
-    event.add('dtend', activity_record.enddate)
-    event.add('dtstamp', activity_record.startdate)
-    organizer = vCalAddress('MAILTO:xxxx@paradymemanagement.com')
+    event.add('summary', activity.name)
+    event.add('dtstart', activity.startdate)
+    event.add('dtend', activity.enddate)
+    event.add('description', activity.description)
+    #organizer = vCalAddress('MAILTO:xxxx@paradymemanagement.com')
     #Add event to calendar
     cal.add_component(event)
     response = HttpResponse(cal.to_ical(), content_type='text/calendar')
-    response['Content-Disposition'] = 'attachment; filename="test.ics"'
+    response['Content-Disposition'] = 'attachment; filename=' + activity.name +'.ics'
     return response
 
 @login_required
@@ -290,6 +289,8 @@ def calendar_url(request):
         username = request.user.username
         useremail = request.user.email
 
+    user_url = str(reverse('activity:calendar_syn', args=[username]))
+
     return render(request, 'activity/calendar_url.html', {
-        'username' : username
+        'user_url' : user_url,
         })
