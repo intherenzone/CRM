@@ -3,7 +3,7 @@ from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from accounts.models import Account
-from common.models import User, Address, Team
+from common.models import CRMUser, Address, Team
 from common.utils import LEAD_STATUS, LEAD_SOURCE
 
 
@@ -23,13 +23,13 @@ class Lead(models.Model):
     address = models.ForeignKey(Address, related_name='leadaddress', on_delete=models.CASCADE, null=True, blank=True)
     website = models.CharField(_("Website"), max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    assigned_to = models.ManyToManyField(User, related_name='lead_assigned_users')
+    assigned_to = models.ManyToManyField(CRMUser, related_name='lead_assigned_users')
     teams = models.ManyToManyField(Team)
     account_name = models.CharField(max_length=255, null=True, blank=True)
     opportunity_amount = models.DecimalField(
         _("Opportunity Amount"), decimal_places=2, max_digits=12,
         blank=True, null=True)
-    created_by = models.ForeignKey(User, related_name='lead_created_by', on_delete=models.CASCADE)
+    created_by = models.ForeignKey(CRMUser, related_name='lead_created_by', on_delete=models.CASCADE)
     created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
     is_active = models.BooleanField(default=False)
     enquery_type = models.CharField(max_length=255, blank=True, null=True)

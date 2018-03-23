@@ -23,11 +23,18 @@
                 {{ contact_form.assigned_to.errors }}
               </div>
             </div>
-            <div class="filter_col col-md-6">
+            <!-- <div class="filter_col col-md-6">
               <div class="form-group">
                 <label for="exampleInputEmail1">Teams</label>
                 {{ contact_form.teams }}
                 {{ contact_form.teams.errors }}
+              </div>
+            </div> -->
+            <div class="filter_col col-md-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Organization</label>
+                {{ contact_form.organization }}
+                {{ contact_form.organization.errors }}
               </div>
             </div>
             <br clear="all">
@@ -47,13 +54,16 @@
               <div class="col-md-6">
                 <div class="filter_col col-md-12">
                   <div class="form-group">
-                    <label for="exampleInputEmail1" class="required">Name</label>
+
                     <div class="row">
+
                       <div class="filter_col col-md-6">
+                        <label for="exampleInputEmail1" class="required">First Name</label>
                         {{ contact_form.first_name }}
                         {{ contact_form.first_name.errors }}
                       </div>
                       <div class="filter_col col-md-6">
+                        <label for="exampleInputEmail1" class="required">Last Name</label>
                         {{ contact_form.last_name }}
                         {{ contact_form.last_name.errors }}
                       </div>

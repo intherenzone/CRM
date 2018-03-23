@@ -6,7 +6,7 @@ from django.urls import reverse
 from activity.models import Activity
 from activity.forms import ActivityForm, ActivityCommentForm
 from contacts.forms import ContactForm
-from common.models import User, Address, Comment, Team
+from common.models import CRMUser, Address, Comment, Team
 from common.utils import LEAD_STATUS, LEAD_SOURCE, INDCHOICES, TYPECHOICES, COUNTRIES
 from common.forms import BillingAddressForm
 from contacts.models import Contact
@@ -49,7 +49,7 @@ def activity_list(request):
 
 @login_required
 def add_activity(request):
-    users = User.objects.filter(is_active=True).order_by('email')
+    users = CRMUser.objects.filter(is_active=True).order_by('email')
     contacts = Contact.objects.all()
     form = ActivityForm(assigned_to=users, contacts=contacts)
     assignedto_list = request.POST.getlist('assigned_to')
@@ -120,7 +120,7 @@ def remove_activity(request, pk):
 @login_required
 def edit_activity(request,pk):
     activity_obj = get_object_or_404(Activity,id=pk)
-    users = User.objects.filter(is_active=True).order_by('email')
+    users = CRMUser.objects.filter(is_active=True).order_by('email')
     contacts = Contact.objects.all()
     form = ActivityForm(instance=activity_obj, assigned_to=users, contacts=contacts)
     assignedto_list = request.POST.getlist('assigned_to')
@@ -134,7 +134,7 @@ def edit_activity(request,pk):
             activity_obj.save()
             activity_obj.assigned_to.clear()
             activity_obj.assigned_to.add(*assignedto_list)
-            activity_obj.contacts.add(*contacts_list)
+            activity_obj.contacts.set(contacts_list)
             if request.is_ajax():
                 return JsonResponse({'error': False})
             return HttpResponseRedirect(reverse('activity:list'))

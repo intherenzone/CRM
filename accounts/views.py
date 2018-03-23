@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from accounts.models import Account
-from common.models import User, Address, Team, Comment
+from common.models import CRMUser, Address, Team, Comment
 from common.utils import INDCHOICES, TYPECHOICES, COUNTRIES, CURRENCY_CODES, CASE_TYPE, PRIORITY_CHOICE, STATUS_CHOICE
 from oppurtunity.models import Opportunity, STAGES, SOURCES
 from contacts.models import Contact
@@ -43,7 +43,7 @@ def accounts_list(request):
 @login_required
 @csrf_exempt
 def add_account(request):
-    users = User.objects.filter(is_active=True).order_by('email')
+    users = CRMUser.objects.filter(is_active=True).order_by('email')
     account_form = AccountForm(assigned_to=users)
     billing_form = BillingAddressForm()
     shipping_form = ShippingAddressForm(prefix='ship')
@@ -102,7 +102,7 @@ def view_account(request, account_id):
     comments = account_record.accounts_comments.all()
     opportunity_list = Opportunity.objects.filter(account=account_record)
     contacts = Contact.objects.filter(account=account_record)
-    users = User.objects.filter(is_active=True).order_by('email')
+    users = CRMUser.objects.filter(is_active=True).order_by('email')
     cases = Case.objects.filter(account=account_record)
     teams = Team.objects.all()
     return render(request, "accounts/view_account.html", {
@@ -129,7 +129,7 @@ def edit_account(request, edid):
     account_instance = get_object_or_404(Account, id=edid)
     account_billing_address = account_instance.billing_address
     account_shipping_address = account_instance.shipping_address
-    users = User.objects.filter(is_active=True).order_by('email')
+    users = CRMUser.objects.filter(is_active=True).order_by('email')
     account_form = AccountForm(instance=account_instance, assigned_to=users)
     billing_form = BillingAddressForm(instance=account_billing_address)
     shipping_form = ShippingAddressForm(prefix='ship', instance=account_shipping_address)

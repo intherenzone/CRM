@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
-from common.models import User, Comment, Team
+from common.models import CRMUser, Comment, Team
 from common.utils import STAGES, SOURCES, CURRENCY_CODES
 from accounts.models import Account
 from contacts.models import Contact
@@ -49,7 +49,7 @@ def opp_list(request):
 
 @login_required
 def opp_create(request):
-    users = User.objects.filter(is_active=True).order_by('email')
+    users = CRMUser.objects.filter(is_active=True).order_by('email')
     accounts = Account.objects.all()
     contacts = Contact.objects.all()
     form = OpportunityForm(assigned_to=users, account=accounts, contacts=contacts)
@@ -118,7 +118,7 @@ def opp_view(request, pk):
 @login_required
 def opp_edit(request, pk):
     opportunity_obj = get_object_or_404(Opportunity, id=pk)
-    users = User.objects.filter(is_active=True).order_by('email')
+    users = CRMUser.objects.filter(is_active=True).order_by('email')
     accounts = Account.objects.all()
     contacts = Contact.objects.all()
     form = OpportunityForm(
