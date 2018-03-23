@@ -8,7 +8,7 @@ from django.forms.models import modelformset_factory
 
 from leads.models import Lead
 from contacts.forms import ContactForm
-from common.models import CRMUser, Address, Comment, Team
+from common.models import Address, Comment, Team
 from common.utils import LEAD_STATUS, LEAD_SOURCE, INDCHOICES, TYPECHOICES, COUNTRIES
 from leads.forms import LeadCommentForm, LeadForm
 from accounts.forms import AccountForm
@@ -17,6 +17,9 @@ from accounts.models import Account
 from planner.models import Event, Reminder
 from planner.forms import ReminderForm
 
+
+from django.contrib.auth.models import User
+from django.conf import settings
 # CRUD Operations Start
 
 
@@ -45,7 +48,7 @@ def leads_list(request):
 @login_required
 def add_lead(request):
     accounts = Account.objects.all()
-    users = CRMUser.objects.filter(is_active=True).order_by('email')
+    users = User.objects.filter(is_active=True).order_by('email')
     teams = Team.objects.all()
     assignedto_list = request.POST.getlist('assigned_to')
     teams_list = request.POST.getlist('teams')
@@ -117,7 +120,7 @@ def edit_lead(request, lead_id):
     lead_obj = get_object_or_404(Lead, id=lead_id)
     address_obj = get_object_or_404(Address, id=lead_obj.address.id)
     accounts = Account.objects.all()
-    users = CRMUser.objects.filter().order_by('email')
+    users = User.objects.filter().order_by('email')
     form = LeadForm(instance=lead_obj, assigned_to=users)
     address_form = BillingAddressForm(instance=address_obj)
     assignedto_list = request.POST.getlist('assigned_to')

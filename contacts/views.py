@@ -3,13 +3,14 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from common.models import CRMUser, Address, Comment, Team
+from common.models import Address, Comment, Team
 from common.forms import BillingAddressForm
 from common.utils import COUNTRIES
 from organizations.models import Organization
 from contacts.models import Contact
 from contacts.forms import ContactForm, ContactCommentForm
 
+from django.contrib.auth.models import User
 
 # CRUD Operations Start
 
@@ -44,11 +45,11 @@ def contacts_list(request):
     if email:
         contact_obj_list = contact_obj_list.filter(email__icontains=email)
 
-    return render(request, 'contacts/contacts.html', {
+    return render(request, 'crm/contacts/contacts.html', {
         'contact_obj_list': contact_obj_list,
         'per_page': page
 
-    #return render(request, 'contacts/contacts.html', {
+    #return render(request, 'crm/contacts/contacts.html', {
      #   'contact_obj_list': contact_obj_list,
       #  'organization': organization,
        # 'per_page': page
@@ -58,7 +59,7 @@ def contacts_list(request):
 @login_required
 def add_contact(request):
     organizations = Organization.objects.all()
-    users = CRMUser.objects.filter(is_active=True).order_by('email')
+    users = User.objects.filter(is_active=True).order_by('email')
     form = ContactForm(assigned_to=users, organization=organizations)
     #form = ContactForm(assigned_to=users, orgnization=organization)
     address_form = BillingAddressForm()
@@ -86,7 +87,7 @@ def add_contact(request):
         else:
             if request.is_ajax():
                 return JsonResponse({'error': True, 'contact_errors': form.errors})
-            return render(request, 'contacts/create_contact.html', {
+            return render(request, 'crm/contacts/create_contact.html', {
                 'contact_form': form,
                 'address_form': address_form,
                 'organizations': organizations,
@@ -97,7 +98,7 @@ def add_contact(request):
                 'teams_list': teams_list
             })
     else:
-        return render(request, 'contacts/create_contact.html', {
+        return render(request, 'crm/contacts/create_contact.html', {
             'contact_form': form,
             'address_form': address_form,
             'organizations': organizations,
@@ -114,7 +115,7 @@ def view_contact(request, contact_id):
     contact_record = get_object_or_404(
         Contact.objects.select_related("address"), id=contact_id)
     comments = contact_record.contact_comments.all()
-    return render(request, 'contacts/view_contact.html', {
+    return render(request, 'crm/contacts/view_contact.html', {
         'contact_record': contact_record,
         'comments': comments})
 
@@ -124,7 +125,7 @@ def edit_contact(request, pk):
     contact_obj = get_object_or_404(Contact, id=pk)
     address_obj = get_object_or_404(Address, id=contact_obj.address.id)
     organizations = Organization.objects.all()
-    users = CRMUser.objects.filter(is_active=True).order_by('email')
+    users = User.objects.filter(is_active=True).order_by('email')
     # form = ContactForm(instance=contact_obj, assigned_to=users)
     form = ContactForm(instance=contact_obj, assigned_to=users, organization=organizations)
     address_form = BillingAddressForm(instance=address_obj)
@@ -151,7 +152,7 @@ def edit_contact(request, pk):
         else:
             if request.is_ajax():
                 return JsonResponse({'error': True, 'contact_errors': form.errors})
-            return render(request, 'contacts/create_contact.html', {
+            return render(request, 'crm/contacts/create_contact.html', {
                 'contact_form': form,
                 'address_form': address_form,
                 'contact_obj': contact_obj,
@@ -163,7 +164,7 @@ def edit_contact(request, pk):
                 'teams_list': teams_list
             })
     else:
-        return render(request, 'contacts/create_contact.html', {
+        return render(request, 'crm/contacts/create_contact.html', {
             'contact_form': form,
             'address_form': address_form,
             'contact_obj': contact_obj,
@@ -256,6 +257,6 @@ def remove_comment(request):
 def get_contacts(request):
     if request.method == 'GET':
         contacts = Contact.objects.filter()
-        return render(request, 'contacts/contacts_list.html', {'contacts': contacts})
+        return render(request, 'crm/contacts/contacts_list.html', {'contacts': contacts})
     else:
         return HttpResponse('Invalid Method or Not Authenticated in load_calls')

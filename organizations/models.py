@@ -2,9 +2,11 @@ from django.db import models
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 
-from common.models import CRMUser, Address, Team
+from common.models import Address, Team
 from common.utils import LEAD_STATUS, LEAD_SOURCE
 
+from django.contrib.auth.models import User
+from django.conf import settings
 
 class Organization(models.Model):
     name = models.CharField(pgettext_lazy("Name of Organization", "Name"), max_length=64)
@@ -18,9 +20,9 @@ class Organization(models.Model):
     address = models.ForeignKey(Address, related_name='organization_address', on_delete=models.CASCADE,
                                 null=True, blank=True)
     description = models.TextField(blank=True, null=True)
-    assigned_to = models.ManyToManyField(CRMUser, related_name="organization_assigned_to")
+    assigned_to = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="organization_assigned_to")
     teams = models.ManyToManyField(Team)
-    created_by = models.ForeignKey(CRMUser, related_name='organization_created_by', null= True, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='organization_created_by', null= True, on_delete=models.CASCADE)
     created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
     is_active = models.BooleanField(default=True)
 

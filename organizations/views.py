@@ -3,12 +3,14 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from common.models import CRMUser, Address, Comment, Team
+from common.models import Address, Comment, Team
 from common.forms import BillingAddressForm
 from common.utils import LEAD_STATUS, LEAD_SOURCE, COUNTRIES
 from organizations.models import Organization
 from organizations.forms import OrganizationForm, OrganizationCommentForm
 
+from django.contrib.auth.models import User
+from django.conf import settings
 
 
 # CRUD Operations Start
@@ -37,7 +39,7 @@ def organizations_list(request):
 #        org_obj = Organization.objects.filter(source__icontains=source)
 
 
-    return render(request, 'organizations/organizations.html', {
+    return render(request, 'crm/organizations/organizations.html', {
         'org_obj': org_obj,
         'per_page': page
 #        'sources': LEAD_SOURCE,
@@ -46,7 +48,7 @@ def organizations_list(request):
 
 @login_required
 def add_organization(request):
-    users = CRMUser.objects.filter(is_active=True).order_by('email')
+    users = User.objects.filter(is_active=True).order_by('email')
     form = OrganizationForm(assigned_to=users)
     address_form = BillingAddressForm()
     teams = Team.objects.all()
@@ -72,7 +74,7 @@ def add_organization(request):
         else:
             if request.is_ajax():
                 return JsonResponse({'error': True, 'organization_errors': form.errors})
-            return render(request, 'organizations/create_organization.html', {
+            return render(request, 'crm/organizations/create_organization.html', {
                           'organization_form': form,
                           'address_form': address_form,
                           'users': users,
@@ -82,7 +84,7 @@ def add_organization(request):
                           'teams_list': teams_list
             })
     else:
-        return render(request, 'organizations/create_organization.html', {
+        return render(request, 'crm/organizations/create_organization.html', {
                       'organization_form': form,
                       'address_form': address_form,
                       'users': users,
@@ -97,7 +99,7 @@ def add_organization(request):
 def view_organization(request, organization_id):
     organization_record = get_object_or_404(Organization, id=organization_id)
     comments = organization_record.organization_comments.all()
-    return render(request, 'organizations/view_organization.html', {
+    return render(request, 'crm/organizations/view_organization.html', {
         'organization_record': organization_record,
         'comments': comments})
 
@@ -106,7 +108,7 @@ def view_organization(request, organization_id):
 def edit_organization(request, pk):
     org_obj = get_object_or_404(Organization, id=pk)
     address_obj = get_object_or_404(Address, id=org_obj.address.id)
-    users = CRMUser.objects.filter(is_active=True).order_by('email')
+    users = User.objects.filter(is_active=True).order_by('email')
     form = OrganizationForm(
         instance=org_obj,assigned_to=users)
     address_form = BillingAddressForm(instance=address_obj)
@@ -135,7 +137,7 @@ def edit_organization(request, pk):
         else:
             if request.is_ajax():
                 return JsonResponse({'error': True, 'organization_errors': form.errors})
-            return render(request, 'organizations/create_organization.html', {
+            return render(request, 'crm/organizations/create_organization.html', {
                 'organization_form': form,
                 'address_form': address_form,
                 'org_obj': org_obj,
@@ -146,7 +148,7 @@ def edit_organization(request, pk):
 
             })
     else:
-        return render(request, 'organizations/create_organization.html', {
+        return render(request, 'crm/organizations/create_organization.html', {
                 'organization_form': form,
                 'address_form': address_form,
                 'org_obj': org_obj,
@@ -235,6 +237,6 @@ def remove_comment(request):
 def get_organizations(request):
     if request.method == 'GET':
         organizations = Organization.objects.filter()
-        return render(request, 'organizations/organizations_list.html', {'organizations': organizations})
+        return render(request, 'crm/organizations/organizations_list.html', {'organizations': organizations})
     else:
         return HttpResponse('Invalid Method or Not Authenticated in load_calls')
