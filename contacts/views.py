@@ -57,17 +57,17 @@ def contacts_list(request):
 
 @login_required
 def add_contact(request):
-    #organization = Organization.objects.filter()
+    organizations = Organization.objects.all()
     users = CRMUser.objects.filter(is_active=True).order_by('email')
-    form = ContactForm(assigned_to=users)
+    form = ContactForm(assigned_to=users, organization=organizations)
     #form = ContactForm(assigned_to=users, orgnization=organization)
     address_form = BillingAddressForm()
     teams = Team.objects.all()
     assignedto_list = request.POST.getlist('assigned_to')
     teams_list = request.POST.getlist('teams')
     if request.method == 'POST':
-        form = ContactForm(request.POST, assigned_to=users)
-        #form = ContactForm(request.POST, assigned_to=users, orgnization=organization)
+        # form = ContactForm(request.POST, assigned_to=users)
+        form = ContactForm(request.POST, assigned_to=users, organization=organizations)
         address_form = BillingAddressForm(request.POST)
         if form.is_valid() and address_form.is_valid():
             address_obj = address_form.save()
@@ -89,7 +89,7 @@ def add_contact(request):
             return render(request, 'contacts/create_contact.html', {
                 'contact_form': form,
                 'address_form': address_form,
-                #'organization': organization,
+                'organizations': organizations,
                 'countries': COUNTRIES,
                 'teams': teams,
                 'users': users,
@@ -100,7 +100,7 @@ def add_contact(request):
         return render(request, 'contacts/create_contact.html', {
             'contact_form': form,
             'address_form': address_form,
-            #'organization': organization,
+            'organizations': organizations,
             'countries': COUNTRIES,
             'teams': teams,
             'users': users,
@@ -123,16 +123,16 @@ def view_contact(request, contact_id):
 def edit_contact(request, pk):
     contact_obj = get_object_or_404(Contact, id=pk)
     address_obj = get_object_or_404(Address, id=contact_obj.address.id)
-    #organization = Organization.objects.filter()
+    organizations = Organization.objects.all()
     users = CRMUser.objects.filter(is_active=True).order_by('email')
-    form = ContactForm(instance=contact_obj, assigned_to=users)
-    #form = ContactForm(instance=contact_obj, assigned_to=users, organization=organization)
+    # form = ContactForm(instance=contact_obj, assigned_to=users)
+    form = ContactForm(instance=contact_obj, assigned_to=users, organization=organizations)
     address_form = BillingAddressForm(instance=address_obj)
     teams = Team.objects.all()
     assignedto_list = request.POST.getlist('assigned_to')
     teams_list = request.POST.getlist('teams')
     if request.method == 'POST':
-        form = ContactForm(request.POST, instance=contact_obj, assigned_to=users)
+        form = ContactForm(request.POST, instance=contact_obj, assigned_to=users, organization=organizations)
         #form = ContactForm(request.POST, instance=contact_obj, assigned_to=users, organization=organization)
         address_form = BillingAddressForm(request.POST, instance=address_obj)
         if form.is_valid() and address_form.is_valid():
@@ -155,7 +155,7 @@ def edit_contact(request, pk):
                 'contact_form': form,
                 'address_form': address_form,
                 'contact_obj': contact_obj,
-                #'organization': organization,
+                'organizations': organizations,
                 'countries': COUNTRIES,
                 'teams': teams,
                 'users': users,
@@ -168,7 +168,7 @@ def edit_contact(request, pk):
             'address_form': address_form,
             'contact_obj': contact_obj,
             'address_obj': address_obj,
-            #'organization': organization,
+            'organizations': organizations,
             'countries': COUNTRIES,
             'teams': teams,
             'users': users,

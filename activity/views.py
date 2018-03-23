@@ -134,7 +134,7 @@ def edit_activity(request,pk):
             activity_obj.save()
             activity_obj.assigned_to.clear()
             activity_obj.assigned_to.add(*assignedto_list)
-            activity_obj.contacts.add(*contacts_list)
+            activity_obj.contacts.set(contacts_list)
             if request.is_ajax():
                 return JsonResponse({'error': False})
             return HttpResponseRedirect(reverse('activity:list'))
