@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from accounts.models import Account
-from common.models import CRMUser, Address, Team, Comment
+from common.models import Address, Team, Comment
 from common.utils import INDCHOICES, TYPECHOICES, COUNTRIES, CURRENCY_CODES, CASE_TYPE, PRIORITY_CHOICE, STATUS_CHOICE
 from oppurtunity.models import Opportunity, STAGES, SOURCES
 from contacts.models import Contact
@@ -11,6 +11,9 @@ from cases.models import Case
 from accounts.forms import AccountForm, AccountCommentForm
 from common.forms import BillingAddressForm, ShippingAddressForm
 from django.views.decorators.csrf import csrf_exempt
+
+from django.contrib.auth.models import User
+from django.conf import settings
 
 
 # CRUD Operations Start
@@ -43,7 +46,7 @@ def accounts_list(request):
 @login_required
 @csrf_exempt
 def add_account(request):
-    users = CRMUser.objects.filter(is_active=True).order_by('email')
+    users = User.objects.filter(is_active=True).order_by('email')
     account_form = AccountForm(assigned_to=users)
     billing_form = BillingAddressForm()
     shipping_form = ShippingAddressForm(prefix='ship')
@@ -102,7 +105,7 @@ def view_account(request, account_id):
     comments = account_record.accounts_comments.all()
     opportunity_list = Opportunity.objects.filter(account=account_record)
     contacts = Contact.objects.filter(account=account_record)
-    users = CRMUser.objects.filter(is_active=True).order_by('email')
+    users = User.objects.filter(is_active=True).order_by('email')
     cases = Case.objects.filter(account=account_record)
     teams = Team.objects.all()
     return render(request, "accounts/view_account.html", {
@@ -129,7 +132,7 @@ def edit_account(request, edid):
     account_instance = get_object_or_404(Account, id=edid)
     account_billing_address = account_instance.billing_address
     account_shipping_address = account_instance.shipping_address
-    users = CRMUser.objects.filter(is_active=True).order_by('email')
+    users = User.objects.filter(is_active=True).order_by('email')
     account_form = AccountForm(instance=account_instance, assigned_to=users)
     billing_form = BillingAddressForm(instance=account_billing_address)
     shipping_form = ShippingAddressForm(prefix='ship', instance=account_shipping_address)

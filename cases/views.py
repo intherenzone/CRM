@@ -5,11 +5,13 @@ from django.db.models import Q
 
 from cases.models import Case
 from cases.forms import CaseForm, CaseCommentForm
-from common.models import Team, CRMUser, Comment
+from common.models import Team, Comment
 from accounts.models import Account
 from contacts.models import Contact
 from common.utils import PRIORITY_CHOICE, STATUS_CHOICE, CASE_TYPE
 
+from django.contrib.auth.models import User
+from django.conf import settings
 # CRUD Operations Start
 
 
@@ -46,7 +48,7 @@ def cases_list(request):
 def add_case(request):
     accounts = Account.objects.all()
     contacts = Contact.objects.all()
-    users = CRMUser.objects.filter(is_active=True).order_by('email')
+    users = User.objects.filter(is_active=True).order_by('email')
     form = CaseForm(assigned_to=users, account=accounts, contacts=contacts)
     teams = Team.objects.all()
     teams_list = request.POST.getlist("teams")
@@ -110,7 +112,7 @@ def view_case(request, case_id):
 @login_required
 def edit_case(request, case_id):
     case_object = get_object_or_404(Case, id=case_id)
-    users = CRMUser.objects.filter(is_active=True).order_by('email')
+    users = User.objects.filter(is_active=True).order_by('email')
     accounts = Account.objects.all()
     contacts = Contact.objects.all()
     form = CaseForm(instance=case_object, assigned_to=users, account=accounts, contacts=contacts)

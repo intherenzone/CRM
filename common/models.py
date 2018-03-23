@@ -4,39 +4,40 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserM
 
 from common.utils import COUNTRIES
 
+from django.contrib.auth.models import User
+from django.conf import settings
 
-
-class CRMUser(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=100, unique=True)
-    email = models.EmailField(max_length=255, unique=True)
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(('date joined'), auto_now_add=True)
-
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
-
-    objects = UserManager()
-
-    def get_short_name(self):
-        return self.username
-
-    def __unicode__(self):
-        return self.email
-
-    def has_perm(self, perm, obj=None):
-        if CRMUser.is_admin:
-            return True
-        else:
-            return False
-
-    def has_module_perms(self, app_label):
-        if CRMUser.is_admin:
-            return True
-        else:
-            return False
+# class CRMUser(AbstractBaseUser, PermissionsMixin):
+#     username = models.CharField(max_length=100, unique=True)
+#     email = models.EmailField(max_length=255, unique=True)
+#     is_active = models.BooleanField(default=True)
+#     is_admin = models.BooleanField(default=False)
+#     is_staff = models.BooleanField(default=False)
+#     date_joined = models.DateTimeField(('date joined'), auto_now_add=True)
+#
+#
+#     USERNAME_FIELD = 'email'
+#     REQUIRED_FIELDS = ['username']
+#
+#     objects = UserManager()
+#
+#     def get_short_name(self):
+#         return self.username
+#
+#     def __unicode__(self):
+#         return self.email
+#
+#     def has_perm(self, perm, obj=None):
+#         if CRMUser.is_admin:
+#             return True
+#         else:
+#             return False
+#
+#     def has_module_perms(self, app_label):
+#         if CRMUser.is_admin:
+#             return True
+#         else:
+#             return False
 
 
 
@@ -54,7 +55,7 @@ class Address(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=55)
-    members = models.ManyToManyField(CRMUser)
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
     def __str__(self):
         return self.name
@@ -64,7 +65,7 @@ class Comment(models.Model):
     case = models.ForeignKey('cases.Case', blank=True, null=True, related_name="cases", on_delete=models.CASCADE)
     comment = models.CharField(max_length=255)
     commented_on = models.DateTimeField(auto_now_add=True)
-    commented_by = models.ForeignKey(CRMUser, on_delete=models.CASCADE, blank=True, null=True)
+    commented_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
     account = models.ForeignKey(
         'accounts.Account', blank=True, null=True, related_name="accounts_comments", on_delete=models.CASCADE)
     lead = models.ForeignKey('leads.Lead', blank=True, null=True, related_name="leads", on_delete=models.CASCADE)

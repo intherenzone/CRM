@@ -1,13 +1,13 @@
-{% extends 'base.html' %}
+{% extends 'crm/base.html' %}
 {% load staticfiles %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
-  <li><a href="{% url 'activity:list' %}">Activities</a></li>
+  <li><a href="{% url 'organizations:list' %}">Organizations</a></li>
   <li class="active">view</li>
 </ol>
 {%endblock%}
 {%block content%}
-<!-- ACTIVITY VIEW STARTS -->
+<!-- ORGANIZATIONS VIEW STARTS -->
   <div class="main_container" id="maincontainer">
     <div class="overview_form_block row marl">
       <div class="col-md-8">
@@ -20,8 +20,8 @@
                   <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu">
-                    <li><a href="{% url 'activity:edit_activity' activity_record.id %}">Edit</a></li>
-                    <li class="delete" ><a href="{% url 'activity:remove_activity' activity_record.id %}" id="remove_activity">REMOVE</a></li>
+                    <li><a href="{% url 'organizations:edit_organization' organization_record.id %}">Edit</a></li>
+                    <li class="delete" ><a href="{% url 'organizations:remove_organization' organization_record.id %}" id="remove_organization">REMOVE</a></li>
                   </ul>
                 </div>
               </span>
@@ -32,61 +32,62 @@
               <div class="col-md-6">
                 <div class="filter_col col-md-12" id="iname">
                   <div class="form-group" >
-                    <label class="activity_field_label" for="id_name" data-name="name">Name</label>
-                    <div class="activity_field" id="activity_name" data-name="name">{{ activity_record.name }}</div>
+                    <label class="organization_field_label" for="id_name" data-name="name">Name</label>
+                    <div class="organization_field" id="organization_name" data-name="name">{{ organization_record.name }}</div>
                   </div>
                 </div>
                 <div class="filter_col col-md-12">
                   <div class="form-group">
-                    <label class="activity_field_label" for="id_start_date" data-name="name">Start Date</label>
-                    <div class="activity_field" id ="activity_start_date" data-name="name">{{ activity_record.startdate }}</div>
+                    <label class="organization_field_label" for="id_phone" data-name="name">Phone</label>
+                    <div class="organization_field" id="organization_phone" data-name="name">{{ organization_record.phone }}</div>
                   </div>
                 </div>
                 <div class="filter_col col-md-12">
                   <div class="form-group">
-                    <label class="activity_field_label" for="id_end_date" data-name="name">End Date</label>
-                    <div class="activity_field" id="activity_end_date" data-name="name">{{ activity_record.enddate }}</div>
-                  </div>
-                </div>
-                <div class="filter_col col-md-12">
-                  <div class="form-group">
-                    <label class="activity_field_label" for="id_email" data-name="name">Email</label>
-                    <div class="activity_field" id="activity_email" data-name="name">{{ activity_record.email }}</div>
+                    <label class="organization_field_label" for="id_email" data-name="name">Email</label>
+                    <div class="organization_field" id="organization_email" data-name="name">{{ organization_record.email }}</div>
                   </div>
                 </div>
               </div>
-                <div class="col-md-4">
-                  <div class="filter_col col-md-12" id="iname">
-                    <div class="form-group" >
-                      <label class="activity_field_label" for="id_contacts" data-name="name">Contacts</label>
-                      <div class="activity_field" id="activity_contacts" data-name="name">{% for contact in activity_record.contacts.all %}<li>{{ contact }}</li>{% endfor %}
-                      </div>
-                    </div>
-                  </div>
-                  <div class="filter_col col-md-12" id="iname">
-                    <div class="form-group" >
-                      <label class="activity_field_label" for="id_status" data-name="name">Status</label>
-                      <div class="activity_field" id="activity_status" data-name="name">{{ activity_record.status }}</div>
-                    </div>
-                  </div>
-                  <div class="filter_col col-md-12" id="iname">
-                    <div class="form-group" >
-                      <label class="activity_field_label" for="id_name" data-name="name">Activity Type</label>
-                      <div class="activity_field" id="activity_name" data-name="name">{{ activity_record.activity_type }}</div>
-                    </div>
-                  </div>
-                  <div class="filter_col col-md-12">
-                    <div class="form-group">
-                      {% if activity_record.description %}
-                      <label class="activity_field_label" for="id_description" data-name="name">Description</label>
-                      <div class="activity_field" id="activity_description" data-name="name">{{ activity_record.description }}</div>
+              <div class="col-md-4">
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    {% if organization_record.address.address_line or organization_record.address.street or organization_record.address.city or  organization_record.address.state or organization_record.address.postcode or organization_record.address.country %}
+                    <label class="organization_field_label" for="id_address" data-name="name" >Address</label>
+                    <div class="organization_field" id="organization_address" data-name="name">
+                      {% if organization_record.address.address_line %}
+                        Address Line:{{organization_record.address.address_line}}</br>
+                      {% endif %}
+                      {% if organization_record.address.street %}
+                        Street:{{ organization_record.address.street }}</br>
+                      {% endif %}
+                      {% if organization_record.address.city %}
+                        City: {{ organization_record.address.city }}</br>
+                      {% endif %}
+                      {% if organization_record.address.state %}
+                        State:{{ organization_record.address.state }}</br>
+                      {% endif %}
+                      {% if organization_record.address.postcode %}
+                        Post Code:{{ organization_record.address.postcode }}</br>
+                      {% endif %}
+                      {% if organization_record.address.country %}
+                        Country: {{ organization_record.address.get_country_display }}
                       {% endif %}
                     </div>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    {% if organization_record.description %}
+                    <label class="organization_field_label" for="id_description" data-name="name">Description</label>
+                    <div class="organization_field" id="organization_description" data-name="name">{{ organization_record.description }}</div>
+                    {% endif %}
                   </div>
                 </div>
               </div>
             </div>
-
+          </div>
           <!-- Comments Section starts-->
           <div class="panel-heading view-pad">
             <h5>COMMENTS</h5>
@@ -100,7 +101,7 @@
                     </br>
                     <button class="btn btn-default save" style="text-align: center;" id="comment_submit" type="submit">Submit</button>
                   </div>
-                  <input type="hidden" value="{{activity_record.id}}" name="activityid">
+                  <input type="hidden" value="{{organization_record.id}}" name="organizationid">
                 </form>
                 <ul class="list-group" id="comments_div">
                   {% for comment in comments %}
@@ -126,7 +127,7 @@
                 </ul>
               </div>
             </div>
-            <div class="modal fade" id="Comments_Activity_Modal" role="dialog" data-keyboard="false" data-backdrop="static">
+            <div class="modal fade" id="Comments_Organizations_Modal" role="dialog" data-keyboard="false" data-backdrop="static">
               <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -137,7 +138,7 @@
                     <div class="modal-body">
                       <div class="form-group">
                         <textarea class="form-control" textarea cols="40" rows="3" id="id_editcomment" name="comment" placeholder="Submit Your Comments"></textarea>
-                        <input type="hidden" value="{{ activity.id }}" name="activityid">
+                        <input type="hidden" value="{{ organization.id }}" name="organizationid">
                         <input type="hidden" value="" name="commentid" id="commentid">
                       </div>
                     </div>
@@ -161,12 +162,12 @@
             <div class="row marl">
               <div class="filter_col col-md-12">
                 <div class="form-group">
-                  <label class="activity_field_label" for="id_assigned_user" data-name="name">Assigned User(s)</label>
-                  <div class="activity_field" id="activity_assigned_users" data-name="name">
-                    {%if not activity_record.assigned_to %}
+                  <label class="organization_field_label" for="id_assigned_user" data-name="name">Assigned User(s)</label>
+                  <div class="organization_field" id="organization_assigned_users" data-name="name">
+                    {%if not organization_record.assigned_to %}
                       Not Assigned Yet
                     {% else %}
-                      {% for user in activity_record.assigned_to.all %}
+                      {% for user in organization_record.assigned_to.all %}
                         <li>{{ user }}</li>
                       {% endfor %}
                     {% endif %}
@@ -175,13 +176,13 @@
               </div>
               <div class="filter_col col-md-12">
                 <div class="form-group">
-                  <label class="activity_field_label" for="id_name" data-name="name">Name(s)</label>
-                  <div class="activity_field" id="activity_name" data-name="name">
-                    {%if not activity_record.name %}
+                  <label class="organization_field_label" for="id_team" data-name="name">Assigned Team(s)</label>
+                  <div class="organization_field" id="organization_team" data-name="name">
+                    {%if not organization_record.teams %}
                       Not Assigned Yet
                     {% else %}
-                      {% for team in activity_record.name.all %}
-                        <li>{{ name }}</li>
+                      {% for team in organization_record.teams.all %}
+                        <li>{{ team }}</li>
                       {% endfor %}
                     {% endif %}
                   </div>
@@ -189,17 +190,17 @@
               </div>
               <div class="filter_col col-md-12">
                 <div class="form-group">
-                  <label class="activity_field_label" for="id_start_date" data-name="name">Start Date</label>
-                  <div class="activity_field" id="activity_start_date" data-name="name">
-                    {{ activity_record.startdate }}
+                  <label class="organization_field_label" for="id_created_on" data-name="name">Created On</label>
+                  <div class="organization_field" id="organization_created_on" data-name="name">
+                    {{ organization_record.created_on }}
                   </div>
                 </div>
               </div>
               <div class="filter_col col-md-12">
                 <div class="form-group">
-                  <label class="activity_field_label" for="id_end_date" data-name="name">End Date</label>
-                  <div class="activity_field" id="activity_end_date" data-name="name">
-                   {{ activity_record.enddate }}
+                  <label class="organization_field_label" for="id_created_by" data-name="name">Created by</label>
+                  <div class="organization_field" id="organization_created_by" data-name="name">
+                   {{ organization_record.created_by }}
                   </div>
                 </div>
               </div>
@@ -209,17 +210,18 @@
       </div>
     </div>
   </div>
-<!-- activities VIEW ENDS -->
-{% endblock%}
-{% block js_block %}
-<script type="text/javascript">
-  $('.delete').click(function(e){
-   e.preventDefault()
-   url = $(this).attr('href')
-   if (!confirm('Are you sure you want to delete?'))
-    return;
-   window.location = $(this).attr('href')
-});
-</script>
-  <script src="{% static 'js/activity/view_activity.js' %}"></script>
-{% endblock js_block %}
+
+
+  {% endblock %}
+  {% block js_block %}
+  <script type="text/javascript">
+    $('.delete').click(function(e){
+     e.preventDefault()
+     url = $(this).attr('href')
+     if (!confirm('Are you sure you want to delete?'))
+      return;
+     window.location = $(this).attr('href')
+  });
+  </script>
+  <script src="{% static 'js/organizations/view_organization.js' %}"></script>
+  {% endblock js_block %}

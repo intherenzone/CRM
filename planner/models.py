@@ -6,9 +6,11 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 from leads.models import Lead
 from contacts.models import Contact
-from common.models import CRMUser, Team
+from common.models import Team
 from common.utils import EVENT_PARENT_TYPE, EVENT_STATUS
 
+from django.contrib.auth.models import User
+from django.conf import settings
 
 class Reminder(models.Model):
     reminder_type = models.CharField(max_length=5, blank=True,
@@ -45,16 +47,16 @@ class Event(models.Model):
     priority = models.CharField(max_length=10, blank=True)  # only for task
     updated_on = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey(
-        CRMUser, on_delete=models.CASCADE, null=True, blank=True, related_name='updated_user')
-    attendees_user = models.ManyToManyField(CRMUser, blank=True,
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name='updated_user')
+    attendees_user = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True,
                                             related_name='attendees_user')
     attendees_contacts = models.ManyToManyField(Contact, blank=True,
                                                 related_name='attendees_contact')
     attendees_leads = models.ManyToManyField(Lead, blank=True,
                                              related_name='attendees_lead')
     created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
-    created_by = models.ForeignKey(CRMUser, related_name='event_created_by', on_delete=models.CASCADE)
-    assigned_to = models.ManyToManyField(CRMUser, blank=True, related_name='event_assigned_users')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='event_created_by', on_delete=models.CASCADE)
+    assigned_to = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='event_assigned_users')
     teams = models.ManyToManyField(Team, blank=True)
     description = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=False)

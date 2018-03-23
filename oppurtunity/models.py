@@ -4,9 +4,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from accounts.models import Account
 from contacts.models import Contact
-from common.models import CRMUser, Team
+from common.models import Team
 from common.utils import STAGES, SOURCES, CURRENCY_CODES
 
+from django.contrib.auth.models import User
+from django.conf import settings
 
 class Opportunity(models.Model):
     name = models.CharField(pgettext_lazy("Name of Opportunity", "Name"), max_length=64)
@@ -18,12 +20,12 @@ class Opportunity(models.Model):
     lead_source = models.CharField(_("Source of Lead"), max_length=255, choices=SOURCES, blank=True, null=True)
     probability = models.IntegerField(default=0, blank=True, null=True)
     contacts = models.ManyToManyField(Contact)
-    closed_by = models.ForeignKey(CRMUser, on_delete=models.CASCADE, null=True)
+    closed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     closed_on = models.DateTimeField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    assigned_to = models.ManyToManyField(CRMUser, related_name='opportunity_assigned_to')
+    assigned_to = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='opportunity_assigned_to')
     teams = models.ManyToManyField(Team)
-    created_by = models.ForeignKey(CRMUser, related_name='opportunity_created_by', on_delete=models.CASCADE)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='opportunity_created_by', on_delete=models.CASCADE)
     created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
     is_active = models.BooleanField(default=False)
 

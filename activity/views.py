@@ -6,10 +6,12 @@ from django.urls import reverse
 from activity.models import Activity
 from activity.forms import ActivityForm, ActivityCommentForm
 from contacts.forms import ContactForm
-from common.models import CRMUser, Address, Comment, Team
+from common.models import Address, Comment, Team
 from common.utils import LEAD_STATUS, LEAD_SOURCE, INDCHOICES, TYPECHOICES, COUNTRIES
 from common.forms import BillingAddressForm
 from contacts.models import Contact
+
+from django.contrib.auth.models import User
 
 # Create your views here.
 @login_required
@@ -43,13 +45,13 @@ def activity_list(request):
     SS = ['in process', 'converted', 'recycled', 'assigned', 'dead', None]
     activity_obj = sorted(activity_obj_list.order_by('enddate', 'startdate'), key=lambda p: SS.index(p.status))
 
-    return render(request, 'activity/activity.html', {
+    return render(request, 'crm/activity/activity.html', {
         'activity_obj': activity_obj, 'per_page': page, 'contacts': contacts})
 
 
 @login_required
 def add_activity(request):
-    users = CRMUser.objects.filter(is_active=True).order_by('email')
+    users = User.objects.filter(is_active=True).order_by('email')
     contacts = Contact.objects.all()
     form = ActivityForm(assigned_to=users, contacts=contacts)
     assignedto_list = request.POST.getlist('assigned_to')
@@ -75,14 +77,14 @@ def add_activity(request):
             print(form.errors)
             if request.is_ajax():
                 return JsonResponse({'error': True, 'activity_errors': form.errors})
-            return render(request, 'activity/create_activity.html', {
+            return render(request, 'crm/activity/create_activity.html', {
                           'activity_form': form,
                           'users': users,
                           'assignedto_list': assignedto_list,
                           'contacts_list': contacts_list
                     })
     else:
-        return render(request, 'activity/create_activity.html', {
+        return render(request, 'crm/activity/create_activity.html', {
                       'activity_form': form,
                       'users': users,
                       'assignedto_list': assignedto_list,
@@ -102,7 +104,7 @@ def contacts(request):
 def view_activity(request, activity_id):
     activity_record = get_object_or_404(Activity, id=activity_id)
     comments = activity_record.activity_comments.all()
-    return render(request, 'activity/view_activity.html', {
+    return render(request, 'crm/activity/view_activity.html', {
         'activity_record': activity_record,
         'comments': comments})
 
@@ -120,7 +122,7 @@ def remove_activity(request, pk):
 @login_required
 def edit_activity(request,pk):
     activity_obj = get_object_or_404(Activity,id=pk)
-    users = CRMUser.objects.filter(is_active=True).order_by('email')
+    users = User.objects.filter(is_active=True).order_by('email')
     contacts = Contact.objects.all()
     form = ActivityForm(instance=activity_obj, assigned_to=users, contacts=contacts)
     assignedto_list = request.POST.getlist('assigned_to')
@@ -142,7 +144,7 @@ def edit_activity(request,pk):
             print(form.errors)
             if request.is_ajax():
                 return JsonResponse({'error': True, 'activity_errors': form.errors})
-            return render(request, 'activity/create_activity.html', {
+            return render(request, 'crm/activity/create_activity.html', {
                           'activity_form': form,
                           'activity_obj': activity_obj,
                           'users': users,
@@ -150,7 +152,7 @@ def edit_activity(request,pk):
                           'contacts_list': contacts_list
                     })
     else:
-        return render(request, 'activity/create_activity.html', {
+        return render(request, 'crm/activity/create_activity.html', {
                       'activity_form': form,
                       'activity_obj': activity_obj,
                       'users': users,

@@ -5,9 +5,11 @@ from django.contrib.contenttypes.models import ContentType
 
 from accounts.models import Account
 from contacts.models import Contact
-from common.models import CRMUser, Team
+from common.models import Team
 from common.utils import CASE_TYPE, PRIORITY_CHOICE, STATUS_CHOICE
 
+from django.contrib.auth.models import User
+from django.conf import settings
 
 class Case(models.Model):
     name = models.CharField(
@@ -20,9 +22,9 @@ class Case(models.Model):
     contacts = models.ManyToManyField(Contact)
     closed_on = models.DateTimeField()
     description = models.TextField(blank=True, null=True)
-    assigned_to = models.ManyToManyField(CRMUser, related_name='case_assigned_users')
+    assigned_to = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='case_assigned_users')
     teams = models.ManyToManyField(Team)
-    created_by = models.ForeignKey(CRMUser, related_name='case_created_by', on_delete=models.CASCADE)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='case_created_by', on_delete=models.CASCADE)
     created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
     is_active = models.BooleanField(default=False)
 
@@ -58,4 +60,4 @@ class Case(models.Model):
             content_type=content_type, object_id=self.id, event_type="Call").exclude(status="Planned")
 
     def get_assigned_user(self):
-        return CRMUser.objects.get(id=self.assigned_to.id)
+        return User.objects.get(id=self.assigned_to.id)

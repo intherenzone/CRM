@@ -129,4 +129,4 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-AUTH_USER_MODEL = 'common.CRMUser'
+# AUTH_USER_MODEL = 'common.CRMUser'

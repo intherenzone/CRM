@@ -2,9 +2,10 @@ from django.db import models
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 
-from common.models import CRMUser, Address, Team
+from common.models import Address, Team
 from common.utils import INDCHOICES
 
+from django.conf import settings
 
 class Account(models.Model):
     first_name = models.CharField(_("First name"), max_length=255)
@@ -16,9 +17,9 @@ class Account(models.Model):
     shipping_address = models.ForeignKey(Address, related_name='account_shipping_address', on_delete=models.CASCADE, blank=True, null=True)
     website = models.URLField(_("Website"), blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    assigned_to = models.ManyToManyField(CRMUser, related_name='account_assigned_to')
+    assigned_to = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='account_assigned_to')
     teams = models.ManyToManyField(Team)
-    created_by = models.ForeignKey(CRMUser, related_name='account_created_by', on_delete=models.CASCADE)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='account_created_by', on_delete=models.CASCADE)
     created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
     is_active = models.BooleanField(default=False)
 
