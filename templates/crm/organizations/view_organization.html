@@ -56,19 +56,19 @@
                     <label class="organization_field_label" for="id_address" data-name="name" >Address</label>
                     <div class="organization_field" id="organization_address" data-name="name">
                       {% if organization_record.address.address_line %}
-                        Address Line:{{organization_record.address.address_line}}</br>
+                        Address Line: {{organization_record.address.address_line}}</br>
                       {% endif %}
                       {% if organization_record.address.street %}
-                        Street:{{ organization_record.address.street }}</br>
+                        Street: {{ organization_record.address.street }}</br>
                       {% endif %}
                       {% if organization_record.address.city %}
                         City: {{ organization_record.address.city }}</br>
                       {% endif %}
                       {% if organization_record.address.state %}
-                        State:{{ organization_record.address.state }}</br>
+                        State: {{ organization_record.address.state }}</br>
                       {% endif %}
                       {% if organization_record.address.postcode %}
-                        Post Code:{{ organization_record.address.postcode }}</br>
+                        Post Code: {{ organization_record.address.postcode }}</br>
                       {% endif %}
                       {% if organization_record.address.country %}
                         Country: {{ organization_record.address.get_country_display }}

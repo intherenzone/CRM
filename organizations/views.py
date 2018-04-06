@@ -124,13 +124,12 @@ def edit_organization(request, pk):
             org_obj = form.save(commit=False)
             org_obj.address = address_obj
             org_obj.created_by = request.user
-            if request.POST.get('stage') in ['CLOSED WON', 'CLOSED LOST']:
-                org_obj.closed_by = request.user
-                org_obj.save()
-                org_obj.assigned_to.clear()
-                org_obj.assigned_to.add(*assignedto_list)
-                org_obj.teams.clear()
-                org_obj.teams.add(*teams_list)
+            org_obj.closed_by = request.user
+            org_obj.save()
+            org_obj.assigned_to.clear()
+            org_obj.assigned_to.add(*assignedto_list)
+            org_obj.teams.clear()
+            org_obj.teams.add(*teams_list)
             if request.is_ajax():
                 return JsonResponse({'error': False})
             return HttpResponseRedirect(reverse('organizations:list'))
