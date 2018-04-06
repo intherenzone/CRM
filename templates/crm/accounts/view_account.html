@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'crm/base.html' %}
 {% load staticfiles %}
 {% block breadcrumb1 %}
 <!-- breadcrumb starts here -->
@@ -361,7 +361,7 @@
                       <div class="col-md-6">
                         <div class="filter_col col-md-12">
                           <div class="form-group">
-                            <label for="exampleInputEmail1" class="required">Name</label> 
+                            <label for="exampleInputEmail1" class="required">Name</label>
                             <div class="row">
                               <div class="filter_col col-md-6">
                                 <input type="text" class="form-control" placeholder="First Name" id="id_first_name" name="first_name"  value="{{request.POST.first_name}}">
@@ -376,7 +376,7 @@
                         </div>
                         <div class="filter_col col-md-12">
                           <div class="form-group">
-                            <label for="exampleInputEmail1">Accounts</label> 
+                            <label for="exampleInputEmail1">Accounts</label>
                             <select class="form-control" id="id_account" name="account">
                               <option value="{{ account_record.id }}" selected >{{ account_record.name }}</option>
                             </select>
@@ -385,14 +385,14 @@
                         </div>
                         <div class="filter_col col-md-12">
                           <div class="form-group ">
-                            <label for="exampleInputEmail1" class="required">Phone</label> 
+                            <label for="exampleInputEmail1" class="required">Phone</label>
                             <input type="text" class="form-control text-filter" id="id_phone" name="phone" value="{{request.POST.phone}}"/>
                             {{ contact_form.phone.errors }}
                           </div>
                         </div>
                         <div class="filter_col col-md-12">
                           <div class="form-group ">
-                            <label for="exampleInputEmail1" class="required">Email Address</label> 
+                            <label for="exampleInputEmail1" class="required">Email Address</label>
                             <input type="text" class="form-control text-filter" id="id_email" name="email" value="{{request.POST.email}}"/>
                             {{ contact_form.email.errors }}
                           </div>
@@ -580,7 +580,7 @@
                         {% else %}
                           {% for team in contact.teams.all %}
                             <li>{{team}}</li>
-                          {% endfor %}  
+                          {% endfor %}
                         {% endif %}
                       </div>
                     </div>
