@@ -13,6 +13,13 @@ from contacts.models import Contact
 
 from django.contrib.auth.models import User
 
+#for iCalendar
+from icalendar import Calendar, Event
+from icalendar import vCalAddress, vText
+from datetime import datetime
+import tempfile, os
+import pytz
+
 # Create your views here.
 @login_required
 def activity_list(request):
@@ -222,3 +229,74 @@ def remove_comment(request):
             return JsonResponse({"error": "You Dont have permisions to delete"})
     else:
         return HttpResponse("Something Went Wrong")
+
+#This will syn the calendar everytime calendar app requests from the url for the fiven user
+def calendar_syn(request, user):
+    activity_obj_list = Activity.objects.all()
+    this_user_object = User.objects.filter(username=user)[0]
+    this_user_useremail = this_user_object.email
+    activities_this_user_is_assigned_to= Activity.objects.filter(assigned_to__email=this_user_useremail)
+
+    #Populating calendar file
+    cal= Calendar()
+    cal['summary'] = 'CRM-Paradyme Management'
+    cal.add('version', '2.0')
+    cal.add('X-WR-CALDESC', 'Calendar events for user, ' + this_user_object.username)
+    cal.add('X-WR-CALNAME', this_user_object.username + ' Calendar (Paradyme CRM)')
+    cal.add('method', 'PUBLISH')
+    cal.add('prodid', '-//Paradyme Management//paradymemanagement.com//')
+    for activity in activities_this_user_is_assigned_to:
+        event = Event()
+        event.add('summary', activity.name)
+        event.add('description', activity.description)
+        event.add('dtstart', activity.startdate)
+        event.add('dtend', activity.enddate)
+        cal.add_component(event)
+    #Create ics file
+    response = HttpResponse(cal.to_ical(), content_type='text/calendar')
+    response['Content-Disposition'] = 'attachment; filename=' + this_user_object.username +'.ics'
+    return response
+
+#Export a ics file for a given activity
+@login_required
+def export_calendar(request,activity_id):
+    activity = get_object_or_404(Activity, id=activity_id)
+    username = None
+    if request.user.is_authenticated():
+        username = request.user.username
+
+    cal= Calendar()
+    cal['summary'] = 'CRM-Paradyme Management'
+    cal.add('version', '2.0')
+    cal.add('X-WR-CALDESC', 'Calendar events for user, ' + username)
+    cal.add('X-WR-CALNAME', username + ' Calendar (Paradyme CRM)')
+    cal.add('method', 'PUBLISH')
+    cal.add('prodid', '-//Paradyme Management//paradymemanagement.com//')
+    #Create an event
+    event = Event()
+    event.add('summary', activity.name)
+    event.add('dtstart', activity.startdate)
+    event.add('dtend', activity.enddate)
+    event.add('description', activity.description)
+    #organizer = vCalAddress('MAILTO:xxxx@paradymemanagement.com')
+    #Add event to calendar
+    cal.add_component(event)
+    response = HttpResponse(cal.to_ical(), content_type='text/calendar')
+    response['Content-Disposition'] = 'attachment; filename=' + activity.name +'.ics'
+    return response
+
+#To show the unique calendar url for the user
+@login_required
+def calendar_url(request):
+    #Get current username and email
+    username = None
+    useremail = None
+    if request.user.is_authenticated():
+        username = request.user.username
+        useremail = request.user.email
+
+    user_url = str(reverse('activity:calendar_syn', args=[username]))
+
+    return render(request, 'crm/activity/calendar_url.html', {
+        'user_url' : user_url,
+        })

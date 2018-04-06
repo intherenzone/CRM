@@ -21,6 +21,7 @@
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'activity:edit_activity' activity_record.id %}">Edit</a></li>
+                    <li><a href="{% url 'activity:export_calendar' activity_record.id %}">Export to calendar file(.ics)</a></li>
                     <li class="delete" ><a href="{% url 'activity:remove_activity' activity_record.id %}" id="remove_activity">REMOVE</a></li>
                   </ul>
                 </div>
