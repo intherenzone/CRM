@@ -14,7 +14,7 @@ from contacts.models import Contact
 @login_required
 def home(request):
     username = None
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         username = request.user.username
     this_user_object = User.objects.filter(username=username)[0]
     teamsObject_this_user_belongs_to = Team.objects.filter(members__username = this_user_object.username)

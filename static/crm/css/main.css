@@ -133,6 +133,12 @@ header .navbar-default .navbar-nav > li > a {
     padding: 15px 10px;
 }
 
+header .navbar-default .navbar-header > a > img {
+    padding: .3em;
+    width: 16.5em;
+    height: 3.5em;
+}
+
 header .navbar-default .navbar-nav > li > a:hover {
     color: #ddd;
 }
@@ -806,5 +812,5 @@ input[type="checkbox"]:checked + label span {
     margin-top: 6px;
 }
 .nav>li>a>img{
-    width: 20px;
+    width: 2em;
 }
