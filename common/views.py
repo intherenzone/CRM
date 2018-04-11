@@ -11,10 +11,12 @@ from django.conf import settings
 
 from contacts.models import Contact
 from activity.models import *
+from organizations.models import *
+from common.utils import LEAD_STATUS, LEAD_SOURCE
 
 from plotly.offline import plot
 import plotly.graph_objs as go
-
+from datetime import datetime
 
 @login_required
 def home(request):
@@ -47,11 +49,33 @@ def home(request):
         count_act_type.append(Activity.objects.filter(activity_type = act[0]).count())
 
     trace = go.Pie(labels=act_type, values=count_act_type,
-               hoverinfo='label+percent', textinfo='value',
+               hoverinfo='label+percent' , textinfo='value',
                textfont=dict(size=20),
                )
 
-    chart = plot([trace], output_type = 'div')
+    act_type_chart = plot([trace], output_type = 'div')
+
+    lead_status = []
+    count_lead_status = []
+    for lead in LEAD_STATUS:
+        lead_status.append(lead[0])
+        count_lead_status.append(Activity.objects.filter(status = lead[0]).count())
+
+    lead_status_trace = go.Pie(labels=lead_status, values=count_lead_status,
+               hoverinfo='label+percent' , textinfo='value',
+               textfont=dict(size=20),
+               )
+    lead_status_chart = plot([lead_status_trace], output_type = 'div')
+
+    #act_start_date = []
+    #act_start_date_count = []
+    #counter = Activity.objects.filter(startdate = lead[0]).count()
+    #for act in
+
+    #orgnization chart
+    organizationsObjects_this_user_associated_with = Organization.objects.filter(assigned_to__username = this_user_object.username)
+
+
 
     return render(request , 'crm/index.html', {
     "teamsObject" : teamsObject_this_user_belongs_to,
@@ -59,9 +83,9 @@ def home(request):
     "contacts_lists_the_teams_have" : contacts_lists_the_teams_have,
     #teamsObject_this_user_belongs_to : contacts_lists_the_teams_have,
     "teams_and_contacts_lists_the_teams_have" : teams_and_contacts_lists_the_teams_have,
-    "act_type" : act_type,
-    "count_act_type" : count_act_type,
-    "chart" : chart,
+    "act_type_chart" : act_type_chart,
+    "lead_status_chart" : lead_status_chart,
+    "my_organizationsObjects" : organizationsObjects_this_user_associated_with
     })
 
 
