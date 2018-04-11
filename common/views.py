@@ -10,6 +10,11 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 from contacts.models import Contact
+from activity.models import *
+
+from plotly.offline import plot
+import plotly.graph_objs as go
+
 
 @login_required
 def home(request):
@@ -33,12 +38,30 @@ def home(request):
     #    contacts_the_team_has = Contact.objects.filter(teams__name = contacts_lists_the_teams_have[i][0])
     #    contacts_lists_the_teams_have[i].append([contacts_the_team_has])
 
-    return render(request, 'crm/index.html', {
+
+    #count activity type
+    act_type = []
+    count_act_type = []
+    for act in ACTIVITY_TYPE:
+        act_type.append(act[0])
+        count_act_type.append(Activity.objects.filter(activity_type = act[0]).count())
+
+    trace = go.Pie(labels=act_type, values=count_act_type,
+               hoverinfo='label+percent', textinfo='value',
+               textfont=dict(size=20),
+               )
+
+    chart = plot([trace], output_type = 'div')
+
+    return render(request , 'crm/index.html', {
     "teamsObject" : teamsObject_this_user_belongs_to,
     "my_contactsObjects" : my_contactsObject_this_user_is_assigned_to,
     "contacts_lists_the_teams_have" : contacts_lists_the_teams_have,
     #teamsObject_this_user_belongs_to : contacts_lists_the_teams_have,
     "teams_and_contacts_lists_the_teams_have" : teams_and_contacts_lists_the_teams_have,
+    "act_type" : act_type,
+    "count_act_type" : count_act_type,
+    "chart" : chart,
     })
 
 

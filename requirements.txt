@@ -3,3 +3,4 @@ django-simple-pagination==1.1.8
 pytz==2017.2
 psycopg2==2.7.3.1
 icalendar==4.0.1
+plotly==2.5.1
