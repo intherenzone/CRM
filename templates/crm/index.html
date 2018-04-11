@@ -22,6 +22,7 @@
 </div>
 
 <div class="container-fluid">
+<div class="row">
 <div class="col-sm-6">
 <div class="table_container_row">
     <div class="panel panel-default">
@@ -130,11 +131,11 @@
   </div>
 </div>
 </div>
+</div>
 
-<div class="container-fluid">
 {% for contacts_the_team_has in teams_and_contacts_lists_the_teams_have %}
-<div class="table_container_row row marl">
-  <div class="col-sm-6">
+<div class="col-sm-6">
+  <div class="table_container_row row marl">
       <div class="panel panel-default">
         <div class="panel-heading-list text-center">
           Team: {{ contacts_the_team_has.0 }}
@@ -187,7 +188,6 @@
     <br clear="all">
   </div>
 {% endfor %}
-</div>
 </div>
 
 {% endblock %}
