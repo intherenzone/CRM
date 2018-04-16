@@ -20,72 +20,54 @@ from datetime import datetime
 
 @login_required
 def home(request):
-    username = None
-    if request.user.is_authenticated:
-        username = request.user.username
-    this_user_object = User.objects.filter(username=username)[0]
-    teamsObject_this_user_belongs_to = Team.objects.filter(members__username = this_user_object.username)
-    contacts_lists_the_teams_have = []
-    for team in teamsObject_this_user_belongs_to:
-        contacts_the_team_has = Contact.objects.filter(teams__name = team.name)
-        contacts_lists_the_teams_have.append(contacts_the_team_has)
-    my_contactsObject_this_user_is_assigned_to = Contact.objects.filter(assigned_to__username=this_user_object.username)
+    # Get user's contacts
+    contacts = Contact.objects.filter(assigned_to=request.user)
 
-    teamsObject_list_this_user_belongs_to = Team.objects.filter(members__username = this_user_object.username)
-    teams_and_contacts_lists_the_teams_have = zip(teamsObject_list_this_user_belongs_to, contacts_lists_the_teams_have)
+    # Get user's organizations
+    organizations = Organization.objects.filter(assigned_to=request.user)
 
-    #contacts_lists_the_teams_have = []
-    #for i in range(len(teamsObject_this_user_belongs_to)):
-    #    contacts_lists_the_teams_have.append([teamsObject_this_user_belongs_to[i]])
-    #    contacts_the_team_has = Contact.objects.filter(teams__name = contacts_lists_the_teams_have[i][0])
-    #    contacts_lists_the_teams_have[i].append([contacts_the_team_has])
+    # Get user's teams
+    teams = Team.objects.filter(members__id = request.user.id)
+    # Get each team's contacts
+    teams_contacts = []
+    for team in teams:
+        teams_contacts.append(Contact.objects.filter(teams=team))
+    # map teams to their contacts
+    teams_to_contacts = zip(teams, teams_contacts)
 
-
-    #count activity type
-    act_type = []
-    count_act_type = []
-    for act in ACTIVITY_TYPE:
-        act_type.append(act[0])
-        count_act_type.append(Activity.objects.filter(activity_type = act[0]).count())
-
-    trace = go.Pie(labels=act_type, values=count_act_type,
+    # count activity types for graphing
+    activity_types = []
+    activity_type_counts = []
+    for activity_type in ACTIVITY_TYPE:
+        activity_types.append(activity_type[0]) # get each type
+        activity_type_counts.append(Activity.objects.filter(activity_type=activity_type[0]).count()) # get count of each type
+    # create activity type pie chart
+    activity_type_trace = go.Pie(labels=activity_types, values=activity_type_counts,
                hoverinfo='label+percent' , textinfo='value',
                textfont=dict(size=20),
                )
+    activity_type_chart = plot([activity_type_trace], output_type = 'div')
 
-    act_type_chart = plot([trace], output_type = 'div')
-
-    lead_status = []
-    count_lead_status = []
-    for lead in LEAD_STATUS:
-        lead_status.append(lead[0])
-        count_lead_status.append(Activity.objects.filter(status = lead[0]).count())
-
-    lead_status_trace = go.Pie(labels=lead_status, values=count_lead_status,
+    # Count statuses for graphing
+    statuses = []
+    status_counts = []
+    for status in LEAD_STATUS:
+        statuses.append(status[0])
+        status_counts.append(Activity.objects.filter(status=status[0]).count())
+    # create status pie chart
+    status_trace = go.Pie(labels=statuses, values=status_counts,
                hoverinfo='label+percent' , textinfo='value',
                textfont=dict(size=20),
                )
-    lead_status_chart = plot([lead_status_trace], output_type = 'div')
+    status_chart = plot([status_trace], output_type = 'div')
 
-    #act_start_date = []
-    #act_start_date_count = []
-    #counter = Activity.objects.filter(startdate = lead[0]).count()
-    #for act in
-
-    #orgnization chart
-    organizationsObjects_this_user_associated_with = Organization.objects.filter(assigned_to__username = this_user_object.username)
-
-
-
-    return render(request , 'crm/index.html', {
-    "teamsObject" : teamsObject_this_user_belongs_to,
-    "my_contactsObjects" : my_contactsObject_this_user_is_assigned_to,
-    "contacts_lists_the_teams_have" : contacts_lists_the_teams_have,
-    #teamsObject_this_user_belongs_to : contacts_lists_the_teams_have,
-    "teams_and_contacts_lists_the_teams_have" : teams_and_contacts_lists_the_teams_have,
-    "act_type_chart" : act_type_chart,
-    "lead_status_chart" : lead_status_chart,
-    "my_organizationsObjects" : organizationsObjects_this_user_associated_with
+    return render(request , 'crm/index.html',
+        {
+            "contacts" : contacts,
+            "organizations" : organizations,
+            "teams_to_contacts" : teams_to_contacts,
+            "activity_type_chart" : activity_type_chart,
+            "status_chart" : status_chart,
     })
 
 

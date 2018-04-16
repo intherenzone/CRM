@@ -88,14 +88,16 @@ def add_activity(request):
                           'activity_form': form,
                           'users': users,
                           'assignedto_list': assignedto_list,
-                          'contacts_list': contacts_list
+                          'contacts_list': contacts_list,
+                          'CREATE': 'CREATE'
                     })
     else:
         return render(request, 'crm/activity/create_activity.html', {
                       'activity_form': form,
                       'users': users,
                       'assignedto_list': assignedto_list,
-                      'contacts_list': contacts_list
+                      'contacts_list': contacts_list,
+                      'CREATE': 'CREATE'
                 })
 
 def contacts(request):

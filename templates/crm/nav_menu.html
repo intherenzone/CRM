@@ -20,6 +20,7 @@
                 <li><a href="{% url 'organizations:list' %}">ORGANIZATIONS</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                {% if user.is_staff %}<li><a href="{% url 'admin:index' %}">ADMIN</a></li>{% endif %}
                 <li class="dropdown">
                   {% with request.profile as profile %}
                   <a href="#" class="dropdown-toggle abcd" data-toggle="dropdown" role="button" aria-haspopup="true"

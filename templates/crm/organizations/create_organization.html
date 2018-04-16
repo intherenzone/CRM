@@ -4,7 +4,7 @@
 <h3 align="center">
   <ol class="breadcrumb">
     <li><a href="{% url 'organizations:list' %}">Organizations</a></li>
-    <li class="active">Create</li>
+    <li class="active">{% if CREATE %}Create{% else %}Edit{% endif %}</li>
   </ol></h3>
 {% endblock %}
 {%block content%}

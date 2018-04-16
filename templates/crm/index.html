@@ -14,10 +14,10 @@
 {% block content %}
 <div class="container-fluid">
 <div class="col-sm-4">
-    {{ act_type_chart|safe }}
+    {{ activity_type_chart|safe }}
 </div>
 <div class="col-sm-4">
-    {{ lead_status_chart|safe }}
+    {{ status_chart|safe }}
 </div>
 </div>
 
@@ -28,7 +28,7 @@
     <div class="panel panel-default">
       <div class="panel-heading-list text-center">
         My CONTACTS
-        <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Contacts {{my_contactsObjects|length}}{% endif %}</span>
+        <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Contacts {{contacts|length}}{% endif %}</span>
       </div>
       <div class="panel-content">
         <table class="table table-bordered table-striped table-condensed">
@@ -44,11 +44,11 @@
           </thead>
           <tbody>
             {% if per_page %}
-              {% paginate per_page my_contactsObjects %}
+              {% paginate per_page contacts %}
             {% else%}
-              {% paginate 10 my_contactsObjects %}
+              {% paginate 10 contacts %}
             {% endif %}
-            {% for contact in my_contactsObjects %}
+            {% for contact in contacts %}
             <tr style="text-align:center;">
               <td scope="row">{{ forloop.counter }}</td>
               <td><a href="{% url 'contacts:view_contact' contact.id %}">{{contact}}</a></td>
@@ -73,7 +73,7 @@
             {% endfor%}
           </tbody>
         </table>
-        {%ifequal my_contactsObjects|length 0 %}
+        {%ifequal contacts|length 0 %}
           <h4 class="text-center">No Contact Records Found</h4>
         {%endifequal%}
         <div class="marl row text-center">
@@ -89,8 +89,8 @@
   <div class="table_container_row marl ">
   <div class="panel panel-default">
     <div class="panel-heading-list text-center">
-      My Orgs
-      <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Organizations {{ my_organizationsObjects|length }}{% endif %}</span>
+      My ORGANIZATIONS
+      <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Organizations {{ organizations|length }}{% endif %}</span>
     </div>
     <div class="panel-content">
       <table class="table table-bordered table-striped table-condensed">
@@ -105,11 +105,11 @@
         </thead>
         <tbody>
           {% if per_page %}
-            {% paginate per_page my_organizationsObjects %}
+            {% paginate per_page organizations %}
           {% else %}
-            {% paginate 10 my_organizationsObjects %}
+            {% paginate 10 organizations %}
           {% endif %}
-          {% for org in my_organizationsObjects %}
+          {% for org in organizations %}
           <tr class="text-center">
             <td scope="row">{{ forloop.counter }}</td>
             <td><a href="{% url 'organizations:view_organization' org.id %}" > {{ org.name }}</a></td>
@@ -121,7 +121,7 @@
           {% endfor %}
         </tbody>
       </table>
-      {%ifequal my_organizationsObjects|length 0%}
+      {%ifequal organizations|length 0%}
         <h4 class="text-center">No Organizations Records Found</h4>
       {%endifequal%}
       <div class="marl row text-center">
@@ -133,13 +133,13 @@
 </div>
 </div>
 
-{% for contacts_the_team_has in teams_and_contacts_lists_the_teams_have %}
+{% for team_to_contacts in teams_to_contacts %}
 <div class="col-sm-6">
   <div class="table_container_row row marl">
       <div class="panel panel-default">
         <div class="panel-heading-list text-center">
-          Team: {{ contacts_the_team_has.0 }}
-          <span class="pull-right total_count">Total Contacts {{contacts_the_team_has.1|length}}</span>
+          Team: {{ team_to_contacts.0 }}
+          <span class="pull-right total_count">Total Contacts {{team_to_contacts.1|length}}</span>
         </div>
         <div class="panel-content">
           <table class="table table-bordered table-striped table-condensed">
@@ -154,7 +154,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for contact in contacts_the_team_has.1 %}
+              {% for contact in team_to_contacts.1 %}
               <tr style="text-align:center;">
                 <td scope="row">{{ forloop.counter }}</td>
                 <td><a href="{% url 'contacts:view_contact' contact.id %}">{{contact}}</a></td>

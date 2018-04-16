@@ -81,7 +81,8 @@ def add_organization(request):
                           'source': LEAD_SOURCE,
                           'teams': teams,
                           'assignedto_list': assignedto_list,
-                          'teams_list': teams_list
+                          'teams_list': teams_list,
+                          'CREATE': 'CREATE'
             })
     else:
         return render(request, 'crm/organizations/create_organization.html', {
@@ -91,7 +92,8 @@ def add_organization(request):
                       'source': LEAD_SOURCE,
                       'teams': teams,
                       'assignedto_list': assignedto_list,
-                      'teams_list': teams_list
+                      'teams_list': teams_list,
+                      'CREATE': 'CREATE'
         })
 
 

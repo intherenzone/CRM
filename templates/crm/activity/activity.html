@@ -121,7 +121,7 @@
               {% for activity in activity_obj %}
               <tr class="text-center">
                 <td scope="row">{{ forloop.counter }}</td>
-                <td><a >{{ activity.name }}</a></td>
+                <td><a href="{% url 'activity:view_activity' activity.id %}">{{ activity.name }}</a></td>
                 <td>{{ activity.status }}</td>
                 <td>{{ activity.startdate }}</td>
                 <td>{{ activity.org }}</td>
