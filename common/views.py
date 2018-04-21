@@ -46,7 +46,10 @@ def home(request):
                hoverinfo='label+percent' , textinfo='value',
                textfont=dict(size=20),
                )
-    activity_type_chart = plot([activity_type_trace], output_type = 'div')
+    data = go.Data([activity_type_trace])
+    layout = go.Layout(title='Number of Activity Type',paper_bgcolor='rgba(0,0,0,0)',plot_bgcolor='rgba(0,0,0,0)')
+    fig = go.Figure(data=data,layout=layout)
+    activity_type_chart = plot(fig, output_type = 'div')
 
     # Count statuses for graphing
     statuses = []
@@ -59,7 +62,13 @@ def home(request):
                hoverinfo='label+percent' , textinfo='value',
                textfont=dict(size=20),
                )
-    status_chart = plot([status_trace], output_type = 'div')
+    data = go.Data([status_trace])
+    layout = go.Layout(title='Activity Status',paper_bgcolor='rgba(0,0,0,0)',plot_bgcolor='rgba(0,0,0,0)')
+    fig = go.Figure(data=data,layout=layout)
+    status_chart = plot(fig, output_type = 'div')
+
+    #def plot_pie():
+
 
     return render(request , 'crm/index.html',
         {
