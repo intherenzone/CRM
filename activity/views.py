@@ -12,6 +12,7 @@ from common.forms import BillingAddressForm
 from contacts.models import Contact
 
 from django.contrib.auth.models import User
+from django.conf import settings
 
 #for iCalendar
 from icalendar import Calendar, Event
@@ -19,6 +20,8 @@ from icalendar import vCalAddress, vText
 from datetime import datetime
 import tempfile, os
 import pytz
+
+from django.core.mail import send_mail
 
 # Create your views here.
 @login_required
@@ -77,8 +80,18 @@ def add_activity(request):
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
+                email=[]
+                for assigned_to in activity_obj.assigned_to.all():
+                    print(type(assigned_to))
+                    email.append(assigned_to.email)
+                send_mail('New activity from CRM', 'This email notifies you that a new activity has been assigned to you.', settings.EMAIL_HOST_USER, email, fail_silently=False)
                 return HttpResponseRedirect(reverse("activity:add_activity"))
             else:
+                email=[]
+                for assigned_to in activity_obj.assigned_to.all():
+                    print(type(assigned_to))
+                    email.append(assigned_to.email)
+                send_mail('New activity from CRM', 'This email notifies you that a new activity has been assigned to you.', settings.EMAIL_HOST_USER, email, fail_silently=False)
                 return HttpResponseRedirect(reverse("activity:list"))
         else:
             print(form.errors)
@@ -298,6 +311,8 @@ def calendar_url(request):
         useremail = request.user.email
 
     user_url = str(reverse('activity:calendar_syn', args=[username]))
+
+    send_mail('Testing', 'Here is the message.', settings.EMAIL_HOST_USER, ['cchen@paradymemanagement.com'], fail_silently=False)
 
     return render(request, 'crm/activity/calendar_url.html', {
         'user_url' : user_url,
