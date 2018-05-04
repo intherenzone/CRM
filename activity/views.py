@@ -12,6 +12,7 @@ from common.forms import BillingAddressForm
 from contacts.models import Contact
 
 from django.contrib.auth.models import User
+from django.conf import settings
 
 #for iCalendar
 from icalendar import Calendar, Event
@@ -19,6 +20,8 @@ from icalendar import vCalAddress, vText
 from datetime import datetime
 import tempfile, os
 import pytz
+
+from django.core.mail import send_mail
 
 # Create your views here.
 @login_required
@@ -55,6 +58,12 @@ def activity_list(request):
     return render(request, 'crm/activity/activity.html', {
         'activity_obj': activity_obj, 'per_page': page, 'contacts': contacts})
 
+def send_email(assignedto_list,name,description):
+    email=[]
+    for assigned_to in assignedto_list:
+        print(type(assigned_to))
+        email.append(assigned_to.email)
+    send_mail('New activity from CRM', 'This email notifies you that a new activity ' + name + ' has been assigned to you. ' + '\nDescription: '+ description, settings.EMAIL_HOST_USER, email, fail_silently=False)
 
 @login_required
 def add_activity(request):
@@ -63,7 +72,6 @@ def add_activity(request):
     form = ActivityForm(assigned_to=users, contacts=contacts)
     assignedto_list = request.POST.getlist('assigned_to')
     contacts_list = request.POST.getlist("contacts")
-
 
     if request.method == 'POST':
         form = ActivityForm(request.POST,assigned_to=users, contacts=contacts)
@@ -77,8 +85,10 @@ def add_activity(request):
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
+                send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description)
                 return HttpResponseRedirect(reverse("activity:add_activity"))
             else:
+                send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description)
                 return HttpResponseRedirect(reverse("activity:list"))
         else:
             print(form.errors)
@@ -298,6 +308,8 @@ def calendar_url(request):
         useremail = request.user.email
 
     user_url = str(reverse('activity:calendar_syn', args=[username]))
+
+    send_mail('Testing', 'Here is the message.', settings.EMAIL_HOST_USER, ['cchen@paradymemanagement.com'], fail_silently=False)
 
     return render(request, 'crm/activity/calendar_url.html', {
         'user_url' : user_url,
