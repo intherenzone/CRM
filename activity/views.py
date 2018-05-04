@@ -67,7 +67,6 @@ def add_activity(request):
     assignedto_list = request.POST.getlist('assigned_to')
     contacts_list = request.POST.getlist("contacts")
 
-
     if request.method == 'POST':
         form = ActivityForm(request.POST,assigned_to=users, contacts=contacts)
         #address_form = BillingAddressForm(request.POST)
@@ -80,18 +79,10 @@ def add_activity(request):
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
-                email=[]
-                for assigned_to in activity_obj.assigned_to.all():
-                    print(type(assigned_to))
-                    email.append(assigned_to.email)
-                send_mail('New activity from CRM', 'This email notifies you that a new activity has been assigned to you.', settings.EMAIL_HOST_USER, email, fail_silently=False)
+                send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description)
                 return HttpResponseRedirect(reverse("activity:add_activity"))
             else:
-                email=[]
-                for assigned_to in activity_obj.assigned_to.all():
-                    print(type(assigned_to))
-                    email.append(assigned_to.email)
-                send_mail('New activity from CRM', 'This email notifies you that a new activity has been assigned to you.', settings.EMAIL_HOST_USER, email, fail_silently=False)
+                send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description)
                 return HttpResponseRedirect(reverse("activity:list"))
         else:
             print(form.errors)
