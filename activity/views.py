@@ -309,8 +309,6 @@ def calendar_url(request):
 
     user_url = str(reverse('activity:calendar_syn', args=[username]))
 
-    send_mail('Testing', 'Here is the message.', settings.EMAIL_HOST_USER, ['cchen@paradymemanagement.com'], fail_silently=False)
-
     return render(request, 'crm/activity/calendar_url.html', {
         'user_url' : user_url,
         })
