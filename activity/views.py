@@ -58,6 +58,12 @@ def activity_list(request):
     return render(request, 'crm/activity/activity.html', {
         'activity_obj': activity_obj, 'per_page': page, 'contacts': contacts})
 
+def send_email(assignedto_list,name,description):
+    email=[]
+    for assigned_to in assignedto_list:
+        print(type(assigned_to))
+        email.append(assigned_to.email)
+    send_mail('New activity from CRM', 'This email notifies you that a new activity ' + name + ' has been assigned to you. ' + '\nDescription: '+ description, settings.EMAIL_HOST_USER, email, fail_silently=False)
 
 @login_required
 def add_activity(request):
