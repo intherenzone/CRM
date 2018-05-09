@@ -274,7 +274,7 @@ def calendar_syn(request, user):
 def export_calendar(request,activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
     username = None
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         username = request.user.username
 
     cal= Calendar()
@@ -303,7 +303,7 @@ def calendar_url(request):
     #Get current username and email
     username = None
     useremail = None
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         username = request.user.username
         useremail = request.user.email
 
