@@ -14,6 +14,17 @@ from django.contrib.auth.models import User
 
 # CRUD Operations Start
 
+def format_phone(phone):
+    phone_length = len(phone)
+    if phone_length == 11:
+        new_phone = phone[:1] + ' (' + phone[1:4] + ') ' + phone[4:7] + '-' + phone[7:]
+    elif phone_length == 12:
+        new_phone = phone[:2] + ' (' + phone[2:5] + ') ' + phone[5:8] + '-' + phone[8:]
+    elif phone_length == 13:
+        new_phone = phone[:3] + ' (' + phone[3:6] + ') ' + phone[6:9] + '-' + phone[9:]
+    else:
+        new_phone = '(' + phone[0:3] + ') ' + phone[3:6] + '-' + phone[6:]
+    return phone
 
 @login_required
 def contacts_list(request):
@@ -117,8 +128,11 @@ def view_contact(request, contact_id):
     contact_record = get_object_or_404(
         Contact.objects.select_related("address"), id=contact_id)
     comments = contact_record.contact_comments.all()
+    phone = format_phone(contact_record.phone)
+    print(phone)
     return render(request, 'crm/contacts/view_contact.html', {
         'contact_record': contact_record,
+        'phone': phone,
         'comments': comments})
 
 

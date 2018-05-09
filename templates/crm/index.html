@@ -27,19 +27,19 @@
       <div class="table_container_row">
         <div class="panel panel-default">
           <div class="panel-heading-list text-center">
-            My CONTACTS
+            MY CONTACTS
             <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Contacts {{contacts|length}}{% endif %}</span>
           </div>
           <div class="panel-content">
             <table class="table table-bordered table-striped table-condensed">
               <thead>
                 <tr>
-                  <th width="5%" style="text-align:center;">S.No</th>
-                  <th width="25%" style="text-align:center;">NAME</th>
-                  <th width="15%" style="text-align:center;">CITY</th>
-                  <!-- <th width="20%" style="text-align:center;">ACCOUNT</th> -->
-                  <th width="15%" style="text-align:center;">STATE</th>
-                  <th width="25%" style="text-align:center;">ACTIONS</th>
+                  <th width="5%" style="text-align:center;"></th>
+                  <th width="15%" style="text-align:center;">NAME</th>
+                  <th width="20%" style="text-align:center;">PHONE</th>
+                  <th width="25%" style="text-align:center;">EMAIL</th>
+                  <th width="15%" style="text-align:center;">ORGANIZATION</th>
+                  <th width="15%" style="text-align:center;">ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
@@ -53,15 +53,28 @@
                   <td scope="row">{{ forloop.counter }}</td>
                   <td><a href="{% url 'contacts:view_contact' contact.id %}">{{contact}}</a></td>
                   <td>
-                    {% if contact.address.city %}
-                      {{contact.address.city}}
+                    {% if contact.phone %}
+                      {% if contact.phone|length == 10 %}
+                        ({{contact.phone.0}}{{contact.phone.1}}{{contact.phone.2}})
+                        {{contact.phone.3}}{{contact.phone.4}}{{contact.phone.5}}-{{contact.phone.6}}{{contact.phone.7}}{{contact.phone.8}}{{contact.phone.9}}
+                      {% else %}
+                        {{contact.phone}}
+                      {% endif %}
                     {% else %}
                       Not Specified
                     {% endif %}
                   </td>
                   <td>
-                    {% if contact.address.state %}
-                      {{contact.address.state}}
+                    {% if contact.email %}
+                      {{contact.email}}
+                    {% else %}
+                      Not Specified
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if contact.organization %}
+                    <a href="{% url 'organizations:view_organization' contact.organization.id %}">
+                      {{contact.organization}}
                     {% else %}
                       Not Specified
                     {% endif %}
@@ -89,18 +102,19 @@
       <div class="table_container_row marl ">
         <div class="panel panel-default">
           <div class="panel-heading-list text-center">
-            My ORGANIZATIONS
+            MY ORGANIZATIONS
             <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Organizations {{ organizations|length }}{% endif %}</span>
           </div>
           <div class="panel-content">
             <table class="table table-bordered table-striped table-condensed">
               <thead>
                 <tr>
-                  <th width="5%" style="text-align:center;">S.No</th>
-                  <th width="40%" style="text-align:center;">ORGANIZATION NAME</th>
+                  <th width="5%" style="text-align:center;"></th>
+                  <th width="20%" style="text-align:center;">ORGANIZATION NAME</th>
                   <!-- <th width="20%" style="text-align:center;">ASSIGNED USER</th> -->
-                  <th width="25%" style="text-align:center;">CREATED ON</th>
-                  <th width="30%" style="text-align:center;">ACTIONS</th>
+                  <th width="25%" style="text-align:center;">PHONE</th>
+                  <th width="30%" style="text-align:center;">EMAIL</th>
+                  <th width="15%" style="text-align:center;">ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
@@ -113,7 +127,25 @@
                 <tr class="text-center">
                   <td scope="row">{{ forloop.counter }}</td>
                   <td><a href="{% url 'organizations:view_organization' org.id %}" > {{ org.name }}</a></td>
-                  <td>{{ org.created_on }}</td>
+                  <td>
+                    {% if org.phone %}
+                      {% if org.phone|length == 10 %}
+                        ({{org.phone.0}}{{org.phone.1}}{{org.phone.2}})
+                        {{org.phone.3}}{{org.phone.4}}{{org.phone.5}}-{{org.phone.6}}{{org.phone.7}}{{org.phone.8}}{{org.phone.9}}
+                      {% else %}
+                        {{org.phone}}
+                      {% endif %}
+                    {% else %}
+                      Not Specified
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if org.email %}
+                      {{org.email}}
+                    {% else %}
+                      Not Specified
+                    {% endif %}
+                  </td>
                   <td>
                     <a href="{% url 'organizations:view_organization' org.id %}" class="btn btn-info ">View</a>
                   </td>
@@ -138,19 +170,19 @@
     <div class="table_container_row row marl">
       <div class="panel panel-default">
         <div class="panel-heading-list text-center">
-          Team: {{ team_to_contacts.0 }}
+          TEAM {{ team_to_contacts.0 }}
           <span class="pull-right total_count">Total Contacts {{team_to_contacts.1|length}}</span>
         </div>
         <div class="panel-content">
           <table class="table table-bordered table-striped table-condensed">
             <thead>
               <tr>
-                <th width="5%" style="text-align:center;">S.No</th>
-                <th width="20%" style="text-align:center;">NAME</th>
-                <th width="15%" style="text-align:center;">CITY</th>
-                <!-- <th width="20%" style="text-align:center;">ACCOUNT</th> -->
-                <th width="15%" style="text-align:center;">STATE</th>
-                <th width="25%" style="text-align:center;">ACTIONS</th>
+                <th width="5%" style="text-align:center;"></th>
+                <th width="15%" style="text-align:center;">NAME</th>
+                <th width="20%" style="text-align:center;">PHONE</th>
+                <th width="25%" style="text-align:center;">EMAIL</th>
+                <th width="15%" style="text-align:center;">ORGANIZATION</th>
+                <th width="15%" style="text-align:center;">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -159,15 +191,28 @@
                 <td scope="row">{{ forloop.counter }}</td>
                 <td><a href="{% url 'contacts:view_contact' contact.id %}">{{contact}}</a></td>
                 <td>
-                  {% if contact.address.city %}
-                    {{contact.address.city}}
+                  {% if contact.phone %}
+                    {% if contact.phone|length == 10 %}
+                      ({{contact.phone.0}}{{contact.phone.1}}{{contact.phone.2}})
+                      {{contact.phone.3}}{{contact.phone.4}}{{contact.phone.5}}-{{contact.phone.6}}{{contact.phone.7}}{{contact.phone.8}}{{contact.phone.9}}
+                    {% else %}
+                      {{contact.phone}}
+                    {% endif %}
                   {% else %}
                     Not Specified
                   {% endif %}
                 </td>
                 <td>
-                  {% if contact.address.state %}
-                    {{contact.address.state}}
+                  {% if contact.email %}
+                    {{contact.email}}
+                  {% else %}
+                    Not Specified
+                  {% endif %}
+                </td>
+                <td>
+                  {% if contact.organization %}
+                  <a href="{% url 'organizations:view_organization' contact.organization.id %}">
+                    {{contact.organization}}
                   {% else %}
                     Not Specified
                   {% endif %}

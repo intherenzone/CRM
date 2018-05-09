@@ -8,6 +8,7 @@ from common.forms import BillingAddressForm
 from common.utils import LEAD_STATUS, LEAD_SOURCE, COUNTRIES
 from organizations.models import Organization
 from organizations.forms import OrganizationForm, OrganizationCommentForm
+from contacts.models import Contact
 
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -100,9 +101,11 @@ def add_organization(request):
 @login_required
 def view_organization(request, organization_id):
     organization_record = get_object_or_404(Organization, id=organization_id)
+    contacts = Contact.objects.all().filter(organization__id=organization_id)
     comments = organization_record.organization_comments.all()
     return render(request, 'crm/organizations/view_organization.html', {
         'organization_record': organization_record,
+        'contacts' : contacts,
         'comments': comments})
 
 

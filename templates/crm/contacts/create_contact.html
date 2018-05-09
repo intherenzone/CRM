@@ -65,6 +65,13 @@
                 </div>
                 <div class="filter_col col-md-12">
                   <div class="form-group">
+                    <label for="exampleInputEmail1" class="required">Title</label>
+                    {{ contact_form.title }}
+                    {{ contact_form.title.errors }}
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
                     <label for="exampleInputEmail1" class="required">Organization</label>
                     {{ contact_form.organization }}
                     {{ contact_form.organization.errors }}

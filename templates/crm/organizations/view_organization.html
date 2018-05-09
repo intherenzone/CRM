@@ -39,7 +39,18 @@
                 <div class="filter_col col-md-12">
                   <div class="form-group">
                     <label class="organization_field_label" for="id_phone" data-name="name">Phone</label>
-                    <div class="organization_field" id="organization_phone" data-name="name">{{ organization_record.phone }}</div>
+                    <div class="organization_field" id="organization_phone" data-name="name">
+                      {% if organization_record.phone %}
+                        {% if organization_record.phone|length == 10 %}
+                          ({{organization_record.phone.0}}{{organization_record.phone.1}}{{organization_record.phone.2}})
+                          {{organization_record.phone.3}}{{organization_record.phone.4}}{{organization_record.phone.5}}-{{organization_record.phone.6}}{{organization_record.phone.7}}{{organization_record.phone.8}}{{organization_record.phone.9}}
+                        {% else %}
+                          {{organization_record.phone}}
+                        {% endif %}
+                      {% else %}
+                        Not Specified
+                      {% endif %}
+                    </div>
                   </div>
                 </div>
                 <div class="filter_col col-md-12">
@@ -50,28 +61,35 @@
                 </div>
               </div>
               <div class="col-md-4">
+                <div class="filter_col col-md-12" id="iname">
+                  <div class="form-group" >
+                    <label class="organization_field_label" for="id_contacts" data-name="name">Contacts</label>
+                    <div class="organization_field" id="organization_contacts" data-name="name">{% for contact in contacts %}<li><a href="{% url 'contacts:view_contact' contact.id %}">{{ contact }}</a></li>{% endfor %}
+                    </div>
+                  </div>
+                </div>
                 <div class="filter_col col-md-12">
                   <div class="form-group">
                     {% if organization_record.address.address_line or organization_record.address.street or organization_record.address.city or  organization_record.address.state or organization_record.address.postcode or organization_record.address.country %}
                     <label class="organization_field_label" for="id_address" data-name="name" >Address</label>
                     <div class="organization_field" id="organization_address" data-name="name">
                       {% if organization_record.address.address_line %}
-                        Address Line: {{organization_record.address.address_line}}</br>
+                        {{organization_record.address.address_line}}</br>
                       {% endif %}
                       {% if organization_record.address.street %}
-                        Street: {{ organization_record.address.street }}</br>
+                        {{ organization_record.address.street }}</br>
                       {% endif %}
                       {% if organization_record.address.city %}
-                        City: {{ organization_record.address.city }}</br>
+                        {{ organization_record.address.city }},
                       {% endif %}
                       {% if organization_record.address.state %}
-                        State: {{ organization_record.address.state }}</br>
+                        {{ organization_record.address.state }}
                       {% endif %}
                       {% if organization_record.address.postcode %}
-                        Post Code: {{ organization_record.address.postcode }}</br>
+                        {{ organization_record.address.postcode }}</br>
                       {% endif %}
                       {% if organization_record.address.country %}
-                        Country: {{ organization_record.address.get_country_display }}
+                        {{ organization_record.address.get_country_display }}
                       {% endif %}
                     </div>
                     {% endif %}
