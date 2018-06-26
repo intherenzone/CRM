@@ -22,7 +22,7 @@
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'activity:edit_activity' activity_record.id %}">Edit</a></li>
                     <li><a href="{% url 'activity:export_calendar' activity_record.id %}">Export to calendar file(.ics)</a></li>
-                    <li class="delete" ><a href="{% url 'activity:remove_activity' activity_record.id %}" id="remove_activity">REMOVE</a></li>
+                    <li class="delete_activity" ><a href="{% url 'activity:remove_activity' activity_record.id %}" id="remove_activity">REMOVE</a></li>
                   </ul>
                 </div>
               </span>
@@ -47,12 +47,6 @@
                   <div class="form-group">
                     <label class="activity_field_label" for="id_end_date" data-name="name">End Date</label>
                     <div class="activity_field" id="activity_end_date" data-name="name">{{ activity_record.enddate }}</div>
-                  </div>
-                </div>
-                <div class="filter_col col-md-12">
-                  <div class="form-group">
-                    <label class="activity_field_label" for="id_email" data-name="name">Email</label>
-                    <div class="activity_field" id="activity_email" data-name="name">{{ activity_record.email }}</div>
                   </div>
                 </div>
               </div>

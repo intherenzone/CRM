@@ -23,6 +23,8 @@ def organizations_list(request):
     page = request.POST.get('per_page')
     name = request.POST.get('name')
     city = request.POST.get('city')
+    state = request.POST.get('state')
+    website = request.POST.get('website')
     phone = request.POST.get('phone')
     email = request.POST.get('email')
 #    source= request.POST.get('lead_source')
@@ -32,10 +34,15 @@ def organizations_list(request):
     if city:
         a = Address.objects.filter(city__icontains=city)
         org_obj = Organization.objects.filter(address__in=a)
+    if state:
+        a = Address.objects.filter(state__icontains=state)
+        org_obj = Organization.objects.filter(address__in=a)
     if phone:
         org_obj = Organization.objects.filter(phone__icontains=phone)
     if email:
         org_obj = Organization.objects.filter(email__icontains=email)
+    if website:
+        org_obj = Organization.objects.filter(website__icontains=website)
 #    if source:
 #        org_obj = Organization.objects.filter(source__icontains=source)
 

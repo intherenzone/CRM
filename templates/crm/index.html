@@ -13,10 +13,17 @@
 {% block content %}
 <div class="container-fluid">
   <div class="col-sm-4">
-      {{ activity_type_chart|safe }}
-  </div>
-  <div class="col-sm-4">
-      {{ status_chart|safe }}
+    <div class="table_container_row">
+      <div class="panel panel-default">
+        <div class="panel-heading-list text-center">
+          SOME STATISTICS FOR YOU...
+        </div>
+        <div class="panel-content">
+          {{ activity_type_chart|safe }} {{ status_chart|safe }}
+        </div>
+      </div>
+    </div>
+    <br clear="all">
   </div>
 </div>
 

@@ -29,7 +29,7 @@ class ActivityForm(forms.ModelForm):
             'rows': '6'})
         # self.fields['teams'].required = False
         # self.fields['phone'].required = False
-        # elf.fields['first_name'].widget.attrs.update({
+        # self.fields['first_name'].widget.attrs.update({
         #        'placeholder': 'First Name'})
         #    self.fields['last_name'].widget.attrs.update({
         #        'placeholder': 'Last Name'})
@@ -39,7 +39,7 @@ class ActivityForm(forms.ModelForm):
     class Meta:
         model = Activity
         fields = (
-            'name', 'email', 'contacts', 'startdate', 'enddate', 'activity_type', 'description', 'status', 'assigned_to'
+            'name', 'contacts', 'startdate', 'enddate', 'activity_type', 'description', 'status', 'assigned_to'
         )
 
 class ActivityCommentForm(forms.ModelForm):
