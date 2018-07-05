@@ -129,7 +129,11 @@ def view_contact(request, contact_id):
         Contact.objects.select_related("address"), id=contact_id)
     comments = contact_record.contact_comments.all()
     phone = format_phone(contact_record.phone)
-    print(phone)
+    if request.POST.get('addcontactid'):
+        add_comment(request)
+    if (len((Comment.objects.all().filter(contact=contact_record))) ==0 ):
+        print('none')
+    print(Comment.objects.all().filter(contact=contact_record))
     return render(request, 'crm/contacts/view_contact.html', {
         'contact_record': contact_record,
         'phone': phone,
@@ -210,6 +214,7 @@ def remove_contact(request, pk):
 @login_required
 def add_comment(request):
     if request.method == 'POST':
+        print('went here')
         contact = get_object_or_404(Contact, id=request.POST.get('contactid'))
         if request.user in contact.assigned_to.all() or request.user == contact.created_by:
             form = ContactCommentForm(request.POST)
