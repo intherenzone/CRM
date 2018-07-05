@@ -58,17 +58,19 @@ def activity_list(request):
     return render(request, 'crm/activity/activity.html', {
         'activity_obj': activity_obj, 'per_page': page, 'contacts': contacts})
 
-def send_email(assignedto_list,name,description, action):
+
+def send_email(assignedto_list, name, description, action):
     email=[]
     for assigned_to in assignedto_list:
         print(type(assigned_to))
         email.append(assigned_to.email)
     if action == "add":
-	    send_mail('New activity', 'This email is to notifiy you that activity ' + name + ' is now assigned to you. ' + '\nDescription: '+ description, settings.EMAIL_HOST_USER, email, fail_silently=False)
+      send_mail('New activity', 'This email is to notifiy you that activity ' + name + ' is now assigned to you. ' + '\nDescription: '+ description, settings.EMAIL_HOST_USER, email, fail_silently=False)
     elif action == "edit":
-	    send_mail('Activity ' + name + ' has been changed', 'Dear ' + name + ' one of your assigned activities has been changed. ' + '\nDescription: '+ description, settings.EMAIL_HOST_USER, email, fail_silently=False)
+        send_mail('Activity ' + name + ' has been changed', 'Dear ' + name + ' one of your assigned activities has been changed. ' + '\nDescription: '+ description, settings.EMAIL_HOST_USER, email, fail_silently=False)
     else:
         send_mail('Activity ' + name + ' has been deleted', 'One of your assigned activities, ' + name + ', has been deleted. ' , settings.EMAIL_HOST_USER, email, fail_silently=False)
+
 
 @login_required
 def add_activity(request):
