@@ -21,7 +21,7 @@
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'organizations:edit_organization' organization_record.id %}">Edit</a></li>
-                    <li class="delete_organization" ><a href="{% url 'organizations:remove_organization' organization_record.id %}" id="remove_organization">REMOVE</a></li>
+                    <li class="delete_organization" ><a href="{% url 'organizations:remove_organization' organization_record.id %}" id="remove_organization" class="delete">REMOVE</a></li>
                   </ul>
                 </div>
               </span>
@@ -103,6 +103,12 @@
                     {% endif %}
                   </div>
                 </div>
+                <div class="filter_col col-md-12">
+              <div class="form-group">
+                <label class="organization_field_label" for="id_website" data-name="website">Website</label>
+                <div class="organization_field" id="organization_website" data-name="website">{{ organization_record.website }}</div>
+              </div>
+            </div>
               </div>
             </div>
           </div>
