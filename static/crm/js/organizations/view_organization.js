@@ -38,7 +38,9 @@ $("#comment_form").submit(function (e) {
           "<li><a class='action' onclick='remove_comment(" + data.comment_id + ")''>Remove</a></li></ul></div></div>" +
           "<div class='stream-head-container'> " + data.commented_by + " Commented</div>" +
           "<div class='stream-post-container' id='comment_name" + data.comment_id + "'><pre>" + data.comment + "</pre></div>" +
-          "<div class='stream-date-container" + data.comment_id + "'>" + d.toGMTString() + "</div></div><div class='stream-date-container' id='comment_file_div" + data.comment_id + "'><div id='new_comment" + data.comment_id + "'</div></div></li>"
+          // "<div class='stream-date-container" + data.comment_id + "'>" + d.toGMTString() + "</div></div><div class='stream-date-container' id='comment_file_div" + data.comment_id + "'><div id='new_comment" + data.comment_id + "'</div></div></li>"
+          "<div class='stream-date-container" + data.comment_id + "'>" + "Just Now" + "</div></div><div class='stream-date-container' id='comment_file_div" + data.comment_id + "'><div id='new_comment" + data.comment_id + "'</div></div></li>"
+
         )
         $("#id_comments").val("")
         alert("Comment Submitted")
