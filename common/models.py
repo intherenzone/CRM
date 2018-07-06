@@ -92,3 +92,17 @@ class Comment_Files(models.Model):
             return self.comment_file.path.split('/')[-1]
         else:
             return None
+
+
+class News(models.Model):
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    activity = models.ForeignKey(
+        'activity.Activity', blank=True, null=True, related_name="activity_news", on_delete=models.CASCADE)
+    contact = models.ForeignKey(
+        'contacts.Contact', blank=True, null=True, related_name="contact_news", on_delete=models.CASCADE)
+    organization = models.ForeignKey(
+        'organizations.Organization', blank=True, null=True, related_name="organization_news", on_delete=models.CASCADE)
+    type = models.CharField(max_length=255)
+    object_name = models.CharField(max_length=255, blank=True, null=True)
+    comment = models.ForeignKey(
+        'common.Comment', blank=True, null=True, related_name="comment_news", on_delete=models.CASCADE)
