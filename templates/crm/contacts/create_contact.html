@@ -136,6 +136,9 @@
       <input type="hidden" id="save_new_form" name="savenewform">
     </div>
     <div class="row marl text-center">
+      {% if DUPLICATE %} <strong style="color: #FF0000"><span style="font-size: 16pt">An Existing Contact already has the same Name and Phone number</span></strong> {% endif %}
+
+      <p>  </p>
       <button  class="btn btn-success save" type="submit">Save</button>
       {% if not contact_obj %}
         <button class="btn btn-success save savenew" type="submit">Save & New</button>
