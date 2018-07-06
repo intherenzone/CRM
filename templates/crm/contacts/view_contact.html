@@ -142,6 +142,7 @@
                     <div class="stream-head-container">{{ comment.commented_by }} Commented</div>
                     <div class="stream-post-container" id="comment_name{{comment.id}}"><pre>{{ comment.comment }}</pre></div>
                     <div class="stream-date-container">{{ comment.commented_on }}</div>
+                    
                   </li>
                   {% endfor %}
                 </ul>
@@ -233,5 +234,5 @@
 <!-- CONTACTS VIEW ENDS -->
 {% endblock%}
 {% block js_block %}
-  <script src="{% static 'js/contacts/view_contact.js' %}"></script>
+  <script src="{% static 'crm/js/contacts/view_contact.js' %}"></script>
 {% endblock js_block %}
