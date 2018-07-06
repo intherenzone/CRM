@@ -52,18 +52,25 @@ def activity_list(request):
         activity_obj_list = activity_obj_list.filter(enddate__lte=enddate)
 
 
-    SS = ['in process', 'converted', 'recycled', 'assigned', 'dead', None]
+    SS = ['In Process', 'Completed', 'Assigned', None]
     activity_obj = sorted(activity_obj_list.order_by('enddate', 'startdate'), key=lambda p: SS.index(p.status))
 
     return render(request, 'crm/activity/activity.html', {
         'activity_obj': activity_obj, 'per_page': page, 'contacts': contacts})
 
-def send_email(assignedto_list,name,description):
+
+def send_email(assignedto_list, name, description, action):
     email=[]
     for assigned_to in assignedto_list:
         print(type(assigned_to))
         email.append(assigned_to.email)
-    send_mail('New activity from CRM', 'This email notifies you that a new activity ' + name + ' has been assigned to you. ' + '\nDescription: '+ description, settings.EMAIL_HOST_USER, email, fail_silently=False)
+    if action == "add":
+      send_mail('New activity', 'This email is to notifiy you that activity ' + name + ' is now assigned to you. ' + '\nDescription: '+ description, settings.EMAIL_HOST_USER, email, fail_silently=False)
+    elif action == "edit":
+        send_mail('Activity ' + name + ' has been changed', 'Dear ' + name + ' one of your assigned activities has been changed. ' + '\nDescription: '+ description, settings.EMAIL_HOST_USER, email, fail_silently=False)
+    else:
+        send_mail('Activity ' + name + ' has been deleted', 'One of your assigned activities, ' + name + ', has been deleted. ' , settings.EMAIL_HOST_USER, email, fail_silently=False)
+
 
 @login_required
 def add_activity(request):
@@ -85,10 +92,10 @@ def add_activity(request):
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
-                send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description)
+                send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description,"add")
                 return HttpResponseRedirect(reverse("activity:add_activity"))
             else:
-                send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description)
+                send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description,"add")
                 return HttpResponseRedirect(reverse("activity:list"))
         else:
             print(form.errors)
@@ -129,8 +136,9 @@ def view_activity(request, activity_id):
 
 @login_required
 def remove_activity(request, pk):
-    activity_record = get_object_or_404(Activity, id=pk)
-    activity_record.delete()
+    activity = get_object_or_404(Activity, id=pk)
+    send_email(activity.assigned_to.all(),activity.name,activity.description,"delete")
+    activity.delete()
     if request.is_ajax():
         return JsonResponse({'error': False})
     else:
@@ -158,6 +166,7 @@ def edit_activity(request,pk):
             activity_obj.contacts.set(contacts_list)
             if request.is_ajax():
                 return JsonResponse({'error': False})
+            send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description,"edit")
             return HttpResponseRedirect(reverse('activity:list'))
         else:
             print(form.errors)

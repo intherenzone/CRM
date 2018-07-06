@@ -47,7 +47,7 @@ def home(request):
                textfont=dict(size=20),
                )
     data = go.Data([activity_type_trace])
-    layout = go.Layout(title='Number of Activity Type',paper_bgcolor='rgba(0,0,0,0)',plot_bgcolor='rgba(0,0,0,0)')
+    layout = go.Layout(title='Activity Type',paper_bgcolor='rgba(0,0,0,0)',plot_bgcolor='rgba(0,0,0,0)')
     fig = go.Figure(data=data,layout=layout)
     activity_type_chart = plot(fig, output_type = 'div')
 
