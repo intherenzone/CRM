@@ -70,9 +70,29 @@ def add_organization(request):
             org_obj = form.save(commit=False)
             org_obj.address = address_obj
             org_obj.created_by = request.user
-            org_obj.save()
-            org_obj.assigned_to.add(*assignedto_list)
-            org_obj.teams.add(*teams_list)
+            existing_organizations = Organization.objects.all().filter(name=org_obj.name)
+            existing_organizations = existing_organizations.filter(address__street=org_obj.address.street)
+            existing_organizations = existing_organizations.filter(address__city=org_obj.address.city)
+            existing_organizations = existing_organizations.filter(address__state=org_obj.address.state)
+            existing_organizations = existing_organizations.filter(address__address_line=org_obj.address.address_line)
+
+            if len(existing_organizations)==0:
+                org_obj.save()
+                org_obj.assigned_to.add(*assignedto_list)
+                org_obj.teams.add(*teams_list)
+            else:
+                return render(request, 'crm/organizations/create_organization.html', {
+                        'organization_form': form,
+                        'address_form': address_form,
+                        'users': users,
+                        'source': LEAD_SOURCE,
+                        'teams': teams,
+                        'assignedto_list': assignedto_list,
+                        'teams_list': teams_list,
+                        'CREATE': 'CREATE',
+                        'DUPLICATE': 'DUPLICATE'
+                })
+
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
