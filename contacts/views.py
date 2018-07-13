@@ -86,9 +86,26 @@ def add_contact(request):
             contact_obj = form.save(commit=False)
             contact_obj.address = address_obj
             contact_obj.created_by = request.user
-            contact_obj.save()
-            contact_obj.assigned_to.add(*assignedto_list)
-            contact_obj.teams.add(*teams_list)
+            existing_contacts = Contact.objects.all().filter(first_name=contact_obj.first_name)
+            existing_contacts = existing_contacts.filter(last_name=contact_obj.last_name)
+            existing_contacts = existing_contacts.filter(phone=contact_obj.phone)
+            if len(existing_contacts)==0:
+                contact_obj.save()
+                contact_obj.assigned_to.add(*assignedto_list)
+                contact_obj.teams.add(*teams_list)
+            else:
+                return render(request, 'crm/contacts/create_contact.html', {
+                    'contact_form': form,
+                    'address_form': address_form,
+                    'organizations': organizations,
+                    'countries': COUNTRIES,
+                    'teams': teams,
+                    'users': users,
+                    'assignedto_list': assignedto_list,
+                    'teams_list': teams_list,
+                    'CREATE': 'CREATE',
+                    'DUPLICATE': 'DUPLICATE'
+                })
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
