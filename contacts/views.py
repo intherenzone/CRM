@@ -107,7 +107,7 @@ def add_contact(request):
                 'users': users,
                 'assignedto_list': assignedto_list,
                 'teams_list': teams_list,
-                'CREATE': CREATE
+                'CREATE': 'CREATE'
             })
     else:
         return render(request, 'crm/contacts/create_contact.html', {

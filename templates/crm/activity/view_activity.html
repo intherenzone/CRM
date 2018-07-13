@@ -188,8 +188,20 @@
                   <div class="activity_field" id="activity_start_date" data-name="name">
                     {{ activity_record.startdate }}
                   </div>
+                  <div class='input-group date' id='datetimepicker1'>
+                  <input type='text' class="form-control" />
+                  <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+                  </div>
+                  <script type="text/javascript">
+            $(function () {
+                $('#datetimepicker1').datetimepicker();
+            });
+        </script>
                 </div>
               </div>
+              
               <div class="filter_col col-md-12">
                 <div class="form-group">
                   <label class="activity_field_label" for="id_end_date" data-name="name">End Date</label>

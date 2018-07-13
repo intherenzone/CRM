@@ -5,6 +5,7 @@ from common.models import Address, Team
 from organizations.models import Organization
 from common.utils import LEAD_STATUS, LEAD_STATUS
 from common.models import Comment
+from datetimewidget.widgets import DateTimeWidget
 
 ACTIVITY_TYPE=(
    ('Email', 'Email'),

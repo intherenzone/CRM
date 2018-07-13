@@ -67,15 +67,43 @@
             <div style = "clear:both" class="filter_col col-md-6">
               <div class="form-group">
                 <label for="exampleInputEmail1">START DATE</label>
-                <input type="text" class="form-control" placeholder="YYYY-MM-DD HH:MM (24-hour)" name="startdate" value="{{request.POST.startdate}}">
+                <div class="input-group date" id="datetimepicker1">
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD HH:MM (24-hour)" name="startdate" value="{{request.POST.startdate}}" />
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span></div>
               </div>
             </div>
+     
             <div class="filter_col col-md-6">
               <div class="form-group">
                 <label for="exampleInputEmail1">END DATE</label>
+                <div class="input-group date" id="datetimepicker2">
                 <input type="text" class="form-control" placeholder="YYYY-MM-DD HH:MM (24-hour)" name="enddate" value="{{request.POST.enddate}}">
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span></div>
               </div>
             </div>
+            
+            <script type="text/javascript">
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            useCurrent: false, //Important! See issue #1075
+            format: 'YYYY-MM-DD HH:mm'
+        });
+        $('#datetimepicker2').datetimepicker({
+            useCurrent: false,//Important! See issue #1075
+            format: 'YYYY-MM-DD HH:mm'
+        });
+        $("#datetimepicker1").on("dp.change", function (e) {
+            $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker2").on("dp.change", function (e) {
+            $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+</script>
 
             <div style = "clear:both" class="filter_col text-center">
               <div class="form-group">
