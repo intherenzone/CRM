@@ -116,6 +116,6 @@ def register_page(request):
 def newsfeed(request):
     newsfeed = News.objects.all()
     return render(request, 'crm/newsfeed.html',{
-                "newsfeed":newsfeed 
+                "newsfeed":newsfeed
             
     })
