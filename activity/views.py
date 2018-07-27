@@ -10,6 +10,7 @@ from common.models import Address, Comment, Team
 from common.utils import LEAD_STATUS, LEAD_SOURCE, INDCHOICES, TYPECHOICES, COUNTRIES
 from common.forms import BillingAddressForm
 from contacts.models import Contact
+from common.models import News
 
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -36,7 +37,7 @@ def activity_list(request):
     startdate = request.POST.get('startdate')
     enddate = request.POST.get('enddate')
     #created_by = request.POST.get('created_by')
-    assigned_to = request.POST.get('assigned_to')
+    #assigned_to = request.POST.get('assigned_to')
 
     if name:
         activity_obj_list = activity_obj_list.filter(name__icontains=name)
@@ -65,12 +66,12 @@ def send_email(assignedto_list, name, description, action):
         print(type(assigned_to))
         email.append(assigned_to.email)
     if action == "add":
-	    send_mail('New activity', 'This email is to notifiy you that a new activity, '+ name +', is now assigned to you. ' + '\nDescription: '+ name + description, settings.EMAIL_HOST_USER, email, fail_silently=False)
+      send_mail('New activity', 'This email is to notifiy you that activity ' + name + ' is now assigned to you. ' + '\nDescription: '+ description, settings.EMAIL_HOST_USER, email, fail_silently=False)
     elif action == "edit":
-	    send_mail('Activity ' + name + ' has been changed', 'Dear ' + name + ',\n\n One of your assigned activities' + name + 'has been changed. ' + '\nDescription: '+ description, settings.EMAIL_HOST_USER, email, fail_silently=False)
-    else: 
-        send_mail('Activity ' + name + ' has been deleted', 'One of your assigned activities, ' + name + ', has been deleted. ' , settings.EMAIL_HOST_USER, email, fail_silently=False)        
-		
+        send_mail('Activity ' + name + ' has been changed', 'Dear ' + name + ' one of your assigned activities has been changed. ' + '\nDescription: '+ description, settings.EMAIL_HOST_USER, email, fail_silently=False)
+    else:
+        send_mail('Activity ' + name + ' has been deleted', 'One of your assigned activities, ' + name + ', has been deleted. ' , settings.EMAIL_HOST_USER, email, fail_silently=False)
+
 
 @login_required
 def add_activity(request):
@@ -92,9 +93,13 @@ def add_activity(request):
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
+                news = News(actor = request.user, activity = activity_obj, type = "add", object_name =activity_obj.name)
+                news.save()
                 send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description,"add")
                 return HttpResponseRedirect(reverse("activity:add_activity"))
             else:
+                news = News(actor = request.user, activity = activity_obj, type = "add", object_name = activity_obj.name)
+                news.save()
                 send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description,"add")
                 return HttpResponseRedirect(reverse("activity:list"))
         else:
@@ -137,6 +142,10 @@ def view_activity(request, activity_id):
 @login_required
 def remove_activity(request, pk):
     activity = get_object_or_404(Activity, id=pk)
+    actor = activity.created_by
+    name = activity.name
+    news = News(actor=actor, type="delete", object_name=name)
+    news.save()
     send_email(activity.assigned_to.all(),activity.name,activity.description,"delete")
     activity.delete()
     if request.is_ajax():
@@ -166,6 +175,8 @@ def edit_activity(request,pk):
             activity_obj.contacts.set(contacts_list)
             if request.is_ajax():
                 return JsonResponse({'error': False})
+            news = News(actor = request.user, activity = activity_obj, type = "edit", object_name =activity_obj.name)
+            news.save()
             send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description,"edit")
             return HttpResponseRedirect(reverse('activity:list'))
         else:
@@ -206,6 +217,8 @@ def add_comment(request):
                 activity_comment.commented_by = request.user
                 activity_comment.activity = activity
                 activity_comment.save()
+                news = News(actor = request.user, comment = activity_comment ,type = "comment")
+                news.save()
                 data = {"comment_id": activity_comment.id, "comment": activity_comment.comment,
                         "commented_on": activity_comment.commented_on,
                         "commented_by": activity_comment.commented_by.email}

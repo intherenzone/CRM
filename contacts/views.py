@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from common.models import Address, Comment, Team
+from common.models import Address, Comment, Team, News
 from common.forms import BillingAddressForm
 from common.utils import COUNTRIES
 from organizations.models import Organization
@@ -89,10 +89,13 @@ def add_contact(request):
             existing_contacts = Contact.objects.all().filter(first_name=contact_obj.first_name)
             existing_contacts = existing_contacts.filter(last_name=contact_obj.last_name)
             existing_contacts = existing_contacts.filter(phone=contact_obj.phone)
+
             if len(existing_contacts)==0:
                 contact_obj.save()
                 contact_obj.assigned_to.add(*assignedto_list)
                 contact_obj.teams.add(*teams_list)
+                news = News(actor = request.user, contact = contact_obj, type = "add", object_name = contact_obj.first_name + ' ' + contact_obj.last_name)
+                news.save()
             else:
                 return render(request, 'crm/contacts/create_contact.html', {
                     'contact_form': form,
@@ -109,8 +112,12 @@ def add_contact(request):
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
+                news = News(actor = request.user, contact = contact_obj, type = "add", object_name = contact_obj.first_name + ' ' + contact_obj.last_name)
+                news.save()
                 return HttpResponseRedirect(reverse("contacts:add_contact"))
             else:
+                news = News(actor = request.user, contact = contact_obj, type = "add", object_name = contact_obj.first_name + ' ' + contact_obj.last_name)
+                news.save()
                 return HttpResponseRedirect(reverse('contacts:list'))
         else:
             if request.is_ajax():
@@ -125,6 +132,7 @@ def add_contact(request):
                 'assignedto_list': assignedto_list,
                 'teams_list': teams_list,
                 'CREATE': 'CREATE'
+
             })
     else:
         return render(request, 'crm/contacts/create_contact.html', {
@@ -183,6 +191,9 @@ def edit_contact(request, pk):
             contact_obj.assigned_to.add(*assignedto_list)
             contact_obj.teams.clear()
             contact_obj.teams.add(*teams_list)
+            news = News(actor = request.user, contact = contact_obj, type = "edit", object_name = contact_obj.first_name + ' ' + contact_obj.last_name)
+            news.save()
+            print(news.contact, news.contact)
             if request.is_ajax():
                 return JsonResponse({'error': False})
             return HttpResponseRedirect(reverse('contacts:list'))
@@ -218,7 +229,11 @@ def edit_contact(request, pk):
 @login_required
 def remove_contact(request, pk):
     contact_record = get_object_or_404(Contact, id=pk)
+    actor = contact_record.created_by
+    name = contact_record.first_name + ' ' + contact_record.last_name
     contact_record.delete()
+    news = News(actor = actor, type = "delete", object_name = name)
+    news.save()
     if request.is_ajax():
         return JsonResponse({'error': False})
     else:
@@ -241,6 +256,8 @@ def add_comment(request):
                 contact_comment.commented_by = request.user
                 contact_comment.contact = contact
                 contact_comment.save()
+                news = News(actor = request.user, comment = contact_comment, type = "comment")
+                news.save()
                 data = {"comment_id": contact_comment.id, "comment": contact_comment.comment,
                         "commented_on": contact_comment.commented_on,
                         "commented_by": contact_comment.commented_by.email}

@@ -1,0 +1,122 @@
+{% extends 'crm/base.html' %}
+
+{% block head %}
+{{block.super}}
+{% endblock %}
+
+
+{% load staticfiles %}
+{% load paginate %}
+
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="table_container_row">
+        <div class="panel panel-default">
+          <div class="panel-heading-list text-center">
+            NEWSFEED
+            <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total News {{newsfeed|length}}{% endif %}</span>
+          </div>
+          <div class="panel-content">
+            <table class="table table-bordered table-striped table-condensed">
+              <tbody>
+                {% if per_page %}
+                  {% paginate per_page newsfeed %}
+                {% else%}
+                  {% paginate 20 newsfeed %}
+                {% endif %}
+                {% for news in newsfeed %}
+                <tr style="text-align:left;">
+                  <td>
+                    {% if news.activity %}
+                      {% if news.type == "add" %}
+                        {% if user == news.activity.assigned_to %}
+                        {% else %}
+                          New activity has been created by {{news.actor}}.
+                        {%endif%}
+                      {% elif news.type == "edit" %}
+                        {% if user == news.activity.assigned_to %}
+                        {% else %}
+                          An activity was modified by {{news.actor}}.
+                        {%endif%}
+                      {% elif news.type == "delete" %}
+                        {% if user == news.activity.assigned_to %}
+                        {% else %}
+                          An activity was deleted by {{news.actor}}.
+                        {%endif%}
+                      {%endif%}
+                    {% elif news.contact %}
+                      {% if news.type == "add" %}
+                        {% if user == news.contact.assigned_to %}
+                        {% else %}
+                          New contact has been created by {{news.actor}}.
+                        {%endif%}
+                      {% elif news.type == "edit" %}
+                        {% if user == news.contact.assigned_to %}
+                        {% else %}
+                          A contact was modified by {{news.actor}}.
+                        {%endif%}
+                      {% elif news.type == "delete" %}
+                        {% if user == news.contact.assigned_to %}
+                        {% else %}
+                          A contact was deleted by {{news.actor}}.
+                        {%endif%}
+                      {%endif%}
+                    {% elif news.organization %}
+                      {% if news.type == "add" %}
+                        {% if user == news.organization.assigned_to %}
+                        {% else %}
+                          New organization has been created by {{news.actor}}.
+                        {%endif%}
+                      {% elif news.type == "edit" %}
+                        {% if user == news.organization.assigned_to %}
+                        {% else %}
+                          An organization was modified by {{news.actor}}.
+                        {%endif%}
+                      {% elif news.type == "delete" %}
+                        {% if user == news.organization.assigned_to %}
+                        {% else %}
+                          An organization was deleted by {{news.actor}}.
+                        {%endif%}
+                      {%endif%}
+                    {% elif news.comment %}
+                    {%endif%}
+                  </td>
+                </tr>
+                {% endfor%}
+              </tbody>
+            </table>
+            {%ifequal newsfeed|length 0 %}
+              <h4 class="text-center">No News</h4>
+            {%endifequal%}
+            <div class="marl row text-center">
+              {% show_pages %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <br clear="all">
+    </div>
+  </div>
+</div>   
+
+{% endblock %}
+{% block js_block %}
+<script type="text/javascript">
+  $('.delete').click(function(e){
+    e.preventDefault()
+    url = $(this).attr('href')
+    if (!confirm('Are you sure you want to delete?'))
+      return;
+    window.location = $(this).attr('href')
+  });
+
+  $("a[rel='page']").click(function(e){
+    e.preventDefault();
+    $('#contacts_filter').attr("action", $(this).attr("href"));
+    $('#contacts_filter').submit();
+  });
+</script>
+{% endblock js_block %}

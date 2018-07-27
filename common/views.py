@@ -112,3 +112,10 @@ def register_page(request):
         'form': form
     }
     return render(request, 'crm/registration.html', variables)
+
+def newsfeed(request):
+    newsfeed = News.objects.all()
+    return render(request, 'crm/newsfeed.html',{
+                "newsfeed":newsfeed 
+            
+    })
