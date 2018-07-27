@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'planner',
     'organizations',
     'simple_pagination',
-    
     #'simple_history',
 ]
 

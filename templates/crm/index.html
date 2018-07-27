@@ -17,9 +17,20 @@
       <div class="panel panel-default">
         <div class="panel-heading-list text-center">
           SOME STATISTICS FOR YOU...
+          <div class="alert1">
+           <button onclick="myFunction1()" class="fa fa-info" aria-hidden="true"></button>
+            <span id="demo1"></span>
+            <script>
+            function myFunction1() {
+              document.getElementById("demo1").innerHTML = "Pie Charts depicting statistical information about the current Activity types and Activity status in a graphical form. Using these charts the user will get a brief about the activities and can export these charts to plot.ly where he/she can modify,explore and analyse the chart as per their requirements. ";
+            }
+          </script>
+          </div>
         </div>
         <div class="panel-content">
-          {{ activity_type_chart|safe }} {{ status_chart|safe }}
+
+                {{ activity_type_chart|safe }} {{ status_chart|safe }}
+
         </div>
       </div>
     </div>
@@ -35,6 +46,15 @@
         <div class="panel panel-default">
           <div class="panel-heading-list text-center">
             MY CONTACTS
+            <div class="alert2">
+             <button onclick="myFunction2()" class="fa fa-info" aria-hidden="true"></button>
+              <span id="demo2"></span>
+              <script>
+              function myFunction2() {
+                document.getElementById("demo2").innerHTML = "List of CONTACTS assigned to the current user ";
+              }
+            </script>
+            </div>
             <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Contacts {{contacts|length}}{% endif %}</span>
           </div>
           <div class="panel-content">
@@ -110,6 +130,23 @@
         <div class="panel panel-default">
           <div class="panel-heading-list text-center">
             MY ORGANIZATIONS
+
+            <div class="alert3">
+
+
+             <button onclick="myFunction3()" class="fa fa-info" aria-hidden="true"></button>
+
+              <span id="demo3"></span>
+              <script>
+              function myFunction3() {
+                document.getElementById("demo3").innerHTML = "List of ORGANIZATIONS assigned to current user ";
+              }
+            </script>
+
+
+
+            </div>
+
             <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Organizations {{ organizations|length }}{% endif %}</span>
           </div>
           <div class="panel-content">
