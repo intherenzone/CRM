@@ -18,7 +18,7 @@
                 <li><a href="{% url 'contacts:list' %}">CONTACTS</a></li>
                 <li><a href="{% url 'activity:list' %}">ACTIVITIES</a></li>
                 <li><a href="{% url 'organizations:list' %}">ORGANIZATIONS</a></li>
-                <li><a href="{% url 'common:newsfeed' %}">NEWS</a></li>
+                <li><a href="{% url 'common:newsfeed' %}">NEWS FEED</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_staff %}<li><a href="{% url 'admin:index' %}">ADMIN</a></li>{% endif %}

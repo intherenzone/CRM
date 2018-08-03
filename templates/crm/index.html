@@ -17,15 +17,14 @@
       <div class="panel panel-default">
         <div class="panel-heading-list text-center">
           SOME STATISTICS FOR YOU...
-          <div class="alert1">
-           <button onclick="myFunction1()" class="fa fa-info" aria-hidden="true"></button>
-            <span id="demo1"></span>
-            <script>
-            function myFunction1() {
-              document.getElementById("demo1").innerHTML = "Pie Charts depicting statistical information about the current Activity types and Activity status in a graphical form. Using these charts the user will get a brief about the activities and can export these charts to plot.ly where he/she can modify,explore and analyse the chart as per their requirements. ";
-            }
-          </script>
-          </div>
+
+            <div class="dropdown">
+             <button class="fa fa-info" type="button" data-toggle="dropdown" style="background-color: transparent; outline: none; border: none;"></button>
+             <ul class="dropdown-menu">
+               <p style="margin: auto;">Pie Charts depicting counts for the types of activities and current status of activities for the entire company.</p>
+             </ul>
+            </div>
+
         </div>
         <div class="panel-content">
 
