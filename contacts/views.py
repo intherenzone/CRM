@@ -94,8 +94,6 @@ def add_contact(request):
                 contact_obj.save()
                 contact_obj.assigned_to.add(*assignedto_list)
                 contact_obj.teams.add(*teams_list)
-                news = News(actor = request.user, contact = contact_obj, type = "add", object_name = contact_obj.first_name + ' ' + contact_obj.last_name)
-                news.save()
             else:
                 return render(request, 'crm/contacts/create_contact.html', {
                     'contact_form': form,
@@ -231,9 +229,13 @@ def remove_contact(request, pk):
     contact_record = get_object_or_404(Contact, id=pk)
     actor = contact_record.created_by
     name = contact_record.first_name + ' ' + contact_record.last_name
-    contact_record.delete()
     news = News(actor = actor, type = "delete", object_name = name)
     news.save()
+    contact_record.delete()
+    # news = News(actor = actor, type = "delete", object_name = name)
+    # news.save()
+    # news = News(actor = request.user, contact = contact_obj, type = "delete", object_name = contact_obj.first_name + ' ' + contact_obj.last_name)
+    # news.save()
     if request.is_ajax():
         return JsonResponse({'error': False})
     else:

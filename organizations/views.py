@@ -79,8 +79,6 @@ def add_organization(request):
                 org_obj.save()
                 org_obj.assigned_to.add(*assignedto_list)
                 org_obj.teams.add(*teams_list)
-                news = News(actor = request.user, organization = org_obj, type = "add", object_name = org_obj.name)
-                news.save()
             else:
                 return render(request, 'crm/organizations/create_organization.html', {
                         'organization_form': form,
