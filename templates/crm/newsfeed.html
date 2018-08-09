@@ -120,7 +120,7 @@
 
                       {% elif news.type == "edit" %}
                         {% if user == news.actor %}
-                          You modified a <a href="{% url 'organizations:view_organization' news.organization.id %}">contact.</a>
+                          You modified an <a href="{% url 'organizations:view_organization' news.organization.id %}">organization.</a>
                         {% else %}
                           An <a href="{% url 'organizations:view_organization' news.organization.id %}">organization</a> was modified by {{news.actor}}.
                         {% endif %}

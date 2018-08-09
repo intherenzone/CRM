@@ -35,6 +35,10 @@ def home(request):
     # map teams to their contacts
     teams_to_contacts = zip(teams, teams_contacts)
 
+    #get the news object
+    # newsfeed = News.objects.all()
+    newsfeed = News.objects.order_by('-updated_on')[0:10]
+
     # count activity types for graphing
     activity_types = []
     activity_type_counts = []
@@ -77,6 +81,7 @@ def home(request):
             "teams_to_contacts" : teams_to_contacts,
             "activity_type_chart" : activity_type_chart,
             "status_chart" : status_chart,
+            "newsfeed":newsfeed,
     })
 
 

@@ -96,6 +96,7 @@ class Comment_Files(models.Model):
 
 class News(models.Model):
     actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    updated_on = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=255)
     object_name = models.CharField(max_length=255, blank=True, null=True)
     activity = models.ForeignKey(
