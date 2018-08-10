@@ -142,7 +142,7 @@
                     <div class="stream-head-container">{{ comment.commented_by }} Commented</div>
                     <div class="stream-post-container" id="comment_name{{comment.id}}"><pre>{{ comment.comment }}</pre></div>
                     <div class="stream-date-container">{{ comment.commented_on }}</div>
-                    
+
                   </li>
                   {% endfor %}
                 </ul>
@@ -185,7 +185,7 @@
                 <div class="form-group">
                   <label class="contact_field_label" for="id_assigned_user" data-name="name">Assigned User(s)</label>
                   <div class="contact_field" id="contact_assigned_users" data-name="name">
-                    {%if not contact_record.assigned_to %}
+                    {%if contact_record.assigned_to %}
                       Not Assigned Yet
                     {% else %}
                       {% for user in contact_record.assigned_to.all %}
@@ -199,8 +199,8 @@
                 <div class="form-group">
                   <label class="contact_field_label" for="id_team" data-name="name">Assigned Team(s)</label>
                   <div class="contact_field" id="contact_team" data-name="name">
-                    {%if not contact_record.teams %}
-                      Not Assigned Yet
+                    {%if contact_record.teams %}
+                      Not Assigned To Any Teams
                     {% else %}
                       {% for team in contact_record.teams.all %}
                         <li>{{ team }}</li>

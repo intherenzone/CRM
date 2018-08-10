@@ -54,7 +54,7 @@
                   <div class="filter_col col-md-12" id="iname">
                     <div class="form-group" >
                       <label class="activity_field_label" for="id_contacts" data-name="name">Contacts</label>
-                      <div class="activity_field" id="activity_contacts" data-name="name">{% for contact in activity_record.contacts.all %}<li>{{ contact }}</li>{% endfor %}
+                      <div class="activity_field" id="activity_contacts" data-name="name">{% for contact in activity_record.contacts.all %}<li><a href="{% url 'contacts:view_contact' contact.id %}">{{ contact }}</a></li>{% endfor %}
                       </div>
                     </div>
                   </div>
@@ -158,7 +158,7 @@
                 <div class="form-group">
                   <label class="activity_field_label" for="id_assigned_user" data-name="name">Assigned User(s)</label>
                   <div class="activity_field" id="activity_assigned_users" data-name="name">
-                    {%if not activity_record.assigned_to %}
+                    {%if activity_record.assigned_to %}
                       Not Assigned Yet
                     {% else %}
                       {% for user in activity_record.assigned_to.all %}
@@ -170,13 +170,13 @@
               </div>
               <div class="filter_col col-md-12">
                 <div class="form-group">
-                  <label class="activity_field_label" for="id_name" data-name="name">Name(s)</label>
+                  <label class="activity_field_label" for="id_name" data-name="name">Team(s)</label>
                   <div class="activity_field" id="activity_name" data-name="name">
-                    {%if not activity_record.name %}
-                      Not Assigned Yet
+                    {% if activity_record.teams %}
+                      Not Assigned To Any Teams
                     {% else %}
-                      {% for team in activity_record.name.all %}
-                        <li>{{ name }}</li>
+                      {% for team in activity_record.teams.all %}
+                        <li>{{ team }}</li>
                       {% endfor %}
                     {% endif %}
                   </div>
@@ -186,22 +186,10 @@
                 <div class="form-group">
                   <label class="activity_field_label" for="id_start_date" data-name="name">Start Date</label>
                   <div class="activity_field" id="activity_start_date" data-name="name">
-                    {{ activity_record.startdate }}
+                   {{ activity_record.startdate }}
                   </div>
-                  <div class='input-group date' id='datetimepicker1'>
-                  <input type='text' class="form-control" />
-                  <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                  </span>
-                  </div>
-                  <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker1').datetimepicker();
-            });
-        </script>
                 </div>
               </div>
-              
               <div class="filter_col col-md-12">
                 <div class="form-group">
                   <label class="activity_field_label" for="id_end_date" data-name="name">End Date</label>
