@@ -37,7 +37,7 @@ def home(request):
 
     #get the news object
     # newsfeed = News.objects.all()
-    newsfeed = News.objects.order_by('-updated_on')[0:10]
+    newsfeed = News.objects.order_by('-date')[0:10]
 
     # count activity types for graphing
     activity_types = []
@@ -122,5 +122,5 @@ def newsfeed(request):
     newsfeed = News.objects.all()
     return render(request, 'crm/newsfeed.html',{
                 "newsfeed":newsfeed
-            
+
     })

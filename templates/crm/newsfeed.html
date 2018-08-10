@@ -10,10 +10,113 @@
 
 
 {% block content %}
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="table_container_row">
+<div class="main_container">
+  <div class="row marl heading_create">
+    <div class="heading col-md-12">
+      <div class="col-md-12">
+        <h1 align="center">NEWS FEED</h1>
+      </div>
+    </div>
+  </div>
+  <div class="filter_row row marl">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-heading-list text-center">
+            Customize Searching
+          </div>
+        </div>
+        <form id="activity_filter" action="" method="POST">{%csrf_token%}
+          <div class="panel-content text-center">
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">USERNAME</label>
+                <input type="text" class="form-control" placeholder="Username" id="id_username" name="username" {% if request.POST %} value="{{request.POST.username}}" {% endif %}>
+              </div>
+            </div>
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">MODULE</label>
+                <select class="form-control" id="id_module" name="module" >
+                  <option value="">--Module--</option>
+                  <option value="activity">Activity</option>
+                  <option value="contact">Contact</option>
+                  <option value="organization">Organization</option>
+                  <option value="comment">Comment</option>
+                </select>
+              </div>
+            </div>
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">ACTION TYPE</label>
+                <select class="form-control" id="id_action_type" name="action_type" >
+                  <option value="">--Types of Actions--</option>
+                  <option value="add">Add</option>
+                  <option value="edit">Edit</option>
+                  <option value="delete">Delete</option>
+                </select>
+              </div>
+            </div>
+            <div style = "clear:both" class="filter_col text-center">
+              <br>
+              <h6>Schedule Information</h6>
+            </div>
+            <div style = "clear:both" class="filter_col col-md-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">START DATE</label>
+                <div class="input-group date" id="datetimepicker1">
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD HH:MM (24-hour) or Press the calendar button on the right." name="startdate" value="{{request.POST.startdate}}" />
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span></div>
+              </div>
+            </div>
+
+            <div class="filter_col col-md-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">END DATE</label>
+                <div class="input-group date" id="datetimepicker2">
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD HH:MM (24-hour) or Press the calendar button on the right." name="enddate" value="{{request.POST.enddate}}">
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span></div>
+              </div>
+            </div>
+
+            <script type="text/javascript">
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            useCurrent: false, //Important! See issue #1075
+            format: 'YYYY-MM-DD HH:mm'
+        });
+        $('#datetimepicker2').datetimepicker({
+            useCurrent: false,//Important! See issue #1075
+            format: 'YYYY-MM-DD HH:mm'
+        });
+        $("#datetimepicker1").on("dp.change", function (e) {
+            $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker2").on("dp.change", function (e) {
+            $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+</script>
+
+            <div style = "clear:both" class="filter_col text-center">
+              <div class="form-group">
+                <br>
+                <button class="btn btn-primary" type="submit">Search</button>
+                <a href="{% url 'common:newsfeed' %}" class="btn btn-default">Clear</a>
+              </div>
+            </div>
+          </div>
+        </form>
+        <br clear="all">
+      </div>
+    </div>
+  </div>
+  <div class="table_container_row row marl">
+    <div class="col-md-12">
         <div class="panel panel-default">
           <div class="panel-heading-list text-center">
             NEWS FEED
@@ -93,7 +196,7 @@
 
                       {% elif news.type == "delete" %}
                         {% if user == news.actor %}
-                          You deleted a <a href="{% url 'contacts:view_contact' news.contact.id %}">contact</a> 
+                          You deleted a <a href="{% url 'contacts:view_contact' news.contact.id %}">contact</a>
                         {% else %}
                           A <a href="{% url 'contacts:view_contact' news.contact.id %}">contact</a>  was deleted by {{news.actor}}.
                         {% endif %}
@@ -145,7 +248,7 @@
                         {% if user == news.actor %}
                           You commented on a <a href="{% url 'contacts:view_contact' news.comment.contact.id %}">contact</a>.
                         {% else %}
-                          {{news.actor}} commented on a <a href="{% url 'contacts:view_contact' news.comment.contact.id %}">contact</a>. 
+                          {{news.actor}} commented on a <a href="{% url 'contacts:view_contact' news.comment.contact.id %}">contact</a>.
                         {% endif %}
 
                       {% elif news.comment.organization %}
@@ -170,7 +273,6 @@
             </div>
           </div>
         </div>
-      </div>
       <br clear="all">
     </div>
   </div>
