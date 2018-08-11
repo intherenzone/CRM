@@ -26,7 +26,7 @@
             Customize Searching
           </div>
         </div>
-        <form id="activity_filter" action="" method="POST">{%csrf_token%}
+        <form id="newsfeed_filter" action="" method="POST">{%csrf_token%}
           <div class="panel-content text-center">
             <div class="filter_col col-md-4">
               <div class="form-group">
@@ -128,16 +128,17 @@
                 {% if per_page %}
                   {% paginate per_page newsfeed %}
                 {% else%}
-                  {% paginate 20 newsfeed %}
+                  {% paginate 10 newsfeed %}
                 {% endif %}
                 {% for news in newsfeed %}
                 <tr style="text-align:left;">
+                  <td scope="row">{{ news.date }}</td>
                   <td>
                     {% if news.activity %}
 
                       {% if news.type == "add" %}
 
-                        {% if user == news.activity.created_by %}
+                        {% if user == news.actor %}
                           A new <a href="{% url 'activity:view_activity' news.activity.id %}">activity</a> has been created by you.
                         {% else %}
                           {% if user in news.activity.assigned_to.all %}
@@ -171,7 +172,7 @@
 
                     {% elif news.contact %}
                       {% if news.type == "add" %}
-                        {% if user == news.contact.created_by %}
+                        {% if user == news.actor%}
                           A new <a href="{% url 'contacts:view_contact' news.contact.id %}">contact</a> has been created by you.
                         {% else %}
                           {% if user in news.contact.assigned_to.all %}
@@ -204,7 +205,7 @@
 
                     {% elif news.organization %}
                       {% if news.type == "add" %}
-                        {% if user == news.organization.created_by %}
+                        {% if user == news.actor %}
                           A new <a href="{% url 'organizations:view_organization' news.organization.id %}">organization</a> has been created by you.
                         {% else %}
                           {% if user in news.organization.assigned_to.all %}
@@ -291,8 +292,8 @@
 
   $("a[rel='page']").click(function(e){
     e.preventDefault();
-    $('#contacts_filter').attr("action", $(this).attr("href"));
-    $('#contacts_filter').submit();
+    $('#newsfeed_filter').attr("action", $(this).attr("href"));
+    $('#newsfeed_filter').submit();
   });
 </script>
 {% endblock js_block %}

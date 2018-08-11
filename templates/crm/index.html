@@ -53,7 +53,7 @@
               <tbody>
                 {% for news in newsfeed %}
                 <tr style="text-align:left;">
-                  <td scope="row">{{ forloop.counter }}</td>
+                  <td scope="row">{{ news.date }}</td>
                   <td>
                     {% if news.activity %}
 
