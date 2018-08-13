@@ -128,7 +128,7 @@
                 {% if per_page %}
                   {% paginate per_page newsfeed %}
                 {% else%}
-                  {% paginate 10 newsfeed %}
+                  {% paginate 20 newsfeed %}
                 {% endif %}
                 {% for news in newsfeed %}
                 <tr style="text-align:left;">
