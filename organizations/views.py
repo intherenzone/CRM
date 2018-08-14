@@ -95,11 +95,11 @@ def add_organization(request):
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
-                news = News(actor = request.user, organization = org_obj, type = "add", object_name = org_obj.name)
+                news = News(actor = request.user, organization = org_obj, type = "add_organization", object_name = org_obj.name)
                 news.save()
                 return HttpResponseRedirect(reverse("organizations:add_organization"))
             else:
-                news = News(actor = request.user, organization = org_obj, type = "add", object_name = org_obj.name)
+                news = News(actor = request.user, organization = org_obj, type = "add_organization", object_name = org_obj.name)
                 news.save()
                 return HttpResponseRedirect(reverse('organizations:list'))
         else:
@@ -165,7 +165,7 @@ def edit_organization(request, pk):
             org_obj.assigned_to.add(*assignedto_list)
             org_obj.teams.clear()
             org_obj.teams.add(*teams_list)
-            news = News(actor = request.user, organization = org_obj, type = "edit", object_name = org_obj.name)
+            news = News(actor = request.user, organization = org_obj, type = "edit_organization", object_name = org_obj.name)
             news.save()
             if request.is_ajax():
                 return JsonResponse({'error': False})
@@ -201,7 +201,7 @@ def remove_organization(request, pk):
     actor = organization_record.created_by
     name = organization_record.name
     organization_record.delete()
-    news = News(actor = actor, type = "delete", object_name = name)
+    news = News(actor = actor, type = "delete_organization", object_name = name)
     news.save()
     print(news.object_name)
     if request.is_ajax():

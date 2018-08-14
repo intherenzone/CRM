@@ -93,12 +93,12 @@ def add_activity(request):
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
-                news = News(actor = request.user, activity = activity_obj, type = "add", object_name =activity_obj.name)
+                news = News(actor = request.user, activity = activity_obj, type = "add_acivity", object_name =activity_obj.name)
                 news.save()
                 send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description,"add")
                 return HttpResponseRedirect(reverse("activity:add_activity"))
             else:
-                news = News(actor = request.user, activity = activity_obj, type = "add", object_name = activity_obj.name)
+                news = News(actor = request.user, activity = activity_obj, type = "add_activity", object_name = activity_obj.name)
                 news.save()
                 send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description,"add")
                 return HttpResponseRedirect(reverse("activity:list"))
@@ -144,7 +144,7 @@ def remove_activity(request, pk):
     activity = get_object_or_404(Activity, id=pk)
     actor = activity.created_by
     name = activity.name
-    news = News(actor=actor, type="delete", object_name=name)
+    news = News(actor=actor, type="delete_activity", object_name=name)
     news.save()
     send_email(activity.assigned_to.all(),activity.name,activity.description,"delete")
     activity.delete()
@@ -175,7 +175,7 @@ def edit_activity(request,pk):
             activity_obj.contacts.set(contacts_list)
             if request.is_ajax():
                 return JsonResponse({'error': False})
-            news = News(actor = request.user, activity = activity_obj, type = "edit", object_name =activity_obj.name)
+            news = News(actor = request.user, activity = activity_obj, type = "edit_activity", object_name =activity_obj.name)
             news.save()
             send_email(activity_obj.assigned_to.all(),activity_obj.name,activity_obj.description,"edit")
             return HttpResponseRedirect(reverse('activity:list'))

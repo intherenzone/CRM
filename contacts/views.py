@@ -110,11 +110,11 @@ def add_contact(request):
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
-                news = News(actor = request.user, contact = contact_obj, type = "add", object_name = contact_obj.first_name + ' ' + contact_obj.last_name)
+                news = News(actor = request.user, contact = contact_obj, type = "add_contact", object_name = contact_obj.first_name + ' ' + contact_obj.last_name)
                 news.save()
                 return HttpResponseRedirect(reverse("contacts:add_contact"))
             else:
-                news = News(actor = request.user, contact = contact_obj, type = "add", object_name = contact_obj.first_name + ' ' + contact_obj.last_name)
+                news = News(actor = request.user, contact = contact_obj, type = "add_contact", object_name = contact_obj.first_name + ' ' + contact_obj.last_name)
                 news.save()
                 return HttpResponseRedirect(reverse('contacts:list'))
         else:
@@ -189,7 +189,7 @@ def edit_contact(request, pk):
             contact_obj.assigned_to.add(*assignedto_list)
             contact_obj.teams.clear()
             contact_obj.teams.add(*teams_list)
-            news = News(actor = request.user, contact = contact_obj, type = "edit", object_name = contact_obj.first_name + ' ' + contact_obj.last_name)
+            news = News(actor = request.user, contact = contact_obj, type = "edit_contact", object_name = contact_obj.first_name + ' ' + contact_obj.last_name)
             news.save()
             print(news.contact, news.contact)
             if request.is_ajax():
@@ -229,7 +229,7 @@ def remove_contact(request, pk):
     contact_record = get_object_or_404(Contact, id=pk)
     actor = contact_record.created_by
     name = contact_record.first_name + ' ' + contact_record.last_name
-    news = News(actor = actor, type = "delete", object_name = name)
+    news = News(actor = actor, type = "delete_contact", object_name = name)
     news.save()
     contact_record.delete()
     # news = News(actor = actor, type = "delete", object_name = name)
