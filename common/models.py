@@ -100,10 +100,10 @@ class News(models.Model):
     type = models.CharField(max_length=255)
     object_name = models.CharField(max_length=255, blank=True, null=True)
     activity = models.ForeignKey(
-        'activity.Activity', blank=True, null=True, related_name="activity_news", on_delete=models.CASCADE)
+        'activity.Activity', blank=True, null=True, related_name="activity_news", on_delete=models.SET_NULL)
     contact = models.ForeignKey(
-        'contacts.Contact', blank=True, null=True, related_name="contact_news", on_delete=models.CASCADE)
+        'contacts.Contact', blank=True, null=True, related_name="contact_news", on_delete=models.SET_NULL)
     organization = models.ForeignKey(
-        'organizations.Organization', blank=True, null=True, related_name="organization_news", on_delete=models.CASCADE)
+        'organizations.Organization', blank=True, null=True, related_name="organization_news", on_delete=models.SET_NULL)
     comment = models.ForeignKey(
         'common.Comment', blank=True, null=True, related_name="comment_news", on_delete=models.CASCADE)
