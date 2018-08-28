@@ -42,36 +42,119 @@ def home(request):
     # count activity types for graphing
     activity_types = []
     activity_type_counts = []
+    user_activity_type_counts = []
+
     for activity_type in ACTIVITY_TYPE:
         activity_types.append(activity_type[0]) # get each type
         activity_type_counts.append(Activity.objects.filter(activity_type=activity_type[0]).count()) # get count of each type
-    # create activity type pie chart
-    activity_type_trace = go.Pie(labels=activity_types, values=activity_type_counts,
-               hoverinfo='label+percent' , textinfo='value',
-               textfont=dict(size=20),
-               )
-    data = go.Data([activity_type_trace])
-    layout = go.Layout(title='Activity Type',paper_bgcolor='rgba(0,0,0,0)',plot_bgcolor='rgba(0,0,0,0)')
-    fig = go.Figure(data=data,layout=layout)
-    activity_type_chart = plot(fig, output_type = 'div')
+        user_activity_type_counts.append(Activity.objects.filter(assigned_to=request.user,activity_type=activity_type[0]).count())
+     #Donut Pie chart Activity Type
+    figa = {
+        "data": [
+            {
+                "values": user_activity_type_counts,
+                "labels": activity_types,
+                "text": user_activity_type_counts,
+                "textposition": "inside",
+                "domain": {"x": [0, .48]},
+                "hoverinfo": "label+percent",
+                "hole": .4,
+                "type": "pie"
+
+            },
+            {
+                "values": activity_type_counts,
+                "labels": activity_types,
+                "text": activity_type_counts,
+                "textposition": "inside",
+                "domain": {"x": [.52, 1]},
+                "hoverinfo": "label+percent",
+                "hole": .4,
+                "type": "pie"
+            }],
+        "layout": {
+            "title": "Activity Type",
+            "annotations": [
+                {
+                    "font": {
+                        "size": 12
+                    },
+                    "showarrow": False,
+                    "text": "You",
+                    "x": 0.22,
+                    "y": 0.5
+                },
+                {
+                    "font": {
+                        "size": 12
+                    },
+                    "showarrow": False,
+                    "text": "Company",
+                    "x": 0.805,
+                    "y": 0.5
+
+                }
+            ]
+        }
+    }
+    activity_type_chart = plot(figa, output_type='div')
 
     # Count statuses for graphing
     statuses = []
     status_counts = []
+    user_status_counts = []
     for status in LEAD_STATUS:
         statuses.append(status[0])
         status_counts.append(Activity.objects.filter(status=status[0]).count())
+        user_status_counts.append(Activity.objects.filter(assigned_to=request.user, status=status[0]).count())
     # create status pie chart
-    status_trace = go.Pie(labels=statuses, values=status_counts,
-               hoverinfo='label+percent' , textinfo='value',
-               textfont=dict(size=20),
-               )
-    data = go.Data([status_trace])
-    layout = go.Layout(title='Activity Status',paper_bgcolor='rgba(0,0,0,0)',plot_bgcolor='rgba(0,0,0,0)')
-    fig = go.Figure(data=data,layout=layout)
-    status_chart = plot(fig, output_type = 'div')
-
-    #def plot_pie():
+    fig_stat = {
+        "data": [
+            {
+                "values": user_status_counts,
+                "labels": statuses,
+                "text": user_status_counts,
+                "textposition": "inside",
+                "domain": {"x": [0, .48]},
+                "hoverinfo": "label+percent",
+                "hole": .4,
+                "type": "pie"
+            },
+            {
+                "values": status_counts,
+                "labels": statuses,
+                "text": status_counts,
+                "textposition": "inside",
+                "domain": {"x": [.52, 1]},
+                "hoverinfo": "label+percent",
+                "hole": .4,
+                "type": "pie"
+            }],
+        "layout": {
+            "title": "Activity Status",
+            "annotations": [
+                {
+                    "font": {
+                        "size": 12
+                    },
+                    "showarrow": False,
+                    "text": "You",
+                    "x": 0.22,
+                    "y": 0.5
+                },
+                {
+                    "font": {
+                        "size": 12
+                    },
+                    "showarrow": False,
+                    "text": "Company",
+                    "x": 0.805,
+                    "y": 0.5
+                }
+            ]
+        }
+    }
+    status_chart = plot(fig_stat, output_type='div')
 
 
     return render(request , 'crm/index.html',
@@ -129,7 +212,7 @@ def newsfeed(request):
     enddate = request.POST.get('enddate')
 
     if username:
-        newsfeed = newsfeed.filter(actor__username__icontains=username) 
+        newsfeed = newsfeed.filter(actor__username__icontains=username)
     if module=='activity':
         newsfeed = newsfeed.filter(activity__isnull = False)
     elif module=='contact':
@@ -146,5 +229,5 @@ def newsfeed(request):
         newsfeed = newsfeed.filter(date__lte=enddate)
 
     return render(request, 'crm/newsfeed.html', {
-        'newsfeed': newsfeed 
+        'newsfeed': newsfeed
         })

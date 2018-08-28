@@ -138,7 +138,7 @@
 
                       {% if news.activity %}
 
-                        {% if user == news.actor %}
+                        {% if user == news.activity.created_by %}
                           A new activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> has been created by you.
                         {% else %}
                           {% if user in news.activity.assigned_to.all %}
@@ -150,13 +150,14 @@
                             {% endif %}
 
                           {% else %}
-                            New activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> has been created by {{news.actor}}.
+                            A new activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> has been created by {{news.actor}}.
                           {%endif%}
 
                         {% endif %}
 
                       {% else %}
-                        A new activity, {{news.object_name}} has been created.
+                          <!-- Case when activity has been deleted, then object can no longer be linked. -->
+                          A new activity, "{{news.object_name}}," has been created by {{news.actor}}. This activity has since been deleted.
                       {% endif %}
 
                     {% elif news.type == "edit_activity" %}
@@ -170,17 +171,17 @@
                         {% endif %}
 
                       {% else %}
-                        An activity, {{news.object_name}} was modified.
+                        An activity, "{{news.object_name}}," was modified by {{news.actor}}. This activity has since been deleted.
                       {% endif %}
 
                     {% elif news.type == "delete_activity" %}
-                      An activity, {{news.object_name}} was deleted by {{news.actor}}.
+                      An activity, "{{news.object_name}}" was deleted by {{news.actor}}.
 
                     {% elif news.type == "add_contact" %}
 
                       {% if news.contact %}
 
-                        {% if user == news.actor%}
+                        {% if user == news.actor %}
                           A new contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> has been created by you.
                         {% else %}
                           {% if user in news.contact.assigned_to.all %}
@@ -192,13 +193,13 @@
                             {% endif %}
 
                           {% else %}
-                            New contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> has been created by {{news.actor}}.
+                            A new contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> has been created by {{news.actor}}.
                           {%endif%}
 
                         {% endif %}
 
                       {% else %}
-                        A new contact, {{news.object_name}} has been created.
+                        A new contact, {{news.object_name}}, has been created by {{news.actor}}. This contact has since been deleted.
                       {% endif %}
 
                     {% elif news.type == "edit_contact" %}
@@ -212,7 +213,7 @@
                         {% endif %}
 
                       {% else %}
-                       A contact, {{news.object_name}} was modified.
+                        A contact, {{news.object_name}}, was modified by {{news.actor}}. This contact has since been deleted.
                       {% endif %}
 
                     {% elif news.type == "delete_contact" %}
@@ -234,13 +235,13 @@
                             {% endif %}
 
                           {% else %}
-                            New organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a> has been created by {{news.actor}}.
+                            A new organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a> has been created by {{news.actor}}.
                           {%endif%}
 
                         {% endif %}
 
                       {% else %}
-                        A new organization, {{news.object_name}} has been created.
+                        A new organization, {{news.object_name}}, has been created by {{news.actor}}. This organization has since been deleted.
                       {% endif %}
 
                     {% elif news.type == "edit_organization" %}
@@ -254,7 +255,7 @@
                         {% endif %}
 
                       {% else %}
-                        An organization, {{news.object_name}} was modified.
+                        An organization, {{news.object_name}} was modified by {{news.actor}}. This organization has since been deleted.
                       {% endif %}
 
                       {% elif news.type == "delete_organization" %}
@@ -263,23 +264,23 @@
                     {% elif news.comment %}
                       {% if news.comment.activity %}
                         {% if user == news.actor %}
-                          You commented on this <a href="{% url 'activity:view_activity' news.comment.activity.id %}">activity</a>.
+                          You commented on the activity, <a href="{% url 'activity:view_activity' news.comment.activity.id %}">{{news.object_name}}</a>.
                         {% else %}
-                          {{news.actor}} commented on this <a href="{% url 'activity:view_activity' news.comment.activity.id %}">activity</a>.
+                          {{news.actor}} commented on the activity, <a href="{% url 'activity:view_activity' news.comment.activity.id %}">{{news.object_name}}</a>.
                         {% endif %}
 
                       {% elif news.comment.contact %}
                         {% if user == news.actor %}
-                          You commented on this <a href="{% url 'contacts:view_contact' news.comment.contact.id %}">contact</a>.
+                          You commented on the contact, <a href="{% url 'contacts:view_contact' news.comment.contact.id %}">{{news.object_name}}</a>.
                         {% else %}
-                          {{news.actor}} commented on this<a href="{% url 'contacts:view_contact' news.comment.contact.id %}">contact</a>.
+                          {{news.actor}} commented on thie contact, <a href="{% url 'contacts:view_contact' news.comment.contact.id %}">{{news.object_name}}</a>.
                         {% endif %}
 
                       {% elif news.comment.organization %}
                         {% if user == news.actor %}
-                          You commented on an this <a href="{% url 'organizations:view_organization' news.comment.organization.id %}">organization</a>.
+                          You commented on the organization, <a href="{% url 'organizations:view_organization' news.comment.organization.id %}">{{news.object_name}}</a>.
                         {% else %}
-                          {{news.actor}} commented on this <a href="{% url 'organizations:view_organization' news.comment.organization.id %}">organization</a>.
+                          {{news.actor}} commented on the organization, <a href="{% url 'organizations:view_organization' news.comment.organization.id %}">{{news.object_name}}</a>.
                         {% endif %}
 
                       {%endif%}
