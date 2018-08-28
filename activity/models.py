@@ -28,8 +28,7 @@ class Activity(models.Model):
     status = models.CharField(_("Status of Activity"), max_length=255, blank=True, null=True, choices=LEAD_STATUS)
     assigned_to = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="activity_assigned_users")
     teams = models.ManyToManyField(Team)
-
-
+    
 
     def __str__(self):
         return self.name

@@ -88,11 +88,14 @@
     $(function () {
         $('#datetimepicker1').datetimepicker({
             useCurrent: false, //Important! See issue #1075
-            format: 'YYYY-MM-DD HH:mm'
+            format: "YYYY-MM-DD HH:mm:ss"
+            
         });
+        
         $('#datetimepicker2').datetimepicker({
-            useCurrent: false,//Important! See issue #1075
-            format: 'YYYY-MM-DD HH:mm'
+            useCurrent: false,//Important! See issue #1075,
+            format: "YYYY-MM-DD HH:mm:ss"
+            
         });
         $("#datetimepicker1").on("dp.change", function (e) {
             $('#datetimepicker2').data("DateTimePicker").minDate(e.date);

@@ -14,6 +14,8 @@ function getCookie(name) {
   return cookieValue;
 }
 
+
+
 $("#comment_form").submit(function (e) {
   e.preventDefault()
   var formData = new FormData($("#comment_form")[0]);
