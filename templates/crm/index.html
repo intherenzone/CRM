@@ -230,10 +230,10 @@
             <div class="dropdown">
              <button class="fa fa-info" type="button" data-toggle="dropdown" style="background-color: transparent; outline: none; border: none;"></button>
              <ul class="dropdown-menu">
-               <p style="margin: auto;">List of CONTACTS assigned to the current user.</p>
+               <p style="margin: auto;">List of CONTACTS assigned to you.</p>
              </ul>
             </div>
-            
+
             <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Contacts {{contacts|length}}{% endif %}</span>
           </div>
           <div class="panel-content">
@@ -309,14 +309,14 @@
         <div class="panel panel-default">
           <div class="panel-heading-list text-center">
             MY ORGANIZATIONS
-            
+
             <div class="dropdown">
              <button class="fa fa-info" type="button" data-toggle="dropdown" style="background-color: transparent; outline: none; border: none;"></button>
              <ul class="dropdown-menu">
-               <p style="margin: auto;">List of ORGANIZATIONS assigned to current user.</p>
+               <p style="margin: auto;">List of ORGANIZATIONS assigned to you.</p>
              </ul>
             </div>
-            
+
             <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Organizations {{ organizations|length }}{% endif %}</span>
           </div>
           <div class="panel-content">
