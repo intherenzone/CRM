@@ -33,7 +33,7 @@
                 <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span></div>
-                    
+
                   </div>
                 </div>
                 <div class="filter_col col-md-12">
@@ -44,21 +44,21 @@
                 <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span></div>
-                   
+
                   </div>
                 </div>
                 <script type="text/javascript">
     $(function () {
         $('#datetimepicker1').datetimepicker({
             useCurrent: false, //Important! See issue #1075
-            format: "YYYY-MM-DD HH:mm:ss"
-            
+            format: "YYYY-MM-DD HH:mm"
+
         });
-        
+
         $('#datetimepicker2').datetimepicker({
             useCurrent: false,//Important! See issue #1075,
-            format: "YYYY-MM-DD HH:mm:ss"
-            
+            format: "YYYY-MM-DD HH:mm"
+
         });
         $("#datetimepicker1").on("dp.change", function (e) {
             $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
@@ -68,7 +68,7 @@
         });
     });
 </script>
-                
+
                 <div class="filter_col col-md-12">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Assigned Users</label>
