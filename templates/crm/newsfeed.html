@@ -39,10 +39,10 @@
                 <label for="exampleInputEmail1">MODULE</label>
                 <select class="form-control" id="id_module" name="module" >
                   <option value="">--Module--</option>
-                  <option value="activity">Activity</option>
-                  <option value="contact">Contact</option>
-                  <option value="organization">Organization</option>
-                  <option value="comment">Comment</option>
+                  <option value="activity" {% if request.POST.module == 'activity' %} selected=true {% endif %}>Activity</option>
+                  <option value="contact" {% if request.POST.module == 'contact' %} selected=true {% endif %}>Contact</option>
+                  <option value="organization" {% if request.POST.module == 'organization' %} selected=true {% endif %}>Organization</option>
+                  <option value="comment" {% if request.POST.module == 'comment' %} selected=true {% endif %}>Comment</option>
                 </select>
               </div>
             </div>
@@ -51,9 +51,9 @@
                 <label for="exampleInputEmail1">ACTION TYPE</label>
                 <select class="form-control" id="id_action_type" name="action_type" >
                   <option value="">--Types of Actions--</option>
-                  <option value="add">Add</option>
-                  <option value="edit">Edit</option>
-                  <option value="delete">Delete</option>
+                  <option value="add" {% if request.POST.action_type == 'add' %} selected=true {% endif %}>Add</option>
+                  <option value="edit" {% if request.POST.action_type == 'edit' %} selected=true {% endif %}>Edit</option>
+                  <option value="delete" {% if request.POST.action_type == 'delete' %} selected=true {% endif %}>Delete</option>
                 </select>
               </div>
             </div>

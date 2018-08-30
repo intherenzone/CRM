@@ -41,9 +41,9 @@
                 <label for="exampleInputEmail1">ACTIVITY STATUS</label>
                 <select class="form-control" id="id_status" name="status" >
                   <option value="">--Status of Activity--</option>
-                  <option value="assigned">Assigned</option>
-                  <option value="in process">In Process</option>
-                  <option value="completed">Completed</option>
+                  <option value="assigned"{% if request.POST.status == 'assigned' %} selected=true {% endif %}>Assigned</option>
+                  <option value="in process" {% if request.POST.status == 'in process' %} selected=true {% endif %}>In Process</option>
+                  <option value="completed"{% if request.POST.status == 'completed' %} selected=true {% endif %}>Completed</option>
                 </select>
               </div>
             </div>
@@ -52,9 +52,9 @@
                 <label for="exampleInputEmail1">ACTIVITY TYPE</label>
                 <select class="form-control" id="id_activity_type" name="activity_type" >
                   <option value="">--Types of Activity--</option>
-                  <option value="email">Email</option>
-                  <option value="phone call">Phone Call</option>
-                  <option value="meeting">Meeting</option>
+                  <option value="email" {% if request.POST.activity_type == 'email' %} selected=true {% endif %}>Email</option>
+                  <option value="phone call" {% if request.POST.activity_type == 'phone call' %} selected=true {% endif %}>Phone Call</option>
+                  <option value="meeting" {% if request.POST.activity_type == 'meeting' %} selected=true {% endif %}>Meeting</option>
                 </select>
               </div>
             </div>

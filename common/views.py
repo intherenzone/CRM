@@ -37,7 +37,7 @@ def home(request):
     teams_to_contacts = zip(teams, teams_contacts)
 
     #get the news object
-    newsfeed = News.objects.order_by('-date')[0:10]
+    newsfeed = News.objects.order_by('-date')[0:15]
 
     # count activity types for graphing
     activity_types = []
