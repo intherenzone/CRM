@@ -45,13 +45,27 @@
                 <div class="filter_col col-md-12">
                   <div class="form-group">
                     <label class="contact_field_label" for="id_phone" data-name="name">Phone</label>
-                    <div class="contact_field" id="contact_phone" data-name="name">{{ contact_record.phone }}</div>
+                    <div class="contact_field" id="contact_phone" data-name="name">{{ phone }}</div>
                   </div>
                 </div>
                 <div class="filter_col col-md-12">
                   <div class="form-group">
                     <label class="contact_field_label" for="id_email" data-name="name">Email</label>
                     <div class="contact_field" id="contact_email" data-name="name">{{ contact_record.email }}</div>
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label class="contact_field_label" for="id_title" data-name="name">Title</label>
+                    <div class="contact_field" id="contact_title" data-name="name">{% if contact_record.title %}{{ contact_record.title }}
+                    {% else %} Not Specified {% endif %}</div>
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label class="contact_field_label" for="id_organization" data-name="name">Organization</label>
+                    <div class="contact_field" id="contact_organization" data-name="name">{% if contact_record.organization %}<a href="{% url 'organizations:view_organization' contact_record.organization.id %}">{{ contact_record.organization }}</a>
+                    {% else %} Not Specified {% endif %}</div>
                   </div>
                 </div>
               </div>
@@ -62,22 +76,22 @@
                     <label class="contact_field_label" for="id_address" data-name="name" >Billing Address</label>
                     <div class="contact_field" id="contact_address" data-name="name">
                       {% if contact_record.address.address_line %}
-                        Address Line: {{contact_record.address.address_line}}</br>
+                        {{contact_record.address.address_line}}</br>
                       {% endif %}
                       {% if contact_record.address.street %}
-                        Street: {{ contact_record.address.street }}</br>
+                        {{ contact_record.address.street }}</br>
                       {% endif %}
                       {% if contact_record.address.city %}
-                        City: {{ contact_record.address.city }}</br>
+                        {{ contact_record.address.city }},
                       {% endif %}
                       {% if contact_record.address.state %}
-                        State: {{ contact_record.address.state }}</br>
+                        {{ contact_record.address.state }}
                       {% endif %}
                       {% if contact_record.address.postcode %}
-                        Post Code: {{ contact_record.address.postcode }}</br>
+                        {{ contact_record.address.postcode }}</br>
                       {% endif %}
                       {% if contact_record.address.country %}
-                        Country: {{ contact_record.address.get_country_display }}
+                        {{ contact_record.address.get_country_display }}
                       {% endif %}
                     </div>
                     {% endif %}
@@ -128,6 +142,7 @@
                     <div class="stream-head-container">{{ comment.commented_by }} Commented</div>
                     <div class="stream-post-container" id="comment_name{{comment.id}}"><pre>{{ comment.comment }}</pre></div>
                     <div class="stream-date-container">{{ comment.commented_on }}</div>
+
                   </li>
                   {% endfor %}
                 </ul>
@@ -170,7 +185,7 @@
                 <div class="form-group">
                   <label class="contact_field_label" for="id_assigned_user" data-name="name">Assigned User(s)</label>
                   <div class="contact_field" id="contact_assigned_users" data-name="name">
-                    {%if not contact_record.assigned_to %}
+                    {%if contact_record.assigned_to %}
                       Not Assigned Yet
                     {% else %}
                       {% for user in contact_record.assigned_to.all %}
@@ -184,8 +199,8 @@
                 <div class="form-group">
                   <label class="contact_field_label" for="id_team" data-name="name">Assigned Team(s)</label>
                   <div class="contact_field" id="contact_team" data-name="name">
-                    {%if not contact_record.teams %}
-                      Not Assigned Yet
+                    {%if contact_record.teams %}
+                      Not Assigned To Any Teams
                     {% else %}
                       {% for team in contact_record.teams.all %}
                         <li>{{ team }}</li>
@@ -219,5 +234,5 @@
 <!-- CONTACTS VIEW ENDS -->
 {% endblock%}
 {% block js_block %}
-  <script src="{% static 'js/contacts/view_contact.js' %}"></script>
+  <script src="{% static 'crm/js/contacts/view_contact.js' %}"></script>
 {% endblock js_block %}

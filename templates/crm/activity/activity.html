@@ -12,6 +12,7 @@
         <p>
         <div class="create_new text-right">
           <a href="{% url 'activity:add_activity' %}"><i class="fa fa-plus"></i> Add New Activity</a>
+          <a href="{% url 'activity:calendar_url' %}"><i class="fa fa-calendar"></i> My Calendar Link</a>
         </div></p>
      </div>
     </div>
@@ -40,11 +41,9 @@
                 <label for="exampleInputEmail1">ACTIVITY STATUS</label>
                 <select class="form-control" id="id_status" name="status" >
                   <option value="">--Status of Activity--</option>
-                  <option value="in process">In Process</option>
-                  <option value="converted">Converted</option>
-                  <option value="recycled">Recycled</option>
-                  <option value="assigned">Assigned</option>
-                  <option value="dead">Dead</option>
+                  <option value="assigned"{% if request.POST.status == 'assigned' %} selected=true {% endif %}>Assigned</option>
+                  <option value="in process" {% if request.POST.status == 'in process' %} selected=true {% endif %}>In Process</option>
+                  <option value="completed"{% if request.POST.status == 'completed' %} selected=true {% endif %}>Completed</option>
                 </select>
               </div>
             </div>
@@ -53,9 +52,9 @@
                 <label for="exampleInputEmail1">ACTIVITY TYPE</label>
                 <select class="form-control" id="id_activity_type" name="activity_type" >
                   <option value="">--Types of Activity--</option>
-                  <option value="email">Email</option>
-                  <option value="phone call">Phone Call</option>
-                  <option value="meeting">Meeting</option>
+                  <option value="email" {% if request.POST.activity_type == 'email' %} selected=true {% endif %}>Email</option>
+                  <option value="phone call" {% if request.POST.activity_type == 'phone call' %} selected=true {% endif %}>Phone Call</option>
+                  <option value="meeting" {% if request.POST.activity_type == 'meeting' %} selected=true {% endif %}>Meeting</option>
                 </select>
               </div>
             </div>
@@ -63,18 +62,49 @@
               <br>
               <h6>Schedule Information</h6>
             </div>
-            <div style = "clear:both" class="filter_col col-md-4">
+            <div style = "clear:both" class="filter_col col-md-6">
               <div class="form-group">
                 <label for="exampleInputEmail1">START DATE</label>
-                <input type="text" class="form-control" placeholder="Activity starts after (including) YYYY-MM-DD HH:MM:SS (24-hour)" name="startdate" value="{{request.POST.startdate}}">
+                <div class="input-group date" id="datetimepicker1">
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD HH:MM (24-hour)" name="startdate" value="{{request.POST.startdate}}" />
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span></div>
               </div>
             </div>
-            <div class="filter_col col-md-4">
+
+            <div class="filter_col col-md-6">
               <div class="form-group">
                 <label for="exampleInputEmail1">END DATE</label>
-                <input type="text" class="form-control" placeholder="Activity ends before (including) YYYY-MM-DD HH:MM:SS (24-hour)" name="enddate" value="{{request.POST.enddate}}">
+                <div class="input-group date" id="datetimepicker2">
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD HH:MM (24-hour)" name="enddate" value="{{request.POST.enddate}}">
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span></div>
               </div>
             </div>
+
+            <script type="text/javascript">
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            useCurrent: false, //Important! See issue #1075
+            format: "YYYY-MM-DD HH:mm"
+
+        });
+
+        $('#datetimepicker2').datetimepicker({
+            useCurrent: false,//Important! See issue #1075,
+            format: "YYYY-MM-DD HH:mm"
+
+        });
+        $("#datetimepicker1").on("dp.change", function (e) {
+            $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker2").on("dp.change", function (e) {
+            $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+</script>
 
             <div style = "clear:both" class="filter_col text-center">
               <div class="form-group">
@@ -102,13 +132,13 @@
           <table class="table table-bordered table-striped table-condensed">
             <thead>
               <tr>
-                <th width="5%" style="text-align:center;">S.No</th>
-                <th width="15%" style="text-align:center;">NAME</th>
+                <!-- <th width="5%" style="text-align:center;">S.No</th> -->
+                <th width="20%" style="text-align:center;">NAME</th>
                 <th width="10%" style="text-align:center;">STATUS</th>
-                <!-- <th width="20%" style="text-align:center;">ASSIGNED USER</th> -->
+                <th width="10%" style="text-align:center;">TYPE</th>
                 <th width="15%" style="text-align:center;">START DATE</th>
-                <th width="30%" style="text-align:center;">ORGANIZATION</th>
-                <th width="30%" style="text-align:center;">ACTIONS</th>
+                <th width="15%" style="text-align:center;">END DATE</th>
+                <th width="15%" style="text-align:center;">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -119,11 +149,12 @@
               {% endif %}
               {% for activity in activity_obj %}
               <tr class="text-center">
-                <td scope="row">{{ forloop.counter }}</td>
-                <td><a >{{ activity.name }}</a></td>
+                <!-- <td scope="row">{{ forloop.counter }}</td> -->
+                <td><a href="{% url 'activity:view_activity' activity.id %}">{{ activity.name }}</a></td>
                 <td>{{ activity.status }}</td>
+                <td>{{ activity.activity_type }}</td>
                 <td>{{ activity.startdate }}</td>
-                <td>{{ activity.org }}</td>
+                <td>{{ activity.enddate }}</td>
                 <td>
                   <a href="{% url 'activity:view_activity' activity.id %}" class="btn btn-info">View</a>
                   <a href="{% url 'activity:edit_activity' activity.id%}" class="btn btn-success">Edit</a>

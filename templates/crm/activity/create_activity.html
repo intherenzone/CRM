@@ -4,7 +4,7 @@
 <h3 align="center">
   <ol class="breadcrumb">
     <li><a href="{% url 'activity:list' %}">Activities</a></li>
-    <li class="active">Create</li>
+    <li class="active">{% if CREATE %}Create{% else %}Edit{% endif %}</li>
   </ol></h3>
 {% endblock %}
 {%block content%}
@@ -20,7 +20,7 @@
               <div class="col-md-6">
                 <div class="filter_col col-md-12">
                   <div class="form-group">
-                    <label for="exampleInputEmail1" class="name" >Name</label>
+                    <label for="exampleInputEmail1" class="name" >Activity Name</label>
                     {{ activity_form.name }}
                     <span>{{ activity_form.name.errors }}</span>
                   </div>
@@ -28,24 +28,47 @@
                 <div class="filter_col col-md-12">
                   <div class="form-group ">
                     <label for="exampleInputEmail1">Start date</label>
-                    {{ activity_form.startdate }}
-                    <span>{{ activity_form.startdate.errors }}</span>
+                    <div class="input-group date" id="datetimepicker1">
+                    <input type="text" class="form-control" placeholder="YYYY-MM-DD HH:MM (24-hour)" name="startdate" value="{{request.POST.startdate}}" />
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span></div>
+
                   </div>
                 </div>
                 <div class="filter_col col-md-12">
                   <div class="form-group">
                     <label for="exampleInputEmail1"/>End Date</label>
-                    {{ activity_form.enddate }}
-                    {{ activity_form.enddate.errors }}
+                    <div class="input-group date" id="datetimepicker2">
+                    <input type="text" class="form-control" placeholder="YYYY-MM-DD HH:MM (24-hour)" name="enddate" value="{{request.POST.startdate}}" />
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span></div>
+
                   </div>
                 </div>
-                <div class="filter_col col-md-12">
-                  <div class="form-group ">
-                    <label for="exampleInputEmail1" class="required">Email Address</label>
-                    {{ activity_form.email }}
-                    <span>{{ activity_form.email.errors }}</span>
-                  </div>
-                </div>
+                <script type="text/javascript">
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            useCurrent: false, //Important! See issue #1075
+            format: "YYYY-MM-DD HH:mm"
+
+        });
+
+        $('#datetimepicker2').datetimepicker({
+            useCurrent: false,//Important! See issue #1075,
+            format: "YYYY-MM-DD HH:mm"
+
+        });
+        $("#datetimepicker1").on("dp.change", function (e) {
+            $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker2").on("dp.change", function (e) {
+            $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+</script>
+
                 <div class="filter_col col-md-12">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Assigned Users</label>
@@ -99,7 +122,7 @@
   </form>
 {% endblock %}
 {% block js_block %}
-  <script src="{% static 'js/activity/activity.js' %}"></script>
+  <script src="{% static 'js/activities/activity.js' %}"></script>
   <script type="text/javascript">
     $(function () {
        var date = new Date();

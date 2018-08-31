@@ -111,12 +111,13 @@
           <table class="table table-bordered table-striped table-condensed">
             <thead>
               <tr>
-                <th width="5%" style="text-align:center;">S.No</th>
+                <!-- <th width="5%" style="text-align:center;">S.No</th> -->
                 <th width="20%" style="text-align:center;">NAME</th>
-                <th width="15%" style="text-align:center;">CITY</th>
+                <th width="15%" style="text-align:center;">PHONE</th>
                 <!-- <th width="20%" style="text-align:center;">ACCOUNT</th> -->
-                <th width="15%" style="text-align:center;">STATE</th>
-                <th width="25%" style="text-align:center;">ACTIONS</th>
+                <th width="25%" style="text-align:center;">EMAIL</th>
+                <th width="15%" style="text-align:center;">ORGANIZATION</th>
+                <th width="15%" style="text-align:center;">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -127,25 +128,38 @@
               {% endif %}
               {% for contact in contact_obj_list %}
               <tr style="text-align:center;">
-                <td scope="row">{{ forloop.counter }}</td>
+                <!-- <td scope="row">{{ forloop.counter }}</td> -->
                 <td><a href="{% url 'contacts:view_contact' contact.id %}">{{contact}}</a></td>
                 <td>
-                  {% if contact.address.city %}
-                    {{contact.address.city}}
+                  {% if contact.phone %}
+                    {% if contact.phone|length == 10 %}
+                      ({{contact.phone.0}}{{contact.phone.1}}{{contact.phone.2}})
+                      {{contact.phone.3}}{{contact.phone.4}}{{contact.phone.5}}-{{contact.phone.6}}{{contact.phone.7}}{{contact.phone.8}}{{contact.phone.9}}
+                    {% else %}
+                      {{contact.phone}}
+                    {% endif %}
                   {% else %}
                     Not Specified
                   {% endif %}
                 </td>
                 <td>
-                  {% if contact.address.state %}
-                    {{contact.address.state}}
+                  {% if contact.email %}
+                    {{contact.email}}
+                  {% else %}
+                    Not Specified
+                  {% endif %}
+                </td>
+                <td>
+                  {% if contact.organization %}
+                  <a href="{% url 'organizations:view_organization' contact.organization.id %}">
+                    {{contact.organization}}
                   {% else %}
                     Not Specified
                   {% endif %}
                 </td>
                 <td>
                   <a href="{% url 'contacts:view_contact' contact.id %}" class="btn btn-info">View</a>
-                  <a href="{% url 'contacts:edit_contact' contact.id%}" class="btn btn-success">Edit</a>
+                  <a href="{% url 'contacts:edit_contact' contact.id %}" class="btn btn-success">Edit</a>
                   <a href="{% url 'contacts:remove_contact' contact.id %}" class="btn btn-danger delete">Delete</a>
                 </td>
               </tr>

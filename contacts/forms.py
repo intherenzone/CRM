@@ -18,11 +18,12 @@ class ContactForm(forms.ModelForm):
         self.fields['organization'].required = False
         self.fields['assigned_to'].required = False
         self.fields['teams'].required = False
+        self.fields['title'].required = False
 
     class Meta:
         model = Contact
         fields = (
-            'assigned_to', 'organization', 'teams', 'first_name', 'last_name', 'email', 'phone', 'address', 'description'
+            'assigned_to', 'organization', 'title','teams', 'first_name', 'last_name', 'email', 'phone', 'address', 'description'
         )
 
     def format_phone(phone):

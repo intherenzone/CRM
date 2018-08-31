@@ -21,7 +21,7 @@
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'organizations:edit_organization' organization_record.id %}">Edit</a></li>
-                    <li class="delete" ><a href="{% url 'organizations:remove_organization' organization_record.id %}" id="remove_organization">REMOVE</a></li>
+                    <li class="delete_organization" ><a href="{% url 'organizations:remove_organization' organization_record.id %}" id="remove_organization" class="delete">REMOVE</a></li>
                   </ul>
                 </div>
               </span>
@@ -39,7 +39,18 @@
                 <div class="filter_col col-md-12">
                   <div class="form-group">
                     <label class="organization_field_label" for="id_phone" data-name="name">Phone</label>
-                    <div class="organization_field" id="organization_phone" data-name="name">{{ organization_record.phone }}</div>
+                    <div class="organization_field" id="organization_phone" data-name="name">
+                      {% if organization_record.phone %}
+                        {% if organization_record.phone|length == 10 %}
+                          ({{organization_record.phone.0}}{{organization_record.phone.1}}{{organization_record.phone.2}})
+                          {{organization_record.phone.3}}{{organization_record.phone.4}}{{organization_record.phone.5}}-{{organization_record.phone.6}}{{organization_record.phone.7}}{{organization_record.phone.8}}{{organization_record.phone.9}}
+                        {% else %}
+                          {{organization_record.phone}}
+                        {% endif %}
+                      {% else %}
+                        Not Specified
+                      {% endif %}
+                    </div>
                   </div>
                 </div>
                 <div class="filter_col col-md-12">
@@ -50,28 +61,35 @@
                 </div>
               </div>
               <div class="col-md-4">
+                <div class="filter_col col-md-12" id="iname">
+                  <div class="form-group" >
+                    <label class="organization_field_label" for="id_contacts" data-name="name">Contacts</label>
+                    <div class="organization_field" id="organization_contacts" data-name="name">{% for contact in contacts %}<li><a href="{% url 'contacts:view_contact' contact.id %}">{{ contact }}</a></li>{% endfor %}
+                    </div>
+                  </div>
+                </div>
                 <div class="filter_col col-md-12">
                   <div class="form-group">
                     {% if organization_record.address.address_line or organization_record.address.street or organization_record.address.city or  organization_record.address.state or organization_record.address.postcode or organization_record.address.country %}
                     <label class="organization_field_label" for="id_address" data-name="name" >Address</label>
                     <div class="organization_field" id="organization_address" data-name="name">
                       {% if organization_record.address.address_line %}
-                        Address Line: {{organization_record.address.address_line}}</br>
+                        {{organization_record.address.address_line}}</br>
                       {% endif %}
                       {% if organization_record.address.street %}
-                        Street: {{ organization_record.address.street }}</br>
+                        {{ organization_record.address.street }}</br>
                       {% endif %}
                       {% if organization_record.address.city %}
-                        City: {{ organization_record.address.city }}</br>
+                        {{ organization_record.address.city }},
                       {% endif %}
                       {% if organization_record.address.state %}
-                        State: {{ organization_record.address.state }}</br>
+                        {{ organization_record.address.state }}
                       {% endif %}
                       {% if organization_record.address.postcode %}
-                        Post Code: {{ organization_record.address.postcode }}</br>
+                        {{ organization_record.address.postcode }}</br>
                       {% endif %}
                       {% if organization_record.address.country %}
-                        Country: {{ organization_record.address.get_country_display }}
+                        {{ organization_record.address.get_country_display }}
                       {% endif %}
                     </div>
                     {% endif %}
@@ -85,6 +103,12 @@
                     {% endif %}
                   </div>
                 </div>
+                <div class="filter_col col-md-12">
+              <div class="form-group">
+                <label class="organization_field_label" for="id_website" data-name="website">Website</label>
+                <div class="organization_field" id="organization_website" data-name="website">{{ organization_record.website }}</div>
+              </div>
+            </div>
               </div>
             </div>
           </div>
@@ -164,7 +188,7 @@
                 <div class="form-group">
                   <label class="organization_field_label" for="id_assigned_user" data-name="name">Assigned User(s)</label>
                   <div class="organization_field" id="organization_assigned_users" data-name="name">
-                    {%if not organization_record.assigned_to %}
+                    {% if organization_record.assigned_to %}
                       Not Assigned Yet
                     {% else %}
                       {% for user in organization_record.assigned_to.all %}
@@ -178,8 +202,8 @@
                 <div class="form-group">
                   <label class="organization_field_label" for="id_team" data-name="name">Assigned Team(s)</label>
                   <div class="organization_field" id="organization_team" data-name="name">
-                    {%if not organization_record.teams %}
-                      Not Assigned Yet
+                    {% if organization_record.teams %}
+                      Not Assigned To Any Teams
                     {% else %}
                       {% for team in organization_record.teams.all %}
                         <li>{{ team }}</li>
@@ -223,5 +247,5 @@
      window.location = $(this).attr('href')
   });
   </script>
-  <script src="{% static 'js/organizations/view_organization.js' %}"></script>
+  <script src="{% static 'crm/js/organizations/view_organization.js' %}"></script>
   {% endblock js_block %}

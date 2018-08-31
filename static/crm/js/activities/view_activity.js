@@ -14,6 +14,8 @@ function getCookie(name) {
   return cookieValue;
 }
 
+
+
 $("#comment_form").submit(function (e) {
   e.preventDefault()
   var formData = new FormData($("#comment_form")[0]);
@@ -38,7 +40,7 @@ $("#comment_form").submit(function (e) {
           "<li><a class='action' onclick='remove_comment(" + data.comment_id + ")''>Remove</a></li></ul></div></div>" +
           "<div class='stream-head-container'> " + data.commented_by + " Commented</div>" +
           "<div class='stream-post-container' id='comment_name" + data.comment_id + "'><pre>" + data.comment + "</pre></div>" +
-          "<div class='stream-date-container" + data.comment_id + "'>" + d.toGMTString() + "</div></div><div class='stream-date-container' id='comment_file_div" + data.comment_id + "'><div id='new_comment" + data.comment_id + "'</div></div></li>"
+          "<div class='stream-date-container" + data.comment_id + "'>" + "Just Now" + "</div></div><div class='stream-date-container' id='comment_file_div" + data.comment_id + "'><div id='new_comment" + data.comment_id + "'</div></div></li>"
         )
         $("#id_comments").val("")
         alert("Comment Submitted")
@@ -49,7 +51,7 @@ $("#comment_form").submit(function (e) {
 
 
 function edit_comment(x) {
-  $('#Comments_Contacts_Modal').modal('show');
+  $('#Comments_Activity_Modal').modal('show');
   comment = $("#comment_name" + x).text()
   $("#commentid").val(x)
   $("#id_editcomment").val(comment)
@@ -59,7 +61,7 @@ $("#comment_edit").click(function (e) {
   e.preventDefault()
   var formData = new FormData($("#comment_edit_form")[0]);
   $.ajax({
-    url: "/activities/comment/edit/",
+    url: "activity/comment/edit/",
     type: "POST",
     data: formData,
     cache: false,
@@ -70,7 +72,7 @@ $("#comment_edit").click(function (e) {
         $("#CommentEditError").html(data.error).show()
       } else {
         $("#comment_name" + data.commentid).html('<pre>' + data.comment + '</pre>')
-        $('#Comments_Contacts_Modal').modal('hide');
+        $('#Comments_Activity_Modal').modal('hide');
         $("#id_editcomment").val("")
         $("#CommentEditError").hide()
       }
@@ -87,7 +89,7 @@ function remove_comment(x) {
   var csrftoken = getCookie('csrftoken');
   var con = confirm("Do you want to Delete it for Sure!?")
   if (con == true) {
-    $.post('/activities/comment/remove/', {
+    $.post('/activity/comment/remove/', {
       "comment_id": x,
       "csrfmiddlewaretoken": csrftoken,
     }, function (data) {

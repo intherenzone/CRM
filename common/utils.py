@@ -42,11 +42,9 @@ TYPECHOICES = (
 )
 
 LEAD_STATUS = (
-    ('assigned', 'Assigned'),
-    ('in process', 'In Process'),
-    ('converted', 'Converted'),
-    ('recycled', 'Recycled'),
-    ('dead', 'Dead')
+    ('Assigned', 'Assigned'),
+    ('In Process', 'In Process'),
+    ('Completed', 'Completed')
 )
 
 

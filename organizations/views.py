@@ -3,11 +3,12 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from common.models import Address, Comment, Team
+from common.models import Address, Comment, Team, News
 from common.forms import BillingAddressForm
 from common.utils import LEAD_STATUS, LEAD_SOURCE, COUNTRIES
 from organizations.models import Organization
 from organizations.forms import OrganizationForm, OrganizationCommentForm
+from contacts.models import Contact
 
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -22,6 +23,8 @@ def organizations_list(request):
     page = request.POST.get('per_page')
     name = request.POST.get('name')
     city = request.POST.get('city')
+    state = request.POST.get('state')
+    website = request.POST.get('website')
     phone = request.POST.get('phone')
     email = request.POST.get('email')
 #    source= request.POST.get('lead_source')
@@ -31,10 +34,15 @@ def organizations_list(request):
     if city:
         a = Address.objects.filter(city__icontains=city)
         org_obj = Organization.objects.filter(address__in=a)
+    if state:
+        a = Address.objects.filter(state__icontains=state)
+        org_obj = Organization.objects.filter(address__in=a)
     if phone:
         org_obj = Organization.objects.filter(phone__icontains=phone)
     if email:
         org_obj = Organization.objects.filter(email__icontains=email)
+    if website:
+        org_obj = Organization.objects.filter(website__icontains=website)
 #    if source:
 #        org_obj = Organization.objects.filter(source__icontains=source)
 
@@ -62,14 +70,37 @@ def add_organization(request):
             org_obj = form.save(commit=False)
             org_obj.address = address_obj
             org_obj.created_by = request.user
-            org_obj.save()
-            org_obj.assigned_to.add(*assignedto_list)
-            org_obj.teams.add(*teams_list)
+            existing_organizations = Organization.objects.all().filter(name=org_obj.name)
+            existing_organizations = existing_organizations.filter(address__street=org_obj.address.street)
+            existing_organizations = existing_organizations.filter(address__city=org_obj.address.city)
+            existing_organizations = existing_organizations.filter(address__state=org_obj.address.state)
+            existing_organizations = existing_organizations.filter(address__address_line=org_obj.address.address_line)
+            if len(existing_organizations)==0:
+                org_obj.save()
+                org_obj.assigned_to.add(*assignedto_list)
+                org_obj.teams.add(*teams_list)
+            else:
+                return render(request, 'crm/organizations/create_organization.html', {
+                        'organization_form': form,
+                        'address_form': address_form,
+                        'users': users,
+                        'source': LEAD_SOURCE,
+                        'teams': teams,
+                        'assignedto_list': assignedto_list,
+                        'teams_list': teams_list,
+                        'CREATE': 'CREATE',
+                        'DUPLICATE': 'DUPLICATE'
+                })
+
             if request.is_ajax():
                 return JsonResponse({'error': False})
             if request.POST.get("savenewform"):
+                news = News(actor = request.user, organization = org_obj, type = "add_organization", object_name = org_obj.name)
+                news.save()
                 return HttpResponseRedirect(reverse("organizations:add_organization"))
             else:
+                news = News(actor = request.user, organization = org_obj, type = "add_organization", object_name = org_obj.name)
+                news.save()
                 return HttpResponseRedirect(reverse('organizations:list'))
         else:
             if request.is_ajax():
@@ -81,7 +112,8 @@ def add_organization(request):
                           'source': LEAD_SOURCE,
                           'teams': teams,
                           'assignedto_list': assignedto_list,
-                          'teams_list': teams_list
+                          'teams_list': teams_list,
+                          'CREATE': 'CREATE'
             })
     else:
         return render(request, 'crm/organizations/create_organization.html', {
@@ -91,16 +123,19 @@ def add_organization(request):
                       'source': LEAD_SOURCE,
                       'teams': teams,
                       'assignedto_list': assignedto_list,
-                      'teams_list': teams_list
+                      'teams_list': teams_list,
+                      'CREATE': 'CREATE'
         })
 
 
 @login_required
 def view_organization(request, organization_id):
     organization_record = get_object_or_404(Organization, id=organization_id)
+    contacts = Contact.objects.all().filter(organization__id=organization_id)
     comments = organization_record.organization_comments.all()
     return render(request, 'crm/organizations/view_organization.html', {
         'organization_record': organization_record,
+        'contacts' : contacts,
         'comments': comments})
 
 
@@ -130,6 +165,8 @@ def edit_organization(request, pk):
             org_obj.assigned_to.add(*assignedto_list)
             org_obj.teams.clear()
             org_obj.teams.add(*teams_list)
+            news = News(actor = request.user, organization = org_obj, type = "edit_organization", object_name = org_obj.name)
+            news.save()
             if request.is_ajax():
                 return JsonResponse({'error': False})
             return HttpResponseRedirect(reverse('organizations:list'))
@@ -161,7 +198,12 @@ def edit_organization(request, pk):
 @login_required
 def remove_organization(request, pk):
     organization_record = get_object_or_404(Organization, id=pk)
+    actor = organization_record.created_by
+    name = organization_record.name
     organization_record.delete()
+    news = News(actor = actor, type = "delete_organization", object_name = name)
+    news.save()
+    print(news.object_name)
     if request.is_ajax():
         return JsonResponse({'error': False})
     else:
@@ -183,6 +225,8 @@ def add_comment(request):
                 organization_comment.commented_by = request.user
                 organization_comment.organization = organization
                 organization_comment.save()
+                news = News(actor = request.user, comment = organization_comment, type = "comment")
+                news.save()
                 data = {"comment_id": organization_comment.id,"comment": organization_comment.comment,
                         "commented_on": organization_comment.commented_on,
                         "commented_by": organization_comment.commented_by.email}

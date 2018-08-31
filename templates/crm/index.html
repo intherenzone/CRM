@@ -1,2 +1,469 @@
 {% extends 'crm/base.html' %}
-      <a href="/logout/"><button class="btn btn-primary" type="button">Logout</button></a
+
+{% block head %}
+{{block.super}}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
+
+{% load staticfiles %}
+{% load paginate %}
+
+
+{% block content %}
+<div class="container-fluid">
+  <div class="col-sm-8">
+    <div class="table_container_row">
+      <div class="panel panel-default">
+        <div class="panel-heading-list text-center">
+          SOME STATISTICS FOR YOU...
+
+            <div class="dropdown">
+             <button class="fa fa-info" type="button" data-toggle="dropdown" style="background-color: transparent; outline: none; border: none;"></button>
+             <ul class="dropdown-menu">
+               <p style="padding: 10px;">Pie Charts illustrating your activity stats vs the entire company.</p>
+             </ul>
+            </div>
+
+        </div>
+        <div class="panel-content">
+
+                {{ activity_type_chart|safe }} {{ status_chart|safe }}
+
+        </div>
+      </div>
+    </div>
+    <br clear="all">
+  </div>
+  <div class="col-sm-4">
+    <div class="table_container_row">
+      <div class="panel panel-default">
+        <div class="panel-heading-list text-center">
+          RECENT NEWS
+            <div class="dropdown">
+             <button class="fa fa-info" type="button" data-toggle="dropdown" style="background-color: transparent; outline: none; border: none;"></button>
+             <ul class="dropdown-menu">
+               <p style="padding: 10px;">Most recent actions done by you and your colleagues.</p>
+             </ul>
+            </div>
+
+        </div>
+        <div class="panel-content">
+          <table class="table table-bordered table-striped table-condensed">
+              <tbody>
+                {% for news in newsfeed %}
+                <tr style="text-align:left;">
+                  <td scope="row">{{ news.date }}</td>
+                  <td>
+                    {% if news.type == "add_activity" %}
+
+                      {% if news.activity %}
+
+                        {% if user == news.activity.created_by %}
+                          A new activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> has been created by you.
+                        {% else %}
+                          {% if user in news.activity.assigned_to.all %}
+
+                            {% if news.activity.assigned_to.all|length == 1 %}
+                              You were assigned to a new activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> by {{news.actor}}.
+                            {% else %}
+                              You and {{news.activity.assigned_to.all|length|add:-1}} others are assigned to a new activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> by {{news.actor}}.
+                            {% endif %}
+
+                          {% else %}
+                            A new activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> has been created by {{news.actor}}.
+                          {%endif%}
+
+                        {% endif %}
+
+                      {% else %}
+                          <!-- Case when activity has been deleted, then object can no longer be linked. -->
+                          A new activity, "{{news.object_name}}," has been created by {{news.actor}}. This activity has since been deleted.
+                      {% endif %}
+
+                    {% elif news.type == "edit_activity" %}
+
+                      {% if news.activity %}
+
+                        {% if user == news.actor %}
+                          You modified an activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a>.
+                        {% else %}
+                          An activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> was modified by {{news.actor}}.
+                        {% endif %}
+
+                      {% else %}
+                        An activity, "{{news.object_name}}," was modified by {{news.actor}}. This activity has since been deleted.
+                      {% endif %}
+
+                    {% elif news.type == "delete_activity" %}
+                      An activity, "{{news.object_name}}" was deleted by {{news.actor}}.
+
+                    {% elif news.type == "add_contact" %}
+
+                      {% if news.contact %}
+
+                        {% if user == news.actor %}
+                          A new contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> has been created by you.
+                        {% else %}
+                          {% if user in news.contact.assigned_to.all %}
+
+                            {% if news.contact.assigned_to.all|length == 1 %}
+                              You were assigned to a new contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> by {{news.actor}}.
+                            {% else %}
+                              You and {{news.contact.assigned_to.all|length|add:-1}} others are assigned to a new contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> by {{news.actor}}.
+                            {% endif %}
+
+                          {% else %}
+                            A new contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> has been created by {{news.actor}}.
+                          {%endif%}
+
+                        {% endif %}
+
+                      {% else %}
+                        A new contact, {{news.object_name}}, has been created by {{news.actor}}. This contact has since been deleted.
+                      {% endif %}
+
+                    {% elif news.type == "edit_contact" %}
+
+                      {% if news.contact %}
+
+                        {% if user == news.actor %}
+                          You modified a contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a>.
+                        {% else %}
+                          A contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> was modified by {{news.actor}}.
+                        {% endif %}
+
+                      {% else %}
+                        A contact, {{news.object_name}}, was modified by {{news.actor}}. This contact has since been deleted.
+                      {% endif %}
+
+                    {% elif news.type == "delete_contact" %}
+                      A contact, {{news.object_name}} was deleted by {{news.actor}}.
+
+                    {% elif news.type == "add_organization" %}
+
+                      {% if news.organization %}
+
+                        {% if user == news.actor %}
+                          A new organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a> has been created by you.
+                        {% else %}
+                          {% if user in news.organization.assigned_to.all %}
+
+                            {% if news.contact.assigned_to.all|length == 1 %}
+                              You were assigned to a new organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a> by {{news.actor}}.
+                            {% else %}
+                              You and {{news.organization.assigned_to.all|length|add:-1}} others are assigned to a new organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a> by {{news.actor}}.
+                            {% endif %}
+
+                          {% else %}
+                            A new organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a> has been created by {{news.actor}}.
+                          {%endif%}
+
+                        {% endif %}
+
+                      {% else %}
+                        A new organization, {{news.object_name}}, has been created by {{news.actor}}. This organization has since been deleted.
+                      {% endif %}
+
+                    {% elif news.type == "edit_organization" %}
+
+                      {% if news.organization %}
+
+                        {% if user == news.actor %}
+                          You modified an organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a>.
+                        {% else %}
+                          An organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a> was modified by {{news.actor}}.
+                        {% endif %}
+
+                      {% else %}
+                        An organization, {{news.object_name}} was modified by {{news.actor}}. This organization has since been deleted.
+                      {% endif %}
+
+                      {% elif news.type == "delete_organization" %}
+                        An organization, {{news.object_name}} was deleted by {{news.actor}}.
+
+                    {% elif news.comment %}
+                      {% if news.comment.activity %}
+                        {% if user == news.actor %}
+                          You commented on the activity, <a href="{% url 'activity:view_activity' news.comment.activity.id %}">{{news.object_name}}</a>.
+                        {% else %}
+                          {{news.actor}} commented on the activity, <a href="{% url 'activity:view_activity' news.comment.activity.id %}">{{news.object_name}}</a>.
+                        {% endif %}
+
+                      {% elif news.comment.contact %}
+                        {% if user == news.actor %}
+                          You commented on the contact, <a href="{% url 'contacts:view_contact' news.comment.contact.id %}">{{news.object_name}}</a>.
+                        {% else %}
+                          {{news.actor}} commented on thie contact, <a href="{% url 'contacts:view_contact' news.comment.contact.id %}">{{news.object_name}}</a>.
+                        {% endif %}
+
+                      {% elif news.comment.organization %}
+                        {% if user == news.actor %}
+                          You commented on the organization, <a href="{% url 'organizations:view_organization' news.comment.organization.id %}">{{news.object_name}}</a>.
+                        {% else %}
+                          {{news.actor}} commented on the organization, <a href="{% url 'organizations:view_organization' news.comment.organization.id %}">{{news.object_name}}</a>.
+                        {% endif %}
+
+                      {%endif%}
+                    {%endif%}
+                  </td>
+                </tr>
+                {% endfor%}
+              </tbody>
+            </table>
+            <span><a href="{% url 'common:newsfeed' %}">See All</a></span>
+        </div>
+      </div>
+    </div>
+    <br clear="all">
+  </div>
+</div>
+
+<div class="container-fluid">
+
+    <div class="col-sm-6">
+      <div class="table_container_row">
+        <div class="panel panel-default">
+          <div class="panel-heading-list text-center">
+            MY CONTACTS
+            <div class="dropdown">
+             <button class="fa fa-info" type="button" data-toggle="dropdown" style="background-color: transparent; outline: none; border: none;"></button>
+             <ul class="dropdown-menu">
+               <p style="margin: auto;">List of CONTACTS assigned to you.</p>
+             </ul>
+            </div>
+
+            <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Contacts {{contacts|length}}{% endif %}</span>
+          </div>
+          <div class="panel-content">
+            <table class="table table-bordered table-striped table-condensed">
+              <thead>
+                <tr>
+                  <th width="5%" style="text-align:center;"></th>
+                  <th width="15%" style="text-align:center;">NAME</th>
+                  <th width="20%" style="text-align:center;">PHONE</th>
+                  <th width="25%" style="text-align:center;">EMAIL</th>
+                  <th width="15%" style="text-align:center;">ORGANIZATION</th>
+                  <th width="15%" style="text-align:center;">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if per_page %}
+                  {% paginate per_page contacts %}
+                {% else%}
+                  {% paginate 10 contacts %}
+                {% endif %}
+                {% for contact in contacts %}
+                <tr style="text-align:center;">
+                  <td scope="row">{{ forloop.counter }}</td>
+                  <td><a href="{% url 'contacts:view_contact' contact.id %}">{{contact}}</a></td>
+                  <td>
+                    {% if contact.phone %}
+                      {% if contact.phone|length == 10 %}
+                        ({{contact.phone.0}}{{contact.phone.1}}{{contact.phone.2}})
+                        {{contact.phone.3}}{{contact.phone.4}}{{contact.phone.5}}-{{contact.phone.6}}{{contact.phone.7}}{{contact.phone.8}}{{contact.phone.9}}
+                      {% else %}
+                        {{contact.phone}}
+                      {% endif %}
+                    {% else %}
+                      Not Specified
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if contact.email %}
+                      {{contact.email}}
+                    {% else %}
+                      Not Specified
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if contact.organization %}
+                    <a href="{% url 'organizations:view_organization' contact.organization.id %}">
+                      {{contact.organization}}
+                    {% else %}
+                      Not Specified
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{% url 'contacts:view_contact' contact.id %}" class="btn btn-info">View</a>
+                  </td>
+                </tr>
+                {% endfor%}
+              </tbody>
+            </table>
+            {%ifequal contacts|length 0 %}
+              <h4 class="text-center">No Contact Records Found</h4>
+            {%endifequal%}
+            <div class="marl row text-center">
+              {% show_pages %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <br clear="all">
+    </div>
+
+    <div class="col-sm-6">
+      <div class="table_container_row marl ">
+        <div class="panel panel-default">
+          <div class="panel-heading-list text-center">
+            MY ORGANIZATIONS
+
+            <div class="dropdown">
+             <button class="fa fa-info" type="button" data-toggle="dropdown" style="background-color: transparent; outline: none; border: none;"></button>
+             <ul class="dropdown-menu">
+               <p style="margin: auto;">List of ORGANIZATIONS assigned to you.</p>
+             </ul>
+            </div>
+
+            <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total Organizations {{ organizations|length }}{% endif %}</span>
+          </div>
+          <div class="panel-content">
+            <table class="table table-bordered table-striped table-condensed">
+              <thead>
+                <tr>
+                  <th width="5%" style="text-align:center;"></th>
+                  <th width="20%" style="text-align:center;">ORGANIZATION NAME</th>
+                  <!-- <th width="20%" style="text-align:center;">ASSIGNED USER</th> -->
+                  <th width="25%" style="text-align:center;">PHONE</th>
+                  <th width="30%" style="text-align:center;">EMAIL</th>
+                  <th width="15%" style="text-align:center;">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if per_page %}
+                  {% paginate per_page organizations %}
+                {% else %}
+                  {% paginate 10 organizations %}
+                {% endif %}
+                {% for org in organizations %}
+                <tr class="text-center">
+                  <td scope="row">{{ forloop.counter }}</td>
+                  <td><a href="{% url 'organizations:view_organization' org.id %}" > {{ org.name }}</a></td>
+                  <td>
+                    {% if org.phone %}
+                      {% if org.phone|length == 10 %}
+                        ({{org.phone.0}}{{org.phone.1}}{{org.phone.2}})
+                        {{org.phone.3}}{{org.phone.4}}{{org.phone.5}}-{{org.phone.6}}{{org.phone.7}}{{org.phone.8}}{{org.phone.9}}
+                      {% else %}
+                        {{org.phone}}
+                      {% endif %}
+                    {% else %}
+                      Not Specified
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if org.email %}
+                      {{org.email}}
+                    {% else %}
+                      Not Specified
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{% url 'organizations:view_organization' org.id %}" class="btn btn-info ">View</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {%ifequal organizations|length 0%}
+              <h4 class="text-center">No Organizations Records Found</h4>
+            {%endifequal%}
+            <div class="marl row text-center">
+              {% show_pages %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+  {% for team_to_contacts in teams_to_contacts %}
+  <div class="col-sm-6">
+    <div class="table_container_row row marl">
+      <div class="panel panel-default">
+        <div class="panel-heading-list text-center">
+          TEAM {{ team_to_contacts.0 }}
+          <span class="pull-right total_count">Total Contacts {{team_to_contacts.1|length}}</span>
+        </div>
+        <div class="panel-content">
+          <table class="table table-bordered table-striped table-condensed">
+            <thead>
+              <tr>
+                <th width="5%" style="text-align:center;"></th>
+                <th width="15%" style="text-align:center;">NAME</th>
+                <th width="20%" style="text-align:center;">PHONE</th>
+                <th width="25%" style="text-align:center;">EMAIL</th>
+                <th width="15%" style="text-align:center;">ORGANIZATION</th>
+                <th width="15%" style="text-align:center;">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for contact in team_to_contacts.1 %}
+              <tr style="text-align:center;">
+                <td scope="row">{{ forloop.counter }}</td>
+                <td><a href="{% url 'contacts:view_contact' contact.id %}">{{contact}}</a></td>
+                <td>
+                  {% if contact.phone %}
+                    {% if contact.phone|length == 10 %}
+                      ({{contact.phone.0}}{{contact.phone.1}}{{contact.phone.2}})
+                      {{contact.phone.3}}{{contact.phone.4}}{{contact.phone.5}}-{{contact.phone.6}}{{contact.phone.7}}{{contact.phone.8}}{{contact.phone.9}}
+                    {% else %}
+                      {{contact.phone}}
+                    {% endif %}
+                  {% else %}
+                    Not Specified
+                  {% endif %}
+                </td>
+                <td>
+                  {% if contact.email %}
+                    {{contact.email}}
+                  {% else %}
+                    Not Specified
+                  {% endif %}
+                </td>
+                <td>
+                  {% if contact.organization %}
+                  <a href="{% url 'organizations:view_organization' contact.organization.id %}">
+                    {{contact.organization}}
+                  {% else %}
+                    Not Specified
+                  {% endif %}
+                </td>
+                <td>
+                  <a href="{% url 'contacts:view_contact' contact.id %}" class="btn btn-info">View</a>
+                </td>
+              </tr>
+              {% endfor%}
+            </tbody>
+          </table>
+          <div class="marl row text-center">
+            {% show_pages %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <br clear="all">
+  </div>
+{% endfor %}
+</div>
+
+{% endblock %}
+{% block js_block %}
+<script type="text/javascript">
+  $('.delete').click(function(e){
+    e.preventDefault()
+    url = $(this).attr('href')
+    if (!confirm('Are you sure you want to delete?'))
+      return;
+    window.location = $(this).attr('href')
+  });
+
+  $("a[rel='page']").click(function(e){
+    e.preventDefault();
+    $('#contacts_filter').attr("action", $(this).attr("href"));
+    $('#contacts_filter').submit();
+  });
+</script>
+{% endblock js_block %}

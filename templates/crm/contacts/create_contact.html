@@ -4,7 +4,7 @@
 <h3 align="center">
   <ol class="breadcrumb">
     <li><a href="{% url 'contacts:list' %}">Contacts</a></li>
-    <li class="active">Create</li>
+    <li class="active">{% if CREATE %} Create {% else %} Edit {% endif %}</li>
   </ol></h3>
 {% endblock %}
 {% block content %}
@@ -23,18 +23,11 @@
                 {{ contact_form.assigned_to.errors }}
               </div>
             </div>
-            <!-- <div class="filter_col col-md-6">
+            <div class="filter_col col-md-6">
               <div class="form-group">
                 <label for="exampleInputEmail1">Teams</label>
                 {{ contact_form.teams }}
                 {{ contact_form.teams.errors }}
-              </div>
-            </div> -->
-            <div class="filter_col col-md-6">
-              <div class="form-group">
-                <label for="exampleInputEmail1">Organization</label>
-                {{ contact_form.organization }}
-                {{ contact_form.organization.errors }}
               </div>
             </div>
             <br clear="all">
@@ -70,13 +63,20 @@
                     </div>
                   </div>
                 </div>
-                <!-- <div class="filter_col col-md-12"> Don't need account for a contact
+                <div class="filter_col col-md-12">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Account</label>
-                    {{ contact_form.account }}
-                    {{ contact_form.account.errors }}
+                    <label for="exampleInputEmail1" class="required">Title</label>
+                    {{ contact_form.title }}
+                    {{ contact_form.title.errors }}
                   </div>
-                </div> -->
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" class="required">Organization</label>
+                    {{ contact_form.organization }}
+                    {{ contact_form.organization.errors }}
+                  </div>
+                </div>
                 <div class="filter_col col-md-12">
                   <div class="form-group ">
                     <label for="exampleInputEmail1" class="required" >Phone</label>
@@ -136,6 +136,9 @@
       <input type="hidden" id="save_new_form" name="savenewform">
     </div>
     <div class="row marl text-center">
+      {% if DUPLICATE %} <strong style="color: #FF0000"><span style="font-size: 16pt">An Existing Contact already has the same Name and Phone number</span></strong> {% endif %}
+
+      <p>  </p>
       <button  class="btn btn-success save" type="submit">Save</button>
       {% if not contact_obj %}
         <button class="btn btn-success save savenew" type="submit">Save & New</button>

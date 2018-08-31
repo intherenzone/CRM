@@ -1,0 +1,323 @@
+{% extends 'crm/base.html' %}
+
+{% block head %}
+{{block.super}}
+{% endblock %}
+
+
+{% load staticfiles %}
+{% load paginate %}
+
+
+{% block content %}
+<div class="main_container">
+  <div class="row marl heading_create">
+    <div class="heading col-md-12">
+      <div class="col-md-12">
+        <h1 align="center">NEWS FEED</h1>
+      </div>
+    </div>
+  </div>
+  <div class="filter_row row marl">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-heading-list text-center">
+            Customize Searching
+          </div>
+        </div>
+        <form id="newsfeed_filter" action="" method="POST">{%csrf_token%}
+          <div class="panel-content text-center">
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">USERNAME</label>
+                <input type="text" class="form-control" placeholder="Username" id="id_username" name="username" {% if request.POST %} value="{{request.POST.username}}" {% endif %}>
+              </div>
+            </div>
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">MODULE</label>
+                <select class="form-control" id="id_module" name="module" >
+                  <option value="">--Module--</option>
+                  <option value="activity" {% if request.POST.module == 'activity' %} selected=true {% endif %}>Activity</option>
+                  <option value="contact" {% if request.POST.module == 'contact' %} selected=true {% endif %}>Contact</option>
+                  <option value="organization" {% if request.POST.module == 'organization' %} selected=true {% endif %}>Organization</option>
+                  <option value="comment" {% if request.POST.module == 'comment' %} selected=true {% endif %}>Comment</option>
+                </select>
+              </div>
+            </div>
+            <div class="filter_col col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">ACTION TYPE</label>
+                <select class="form-control" id="id_action_type" name="action_type" >
+                  <option value="">--Types of Actions--</option>
+                  <option value="add" {% if request.POST.action_type == 'add' %} selected=true {% endif %}>Add</option>
+                  <option value="edit" {% if request.POST.action_type == 'edit' %} selected=true {% endif %}>Edit</option>
+                  <option value="delete" {% if request.POST.action_type == 'delete' %} selected=true {% endif %}>Delete</option>
+                </select>
+              </div>
+            </div>
+            <div style = "clear:both" class="filter_col text-center">
+              <br>
+              <h6>Schedule Information</h6>
+            </div>
+            <div style = "clear:both" class="filter_col col-md-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">START DATE</label>
+                <div class="input-group date" id="datetimepicker1">
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD HH:MM (24-hour) or Press the calendar button on the right." name="startdate" value="{{request.POST.startdate}}" />
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span></div>
+              </div>
+            </div>
+
+            <div class="filter_col col-md-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">END DATE</label>
+                <div class="input-group date" id="datetimepicker2">
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD HH:MM (24-hour) or Press the calendar button on the right." name="enddate" value="{{request.POST.enddate}}">
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span></div>
+              </div>
+            </div>
+
+            <script type="text/javascript">
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            useCurrent: false, //Important! See issue #1075
+            format: 'YYYY-MM-DD HH:mm'
+        });
+        $('#datetimepicker2').datetimepicker({
+            useCurrent: false,//Important! See issue #1075
+            format: 'YYYY-MM-DD HH:mm'
+        });
+        $("#datetimepicker1").on("dp.change", function (e) {
+            $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker2").on("dp.change", function (e) {
+            $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+</script>
+
+            <div style = "clear:both" class="filter_col text-center">
+              <div class="form-group">
+                <br>
+                <button class="btn btn-primary" type="submit">Search</button>
+                <a href="{% url 'common:newsfeed' %}" class="btn btn-default">Clear</a>
+              </div>
+            </div>
+          </div>
+        </form>
+        <br clear="all">
+      </div>
+    </div>
+  </div>
+  <div class="table_container_row row marl">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading-list text-center">
+            NEWS FEED
+            <span class="pull-right total_count">{% if show_pageitems %} {% show_pageitems %}{% else %}Total News {{newsfeed|length}}{% endif %}</span>
+          </div>
+          <div class="panel-content">
+            <table class="table table-bordered table-striped table-condensed">
+              <tbody>
+                {% if per_page %}
+                  {% paginate per_page newsfeed %}
+                {% else%}
+                  {% paginate 20 newsfeed %}
+                {% endif %}
+                {% for news in newsfeed %}
+                <tr style="text-align:left;">
+                  <td scope="row">{{ news.date }}</td>
+                  <td>
+                    {% if news.type == "add_activity" %}
+
+                      {% if news.activity %}
+
+                        {% if user == news.activity.created_by %}
+                          A new activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> has been created by you.
+                        {% else %}
+                          {% if user in news.activity.assigned_to.all %}
+
+                            {% if news.activity.assigned_to.all|length == 1 %}
+                              You were assigned to a new activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> by {{news.actor}}.
+                            {% else %}
+                              You and {{news.activity.assigned_to.all|length|add:-1}} others are assigned to a new activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> by {{news.actor}}.
+                            {% endif %}
+
+                          {% else %}
+                            A new activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> has been created by {{news.actor}}.
+                          {%endif%}
+
+                        {% endif %}
+
+                      {% else %}
+                          <!-- Case when activity has been deleted, then object can no longer be linked. -->
+                          A new activity, "{{news.object_name}}," has been created by {{news.actor}}. This activity has since been deleted.
+                      {% endif %}
+
+                    {% elif news.type == "edit_activity" %}
+
+                      {% if news.activity %}
+
+                        {% if user == news.actor %}
+                          You modified an activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a>.
+                        {% else %}
+                          An activity, <a href="{% url 'activity:view_activity' news.activity.id %}">{{news.object_name}}</a> was modified by {{news.actor}}.
+                        {% endif %}
+
+                      {% else %}
+                        An activity, "{{news.object_name}}," was modified by {{news.actor}}. This activity has since been deleted.
+                      {% endif %}
+
+                    {% elif news.type == "delete_activity" %}
+                      An activity, "{{news.object_name}}" was deleted by {{news.actor}}.
+
+                    {% elif news.type == "add_contact" %}
+
+                      {% if news.contact %}
+
+                        {% if user == news.actor %}
+                          A new contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> has been created by you.
+                        {% else %}
+                          {% if user in news.contact.assigned_to.all %}
+
+                            {% if news.contact.assigned_to.all|length == 1 %}
+                              You were assigned to a new contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> by {{news.actor}}.
+                            {% else %}
+                              You and {{news.contact.assigned_to.all|length|add:-1}} others are assigned to a new contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> by {{news.actor}}.
+                            {% endif %}
+
+                          {% else %}
+                            A new contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> has been created by {{news.actor}}.
+                          {%endif%}
+
+                        {% endif %}
+
+                      {% else %}
+                        A new contact, {{news.object_name}}, has been created by {{news.actor}}. This contact has since been deleted.
+                      {% endif %}
+
+                    {% elif news.type == "edit_contact" %}
+
+                      {% if news.contact %}
+
+                        {% if user == news.actor %}
+                          You modified a contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a>.
+                        {% else %}
+                          A contact, <a href="{% url 'contacts:view_contact' news.contact.id %}">{{news.object_name}}</a> was modified by {{news.actor}}.
+                        {% endif %}
+
+                      {% else %}
+                        A contact, {{news.object_name}}, was modified by {{news.actor}}. This contact has since been deleted.
+                      {% endif %}
+
+                    {% elif news.type == "delete_contact" %}
+                      A contact, {{news.object_name}} was deleted by {{news.actor}}.
+
+                    {% elif news.type == "add_organization" %}
+
+                      {% if news.organization %}
+
+                        {% if user == news.actor %}
+                          A new organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a> has been created by you.
+                        {% else %}
+                          {% if user in news.organization.assigned_to.all %}
+
+                            {% if news.contact.assigned_to.all|length == 1 %}
+                              You were assigned to a new organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a> by {{news.actor}}.
+                            {% else %}
+                              You and {{news.organization.assigned_to.all|length|add:-1}} others are assigned to a new organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a> by {{news.actor}}.
+                            {% endif %}
+
+                          {% else %}
+                            A new organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a> has been created by {{news.actor}}.
+                          {%endif%}
+
+                        {% endif %}
+
+                      {% else %}
+                        A new organization, {{news.object_name}}, has been created by {{news.actor}}. This organization has since been deleted.
+                      {% endif %}
+
+                    {% elif news.type == "edit_organization" %}
+
+                      {% if news.organization %}
+
+                        {% if user == news.actor %}
+                          You modified an organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a>.
+                        {% else %}
+                          An organization, <a href="{% url 'organizations:view_organization' news.organization.id %}">{{news.object_name}}</a> was modified by {{news.actor}}.
+                        {% endif %}
+
+                      {% else %}
+                        An organization, {{news.object_name}} was modified by {{news.actor}}. This organization has since been deleted.
+                      {% endif %}
+
+                      {% elif news.type == "delete_organization" %}
+                        An organization, {{news.object_name}} was deleted by {{news.actor}}.
+
+                    {% elif news.comment %}
+                      {% if news.comment.activity %}
+                        {% if user == news.actor %}
+                          You commented on the activity, <a href="{% url 'activity:view_activity' news.comment.activity.id %}">{{news.object_name}}</a>.
+                        {% else %}
+                          {{news.actor}} commented on the activity, <a href="{% url 'activity:view_activity' news.comment.activity.id %}">{{news.object_name}}</a>.
+                        {% endif %}
+
+                      {% elif news.comment.contact %}
+                        {% if user == news.actor %}
+                          You commented on the contact, <a href="{% url 'contacts:view_contact' news.comment.contact.id %}">{{news.object_name}}</a>.
+                        {% else %}
+                          {{news.actor}} commented on thie contact, <a href="{% url 'contacts:view_contact' news.comment.contact.id %}">{{news.object_name}}</a>.
+                        {% endif %}
+
+                      {% elif news.comment.organization %}
+                        {% if user == news.actor %}
+                          You commented on the organization, <a href="{% url 'organizations:view_organization' news.comment.organization.id %}">{{news.object_name}}</a>.
+                        {% else %}
+                          {{news.actor}} commented on the organization, <a href="{% url 'organizations:view_organization' news.comment.organization.id %}">{{news.object_name}}</a>.
+                        {% endif %}
+
+                      {%endif%}
+                    {%endif%}
+                  </td>
+                </tr>
+                {% endfor%}
+              </tbody>
+            </table>
+            {%ifequal newsfeed|length 0 %}
+              <h4 class="text-center">No News</h4>
+            {%endifequal%}
+            <div class="marl row text-center">
+              {% show_pages %}
+            </div>
+          </div>
+        </div>
+      <br clear="all">
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block js_block %}
+<script type="text/javascript">
+  $('.delete').click(function(e){
+    e.preventDefault()
+    url = $(this).attr('href')
+    if (!confirm('Are you sure you want to delete?'))
+      return;
+    window.location = $(this).attr('href')
+  });
+
+  $("a[rel='page']").click(function(e){
+    e.preventDefault();
+    $('#newsfeed_filter').attr("action", $(this).attr("href"));
+    $('#newsfeed_filter').submit();
+  });
+</script>
+{% endblock js_block %}

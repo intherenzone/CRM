@@ -10,26 +10,24 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <img src="/static/images/paradyme-management.png" height="49" width="231" style="padding-left: 10px" />
+            <a href="{% url 'common:home' %}"><img src="/static/crm/images/paradyme-management.png"/></a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <!-- <li><a href="{% url 'accounts:list' %}">ACCOUNTS</a></li> -->
                 <li><a href="{% url 'contacts:list' %}">CONTACTS</a></li>
-                <!--<li><a href="{% url 'leads:list' %}">LEADS</a></li>-->
                 <li><a href="{% url 'activity:list' %}">ACTIVITIES</a></li>
                 <li><a href="{% url 'organizations:list' %}">ORGANIZATIONS</a></li>
-                <!-- <li><a href="{% url 'oppurtunities:list' %}">OPPORTUNITY</a></li> -->
-                <!-- <li><a href="{% url 'cases:list' %}">CASES</a></li> -->
+                <li><a href="{% url 'common:newsfeed' %}">NEWS FEED</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                {% if user.is_staff %}<li><a href="{% url 'admin:index' %}">ADMIN</a></li>{% endif %}
                 <li class="dropdown">
                   {% with request.profile as profile %}
                   <a href="#" class="dropdown-toggle abcd" data-toggle="dropdown" role="button" aria-haspopup="true"
                     aria-expanded="false" >
                   {% if not profile.profile_pic %}
-                  <img src="{% static 'images/user.png' %}" alt="Paradyme profile pic">
+                  <img src="{% static 'crm/images/user.png' %}" alt="Paradyme profile pic">
                   {% else %}
                   <img src="{{profile.profile_pic.url}}" alt="Paradyme profile pic">
                   {% endif %}

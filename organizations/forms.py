@@ -14,6 +14,8 @@ class OrganizationForm(forms.ModelForm):
         self.fields['assigned_to'].queryset = assigned_users
         self.fields['assigned_to'].required = False
         self.fields['teams'].required = False
+        self.fields['phone'].required = False
+        self.fields['email'].required = False
 
     class Meta:
         model = Organization

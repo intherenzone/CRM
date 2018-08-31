@@ -1,0 +1,21 @@
+{% extends 'crm/base.html' %}
+{% load staticfiles %}
+{% load paginate %}
+{% block content %}
+
+<div class="container-fluid">
+<h2> Your calendar link is : {{user_url}} </h2>
+<h3> How to use this calendar link to automatically synchronize your calendar: </h3>
+<h3>
+  <ol>
+    <li>Go to <a href="https://www.google.com/calendar" target="_blank">Google Calendar</a></li>
+    <li>Click <b>Setting</b></li>
+    <li>Under Setting, click <b>Add Calendar</b></li>
+    <li>Under Add Calendar, choose <b>From URL</b></li>
+    <li>Copy your link:<b> {{user_url}} </b>into the input box </li>
+    <li>Click <b>ADD CALENDAR</b></li>
+    <li>Once you finish, this calendar will be automatically update, <b>no further action needed</b></li>
+</h3>
+</div>
+
+{% endblock %}
