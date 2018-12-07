@@ -40,7 +40,10 @@ from django.conf import settings
 #             return False
 
 
-
+class UserProfile(models.Model):
+    user = models.OneToOneField(User,related_name="user_profile",on_delete=models.CASCADE)
+    phone = models.CharField(max_length=20,null=True)
+    
 class Address(models.Model):
     address_line = models.CharField(_("Address"), max_length=255, blank=True, null=True)
     street = models.CharField(_("Street"), max_length=55, blank=True, null=True)

@@ -1,7 +1,6 @@
 from django import forms
 from common.models import *
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-
 from django.contrib.auth.models import User
 from django.conf import settings
 
@@ -33,6 +32,7 @@ class UserCreationForm(forms.ModelForm):
         return user
 
 
+
 class UserChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
     the user, but replaces the password field with admin's
@@ -42,13 +42,42 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'username', 'is_active','is_staff')
+        fields = ('email','first_name','last_name','password', 'username', 'is_active','is_staff')
 
-    def clean_password(self):
-        # Regardless of what the user provides, return the initial value.
-        # This is done here, rather than on the field, because the
-        # field does not have access to the initial value
-        return self.initial["password"]
+    # def clean_password(self):
+    #     # Regardless of what the user provides, return the initial value.
+    #     # This is done here, rather than on the field, because the
+    #     # field does not have access to the initial value
+    #     return self.initial["password"]
+
+
+class CustomUserChangeForm(forms.ModelForm):
+    """Form to allow users to change user details in template"""
+    class Meta:
+        model = User
+        fields = ('first_name','last_name',)
+
+    def __init__(self, *args, **kwargs):
+        super(CustomUserChangeForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs = {"class":"form-control"}
+
+
+class UserProfileChangeForm(forms.ModelForm):
+    """Form that allows users to edit their phone number which is part of the UserProfile Model"""
+    class Meta:
+        model = UserProfile
+        fields = ('phone',)
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileChangeForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs = {"class":"form-control"}
+
+
+    def clean_phone(self):
+
+        return self.cleaned_data.get('phone')
 
 class BillingAddressForm(forms.ModelForm):
 

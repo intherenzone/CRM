@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect
@@ -231,3 +231,68 @@ def newsfeed(request):
     return render(request, 'crm/newsfeed.html', {
         'newsfeed': newsfeed
         })
+
+
+def format_phone(phone):
+    phone_length = len(phone)
+    if phone_length == 11:
+        new_phone = phone[:1] + ' (' + phone[1:4] + ') ' + phone[4:7] + '-' + phone[7:]
+    elif phone_length == 12:
+        new_phone = phone[:2] + ' (' + phone[2:5] + ') ' + phone[5:8] + '-' + phone[8:]
+    elif phone_length == 13:
+        new_phone = phone[:3] + ' (' + phone[3:6] + ') ' + phone[6:9] + '-' + phone[9:]
+    else:
+        new_phone = '(' + phone[0:3] + ') ' + phone[3:6] + '-' + phone[6:]
+    return new_phone
+
+
+def view_profile(request):
+
+    try:
+        phone = request.user.user_profile.phone
+        phone = format_phone(phone)
+    except:
+        phone = None
+    return render(request,"crm/view_profile.html",{'phone':phone})
+
+
+@csrf_exempt
+def edit_profile(request, user_id):
+    first_name = request.user.first_name
+    last_name = request.user.last_name
+    email  = request.user.email
+    try:
+        phone = request.user.user_profile.phone
+    except:
+        phone = None
+    if request.method=='GET':
+        form = CustomUserChangeForm({
+            'first_name':first_name,
+            'last_name':last_name,
+            'email':email,
+        })
+        form_2 = UserProfileChangeForm({
+            'phone':phone,
+        })
+    elif request.method == "POST":
+        user = request.user
+        try:
+            user_profile = get_object_or_404(UserProfile, user=user)
+        except:
+            user_profile = UserProfile(user=user,phone=None)
+            user_profile.save()
+        form = CustomUserChangeForm(request.POST)
+        form_2 = UserProfileChangeForm(request.POST)
+        if form_2.is_valid() and form.is_valid():
+           first_name = form.cleaned_data['first_name']
+           last_name = form.cleaned_data['last_name']
+           phone = form_2.cleaned_data['phone']
+           
+           user.first_name = first_name
+           user.last_name = last_name
+           user_profile.phone = phone
+           user.save()
+           user_profile.save()
+
+        return HttpResponseRedirect(reverse('common:view_profile'))
+    return render(request,"crm/edit_profile.html",{"form":form,"form_2":form_2})

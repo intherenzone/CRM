@@ -1,0 +1,136 @@
+{% extends 'crm/base.html' %}
+{% load staticfiles %}
+{%block content%}
+<div class="main-container">
+<div class="row marl heading_create">
+    <div class="heading col-md-12">
+      <div class="col-md-12">
+        <h1 align="center" style="padding-bottom:20px">Your Profile</h1>
+     </div>
+    </div>
+  </div>
+
+    <div class="overview_form_block row marl">
+      <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading view-pad">
+            <h5>
+              OVERVIEW
+              <span class="pull-right" style="margin-top: -10px">
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href="{% url 'common:edit_profile' user.id %}">Edit</a></li>
+                    
+                  </ul>
+                </div>
+              </span>
+            </h5>
+        </div>
+        <div class="panel-content" id="datashow">
+            <div class="row marl">
+              <div class="col-md-6">
+                <div class="filter_col col-md-12" id="iname">
+                  <div class="form-group" >
+                    <label class="contact_field_label" for="id_name" data-name="name">Name:</label>
+                    
+                    <div class="contact_field" id="contact_name" data-name="name">
+                    {% if user.get_full_name %}
+                    {{ user.get_full_name }}
+                    {% else %}
+                    Not Specified
+                    {% endif %}
+                    </div>
+
+                   
+                    
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label class="contact_field_label" for="id_email" data-name="name">Email</label>
+                    <div class="contact_field" id="contact_email" data-name="name">{{ user.email }}</div>
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label class="contact_field_label" for="id_username" data-name="username">Username</label>
+                    <div class="contact_field" id="contact_username" data-name="username">{{ user.username }}</div>
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label class="contact_field_label" for="id_phone" data-name="name">Phone</label>
+                    
+                    <div class="contact_field" id="contact_phone" data-name="name">
+                    {% if phone %}
+                    {{ phone }}
+                    {% else %}
+                    Not Specified
+                    {% endif %}
+                    </div>
+                  </div>
+                </div>
+                
+                {% comment %} <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label class="contact_field_label" for="id_title" data-name="name">Title</label>
+                    <div class="contact_field" id="contact_title" data-name="name">{% if user.title %}{{ user.title }}
+                    {% else %} Not Specified {% endif %}</div>
+                  </div>
+                </div>
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    <label class="contact_field_label" for="id_organization" data-name="name">Organization</label>
+                    <div class="contact_field" id="contact_organization" data-name="name">{% if contact_record.organization %}<a href="{% url 'organizations:view_organization' contact_record.organization.id %}">{{ user.organization }}</a>
+                    {% else %} Not Specified {% endif %}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="filter_col col-md-12">
+                  <div class="form-group">
+                    {% if contact_record.address.address_line or contact_record.address.street or contact_record.address.city or  contact_record.address.state or contact_record.address.postcode or contact_record.address.country %}
+                    <label class="contact_field_label" for="id_address" data-name="name" >Billing Address</label>
+                    <div class="contact_field" id="contact_address" data-name="name">
+                      {% if contact_record.address.address_line %}
+                        {{contact_record.address.address_line}}</br>
+                      {% endif %}
+                      {% if contact_record.address.street %}
+                        {{ contact_record.address.street }}</br>
+                      {% endif %}
+                      {% if contact_record.address.city %}
+                        {{ contact_record.address.city }},
+                      {% endif %}
+                      {% if contact_record.address.state %}
+                        {{ contact_record.address.state }}
+                      {% endif %}
+                      {% if contact_record.address.postcode %}
+                        {{ contact_record.address.postcode }}</br>
+                      {% endif %}
+                      {% if contact_record.address.country %}
+                        {{ contact_record.address.get_country_display }}
+                      {% endif %}
+                    </div>
+                    {% endif %}
+                  </div>
+                </div> {% endcomment %}
+                  {% comment %} <div class="filter_col col-md-12">
+                    <div class="form-group">
+                      {% if contact_record.description %}
+                      <label class="contact_field_label" for="id_description" data-name="name">Description</label>
+                      <div class="contact_field" id="contact_description" data-name="name">{{ contact_record.description }}</div>
+                      {% endif %}
+                    </div>
+                  </div> {% endcomment %}
+              </div>
+            </div>
+          </div>
+          </div>
+          </div>
+          </div>
+          </div>
+
+
+{%endblock%}
